@@ -1,0 +1,327 @@
+.nera-login-logo-container {
+  position: absolute;
+  display: flex;
+  width: 180px;
+  height: 50px;
+  top: 10px;
+  left: 110px;
+  align-items: center;
+  transform: translateX(-50%);
+  z-index: 10;
+  gap: 6px;
+  cursor: pointer;
+  /* background-color: #8fff1e; */
+}
+
+.nera-login-logo-container img {
+  width: 35px;
+  height: 35px;
+  border-radius: 30px;
+  cursor: pointer;
+}
+.nera-logo-para {
+  font-size: 25px;
+  font-weight: 600;
+  color: #1e90ff;
+  margin-top: -2px;
+  cursor: pointer;
+}
+
+.login-carousel{
+  width: 500px;
+  height: 200px;
+}
+
+/* __________right side of the screen____________ */
+
+.login-form-container {
+  display: flex;
+  flex-direction: column;
+  width: 400px;
+  height: 440px;
+  background-color: white;
+  border-radius: 10px;
+}
+.h2-of-login-form {
+  display: flex;
+  font-size: 30px;
+  font-weight: 600;
+  color: black;
+  margin-top: 25px;
+  margin-bottom: 10px;
+  align-items: center;
+  justify-content: center;
+}
+.para-of-login-form {
+  display: flex;
+  font-size: 18px;
+  font-weight: 400;
+  color: rgb(67, 66, 66);
+  margin-top: -7px;
+  margin-bottom: 20px;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+.sign-up-of-login-form {
+  color: blue;
+  cursor: pointer;
+}
+.sign-up-of-login-form:hover {
+  color: #9a1eff;
+}
+.form-container {
+  display: flex;
+  flex-direction: column;
+}
+.para-email-of-login-form {
+  display: flex;
+  font-size: 18px;
+  font-weight: 500;
+  color: rgb(67, 66, 66);
+  margin-top: 10px;
+  margin-left: 30px;
+  font-weight: 500;
+}
+.input-of-login-form {
+  display: flex;
+  width: 350px;
+  height: 50px;
+  font-weight: 300;
+  margin-top: 5px;
+  margin-left: 25px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  padding: 8px;
+  border: 1px solid #1e90ff;
+}
+.btn-of-get-otp-login-form {
+  display: flex;
+  width: 350px;
+  height: 50px;
+  font-weight: 500;
+  margin-top: 10px;
+  margin-left: 25px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  padding: 8px;
+  background-color: #9a1eff;
+  color: white;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
+  border: none;
+  cursor: pointer;
+}
+.btn-of-get-otp-login-form:hover {
+  background-color: #7f5b9d;
+}
+
+/* ______ line of_____ css */
+
+.line-of-login-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 18px;
+  color: brown;
+  font-size: 18px;
+}
+.straightline-of-login-form {
+  width: 100px;
+  height: 1px;
+  background-color: rgb(152, 13, 13);
+}
+
+/* --------- social-login-container css --------- */
+
+.social-login-container {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  justify-content: center;
+}
+
+.btn-of-login-form {
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-weight: 400;
+  width: 150px;
+  /* background-color: #9a1eff; */
+  border: 1px solid #383334;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: 20px;
+  transition: background-color 0.3s ease;
+}
+
+/* Google button specific styles */
+.btn-google {
+  background: white;
+  color: #333;
+  border: 1px solid #ddd;
+}
+
+.btn-google:hover {
+  background: #f5f5f5;
+}
+
+/* Apple button specific styles */
+.btn-apple {
+  background: black;
+  color: white;
+  border: none;
+}
+
+.btn-apple:hover {
+  background: #333;
+}
+
+/*    Media Queries for specific breakpoints Base styles (mobile-first approach) */
+
+@media (max-width: 719px) {
+  .nera-login-logo-container {
+    display: none;
+  }
+}
+
+.nera-login-logo-container img {
+  width: 30px;
+  height: 30px;
+  border-radius: 30px;
+}
+
+.nera-logo-para {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1e90ff;
+  margin-top: -2px;
+}
+
+.login-form-container {
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  max-width: 400px;
+  height: auto;
+  padding: 20px 0;
+  margin: 0 auto;
+  background-color: white;
+  border-radius: 10px;
+}
+
+.h2-of-login-form {
+  font-size: 24px;
+  font-weight: 600;
+  color: black;
+  margin: 15px 0 5px;
+  text-align: center;
+}
+
+.para-of-login-form {
+  font-size: 14px;
+  font-weight: 400;
+  color: rgb(67, 66, 66);
+  margin: 0 0 15px;
+  text-align: center;
+}
+
+.input-of-login-form,
+.btn-of-get-otp-login-form {
+  width: calc(100% - 50px);
+  height: 45px;
+  margin: 5px auto 10px;
+}
+
+.line-of-login-form {
+  margin: 15px 0;
+  font-size: 16px;
+}
+
+.straightline-of-login-form {
+  width: 80px;
+}
+
+.social-login-container {
+  flex-direction: column;
+  gap: 0.8rem;
+  margin-top: 1rem;
+}
+
+.btn-of-login-form {
+  padding: 0.6rem;
+  justify-content: center;
+}
+
+/* Media Queries for specific breakpoints */
+@media (min-width: 320px) {
+  .nera-logo-para {
+    font-size: 18px;
+  }
+
+  .login-form-container {
+    width: 300px;
+  }
+}
+
+@media (min-width: 375px) {
+  .nera-logo-para {
+    font-size: 22px;
+  }
+
+  .login-form-container {
+    width: 340px;
+  }
+
+  .h2-of-login-form {
+    font-size: 26px;
+  }
+
+  .para-of-login-form {
+    font-size: 16px;
+  }
+}
+
+@media (min-width: 420px) {
+  .nera-login-logo-container img {
+    width: 35px;
+    height: 35px;
+  }
+
+  .nera-logo-para {
+    font-size: 25px;
+  }
+
+  .login-form-container {
+    width: 380px;
+  }
+
+  .h2-of-login-form {
+    font-size: 28px;
+  }
+
+  .social-login-container {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .btn-of-login-form {
+    padding: 0.75rem 1rem;
+  }
+}
+
+/* Additional responsive adjustments */
+@media (max-height: 700px) {
+  .h2-of-login-form {
+    margin-top: 10px;
+  }
+
+  .input-of-login-form,
+  .btn-of-get-otp-login-form {
+    height: 40px;
+    margin-bottom: 8px;
+  }
+}
