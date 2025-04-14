@@ -9,12 +9,11 @@ import {
   FaUsersSlash,
   FaRegUser,
 } from "react-icons/fa";
-import { FcComboChart, FcApproval, FcDoNotMix } from "react-icons/fc";
+import { FcComboChart, FcApproval, FcDoNotMix,FcCurrencyExchange } from "react-icons/fc";
 import { SiGooglecampaignmanager360, SiEclipsemosquitto } from "react-icons/si";
 import { GrInternetExplorer } from "react-icons/gr";
 import { HiClipboardDocumentList } from "react-icons/hi2";
 import { VscVerified } from "react-icons/vsc";
-import { AiOutlineTransaction } from "react-icons/ai";
 
 
 const Sidebar = ({ sidebarOpen }) => {
@@ -193,8 +192,8 @@ const Sidebar = ({ sidebarOpen }) => {
               </div>
             </li>
           </ul>
-          {/* end of Kyc Studio dropdown menu item */}
         </nav>
+          {/* end of Kyc Studio dropdown menu item */}
 
         {/* wallet transaction nav list */}
         <div className="sidebar-all-items-inside-this">
@@ -202,33 +201,18 @@ const Sidebar = ({ sidebarOpen }) => {
             <div className="sidebar-wallet-title">
             <h2 className="sidebar-wallet-h2">WALLET TRANSACTION</h2>
             </div>
-            <ul className="menu-ul">
-              {/* Users dropdown menu item */}
-              <li
-                className={`dropdown-container ${usersDropdownOpen ? "open" : ""}`}
-              >
-                <div className="dropdown-header-wrapper">
-                  <div
-                    className="dropdown-header"
-                    onClick={toggleUsersDropdown}
-                  >
-                    <FaUsers size={24} style={{ color: "royalblue" }} />
-                    {sidebarOpen && (
-                      <>
-                        <span className="menu-span">Transaction History</span>
-                        {usersDropdownOpen ? (
-                          <FaChevronUp size={14} />
-                        ) : (
-                          <FaChevronDown size={14} />
-                        )}
-                      </>
-                    )}
-                  </div>
-                </div>
+            <ul className="transaction-ul">
+            <li className='transaction-li'>
+                      <Link to="/TransactionHistory" className="dropdown-item">
+                        <FcCurrencyExchange size={28} className="dropdown-icon" />
+                        <span className='transaction-span'>Transaction History</span>
+                      </Link>
               </li>
-            </ul>
+           </ul>
           </nav>
         </div>
+            {/* end of wallet transaction nav list */}
+
       </div>
     </div>
   );

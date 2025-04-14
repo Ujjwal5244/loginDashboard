@@ -21,12 +21,14 @@
   align-items: center;
   margin-top: 10px;
 }
+
 .sidebar-menu-h2 {
   margin-top: 25px;
   font-weight: 500;
   font-size: 1.2rem;
   color: rgb(6, 6, 115);
 }
+
 .menu-ul {
   list-style: none;
   padding: 10px;
@@ -36,7 +38,7 @@
   /* background-color: brown; */
   width: 270px;
   margin-left: 25px;
-  gap: 15px;
+  gap: 10px;
   /* margin-top: 10px; */
 }
 
@@ -49,6 +51,7 @@
   margin-top: -15px;
   font-size: 1.1rem;
   font-weight: 500;
+  /* background-color: sandybrown; */
 }
 
 /* dropdown styles of users*/
@@ -100,10 +103,17 @@
 .menu-span {
   font-size: 1.2rem;
   flex-grow: 1;
+  color: black;
 }
-.menu-Home{
+
+.menu-Home {
   margin-left: 8px;
+  font-size: 1.2rem;
+  color: black;
+  /* margin-bottom: -10px; */
+  /* background-color: brown; */
 }
+
 /* dark-mode css */
 
 .app.dark-mode .sidebar {
@@ -113,11 +123,14 @@
 .app.dark-mode .dropdown-header {
   color: var(--dark-text);
 }
+
 .app.dark-mode .dropdown-item {
   color: var(--dark-text);
 }
-.app.dark-mode .dropdown-header .icon {
-  color: var(--dark-text);
+
+.app.dark-mode .menu-span,
+.app.dark-mode .menu-Home {
+  color: var(--dark-text) !important;
 }
 
 .sidebar.collapsed {
@@ -140,9 +153,6 @@
   transition: var(--transition);
 }
 
-.app.dark-mode .sidebar nav ul li a {
-  color: var(--dark-text);
-}
 
 .sidebar nav ul li a:hover {
   background-color: rgba(0, 0, 0, 0.1);
@@ -168,22 +178,49 @@
   display: none;
 }
 
- /* ______wallet transaction css____ */
- 
- .sidebar-wallet-title {
+
+/* ______wallet transaction css____ */
+
+.sidebar-wallet-title {
   display: flex;
   font-size: 1.4rem;
   padding: 25px;
   color: var(--light-text);
-  background-color: rgb(183, 255, 0);
+  /* background-color: rgb(183, 255, 0); */
   width: 290px;
   height: 10px;
   align-items: center;
   margin-top: -10px;
 }
+
 .sidebar-wallet-h2 {
   /* margin-top: -15px; */
   font-weight: 500;
   font-size: 1.2rem;
   color: rgb(6, 6, 115);
+}
+
+.transaction-li {
+  list-style: none;
+  padding: 10px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  /* background-color: brown; */
+  width: 270px;
+  height: 30px;
+  margin-left: 12px;
+  margin-top: -18px;
+  gap: 15px;
+  /* background-color: rgb(211, 105, 105); */
+  justify-content: center;
+}
+
+.transaction-span {
+  color: black;
+  font-size: 1.2rem;
+}
+
+.app.dark-mode .sidebar nav ul li .transaction-span {
+  color: var(--dark-text);
 }
