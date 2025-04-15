@@ -5,6 +5,15 @@ body {
   padding: 0;
 }
 
+/* .roboto-uniquifier {
+  font-family: "Roboto", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100;
+} */
+
 :root {
   --sidebar-width: 250px;
   --sidebar-collapsed-width: 80px;
@@ -49,6 +58,6 @@ body {
   background-color: var(--dark-bg);
 }
 
-.sidebar.collapsed ~ .main-content {
+.sidebar.collapsed~.main-content {
   margin-left: var(--sidebar-collapsed-width);
 }

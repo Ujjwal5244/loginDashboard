@@ -3,11 +3,10 @@ import "./Login.css";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Carousel } from "react-responsive-carousel";
 import neralog from "../assets/nerasoft-logo.jpg";
-import loginimg1 from "../assets/login-left.jpg";
-import loginimg2 from "../assets/login-left-img2.jpg";
 import loginimg3 from "../assets/login-left-img3.jpg";
 import { FaApple } from "react-icons/fa"; // Using react-icons library
 import { FcGoogle } from "react-icons/fc";
+import { SiFacebook } from "react-icons/si";
 import { Link } from "react-router-dom";
 
 const Login = () => {
@@ -23,7 +22,7 @@ const Login = () => {
   return (
     <div className="main-login flex flex-col md:flex-row h-screen">
       {/* --------- Left side of login --------- */}
-      <div className="left-side  w-full md:w-1/2 bg-blue-200 h-1/2 md:h-full relative">
+      <div className="left-side  w-full md:w-1/2 bg-white h-1/2 md:h-full relative">
         <a
           href="https://nerasoft.in/"
           className="nera-login-logo-container"
@@ -32,21 +31,21 @@ const Login = () => {
           <img src={neralog} alt="nera-logo" />
           <p className="nera-logo-para">NeraSoft</p>
         </a>
-        <Carousel
+        {/* <Carousel
   showArrows={true}
   autoPlay={true}
   infiniteLoop={true}
   showThumbs={false}
   showStatus={false}
   className='login-carousel'
->
-  {/* All slides now have consistent sizing */}
-  <div className="h-[50vh]  md:h-[100vh] w-full relative">
+> */}
+          {/* All slides now have consistent sizing */}
+  {/* <div className="left-img-1">
     <img
-      src={loginimg1}
-      alt="Slide 1"
-      className="object-cover w-full h-full"
-    />
+    src={loginimg1}
+    alt="Slide 1"
+    className="w-full h-full object-contain"
+  />
   </div>
 
   <div className="h-[50vh] md:h-[100vh] w-full relative">
@@ -63,26 +62,41 @@ const Login = () => {
       alt="Slide 3"
       className="object-cover w-full h-full"
     />
-  </div>
-</Carousel>
+            </div> 
+ </Carousel> */}
+        {/* end of crausel */}
+        <div className="left-img-1">
+    <img
+    src={loginimg3}
+    alt="Slide 1"
+    className="w-full h-full object-contain"
+          />
+        </div>
+        
       </div>
 
       {/* --------- Right side of login --------- */}
-      <div className="right-side w-full md:w-1/2 flex items-center justify-center bg-transparent md:bg-blue-100 h-1/2 md:h-full">
+      <div className="right-side w-full md:w-1/2 flex items-center justify-center bg-transparent md:bg-white h-1/2 md:h-full">
         <div className="login-form-container">
-          <h2 className="h2-of-login-form">Welcome back</h2>
-          <p className="para-of-login-form">
+          <div className="h2-of-login-form ">
+            <h2>Log in to continue your
+            </h2>
+            <p className='para-of-h2-of-login-form'>
+              <span className='login-nifipayment'>NifiPayment</span> journey
+              </p>
+            </div>
+          {/* <p className="para-of-login-form">
             Don't have an account?{" "}
             <Link to="/signup" className="sign-up-of-login-form">
               Sign up
             </Link>
-          </p>
+          </p> */}
           {/* --------- form-container --------- */}
           <div className="form-container">
-            <p className="para-email-of-login-form">Email</p>
+            {/* <p className="para-email-of-login-form">Email</p> */}
             <input
               type="text"
-              placeholder="Enter your Email..."
+              placeholder="Email"
               className="input-of-login-form"
             />
             <button type="submit" className="btn-of-get-otp-login-form">
@@ -104,7 +118,15 @@ const Login = () => {
               onClick={() => handleSocialLogin("google")}
             >
               <FcGoogle size={24} />
-              <span>Google</span>
+            </button>
+            
+            {/* facebook Login Button */}
+            <button
+              type="button"
+              className="btn-of-login-form"
+              onClick={() => handleSocialLogin("facebook")}
+            >
+              <SiFacebook  size={24} />
             </button>
 
             {/* Apple Login Button */}
@@ -114,9 +136,16 @@ const Login = () => {
               onClick={() => handleSocialLogin("apple")}
             >
               <FaApple size={24} />
-              <span>Apple</span>
             </button>
           </div>
+          <div className="sign-up-form">
+          <p className="para-of-login-form">
+            Don't have an account?{" "}
+            <Link to="/signup" className="sign-up-of-login-form">
+              Sign up
+            </Link>
+            </p>
+            </div>
         </div>
       </div>
     </div>
