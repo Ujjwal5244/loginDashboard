@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./Sidebar.css";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
   FaUsers,
   FaHome,
@@ -8,211 +8,257 @@ import {
   FaChevronUp,
   FaUsersSlash,
   FaRegUser,
+  FaFileSignature,
 } from "react-icons/fa";
-import { FcComboChart, FcApproval, FcDoNotMix,FcCurrencyExchange } from "react-icons/fc";
+import { LiaUserLockSolid } from "react-icons/lia";
+import { FcApproval, FcCurrencyExchange } from "react-icons/fc";
 import { SiGooglecampaignmanager360, SiEclipsemosquitto } from "react-icons/si";
-import { GrInternetExplorer } from "react-icons/gr";
+import { MdAnalytics, MdDrafts, MdOutlineSettings, MdOutlineImportantDevices } from "react-icons/md";
+import { GrInternetExplorer, GrDocumentText, GrCompliance } from "react-icons/gr";
 import { HiClipboardDocumentList } from "react-icons/hi2";
 import { VscVerified } from "react-icons/vsc";
 
+const Sidebar = ({ sidebarOpen, darkMode }) => {
+  const location = useLocation();
+  const [openDropdown, setOpenDropdown] = useState(null);
+  const [isHovered, setIsHovered] = useState(false);
 
-const Sidebar = ({ sidebarOpen }) => {
-  // State to manage the open/close state of the dropdowns
-  const [usersDropdownOpen, setUsersDropdownOpen] = useState(false);
-  const [devToolDropdownOpen, setDevToolDropdownOpen] = useState(false);
-  const [kycDropdownOpen, setKycDropdownOpen] = useState(false);
-
-  const toggleUsersDropdown = () => {
-    setUsersDropdownOpen(!usersDropdownOpen);
-    setDevToolDropdownOpen(false); // Close DevTool when opening Users
+  const toggleDropdown = (dropdown) => {
+    setOpenDropdown(openDropdown === dropdown ? null : dropdown);
   };
 
-  const toggleDevToolDropdown = () => {
-    setDevToolDropdownOpen(!devToolDropdownOpen);
-    setUsersDropdownOpen(false); // Close Users when opening DevTool
+  const isActive = (path) => {
+    return location.pathname === path || location.pathname.startsWith(`${path}/`);
   };
-  const toggleKycDropdown = () => {
-    setKycDropdownOpen(!kycDropdownOpen);
-    setUsersDropdownOpen(false);
-    setDevToolDropdownOpen(false);
+
+  const getIconColor = (iconComponent, active = false) => {
+    if (active) return "#ffffff";
+    if (!sidebarOpen) return "#ffffff"; // Always white in collapsed state
+    if (darkMode) {
+      if ([FcApproval, FcCurrencyExchange].includes(iconComponent.type)) 
+        return "#63b3ed";
+      return "#a0aec0";
+    }
+    if ([FcApproval, FcCurrencyExchange].includes(iconComponent.type)) 
+      return "";
+    return "#6c757d";
   };
+
+  const menuSections = [
+    {
+      title: "MENU",
+      items: [
+        {
+          path: "/maindashboard/home",
+          icon: <FaHome size={28} color={getIconColor(FaHome, isActive("/maindashboard/home"))} />,
+          label: "Home",
+          active: isActive("/maindashboard/home")
+        },
+        {
+          path: "/maindashboard/analytics",
+          icon: <MdAnalytics size={30} color={getIconColor(MdAnalytics, isActive("/maindashboard/analytics"))} />,
+          label: "Analytics",
+          active: isActive("/maindashboard/analytics")
+        },
+        {
+          type: "dropdown",
+          icon: <FaUsers size={28} color={getIconColor(FaUsers, false)} />,
+          label: "Users",
+          items: [
+            {
+              path: "/maindashboard/role-management",
+              icon: <SiGooglecampaignmanager360 size={26} color={getIconColor(SiGooglecampaignmanager360, isActive("/maindashboard/role-management"))} />,
+              label: "Role Management",
+              active: isActive("/maindashboard/role-management")
+            },
+            {
+              path: "/maindashboard/my-team",
+              icon: <FaUsersSlash size={28} color={getIconColor(FaUsersSlash, isActive("/maindashboard/my-team"))} />,
+              label: "My Team",
+              active: isActive("/maindashboard/my-team")
+            }
+          ]
+        },
+        {
+          type: "dropdown",
+          icon: <MdOutlineImportantDevices size={28} color={getIconColor(MdOutlineImportantDevices, false)} />,
+          label: "DevTool",
+          items: [
+            {
+              path: "/maindashboard/ip-whitelist",
+              icon: <SiEclipsemosquitto size={26} color={getIconColor(SiEclipsemosquitto, isActive("/maindashboard/ip-whitelist"))} />,
+              label: "IP Whitelist",
+              active: isActive("/maindashboard/ip-whitelist")
+            },
+            {
+              path: "/maindashboard/webhooks",
+              icon: <GrInternetExplorer size={26} color={getIconColor(GrInternetExplorer, isActive("/maindashboard/webhooks"))} />,
+              label: "Webhooks",
+              active: isActive("/maindashboard/webhooks")
+            },
+            {
+              path: "/maindashboard/logs",
+              icon: <HiClipboardDocumentList size={26} color={getIconColor(HiClipboardDocumentList, isActive("/maindashboard/logs"))} />,
+              label: "Logs",
+              active: isActive("/maindashboard/logs")
+            }
+          ]
+        },
+        {
+          type: "dropdown",
+          icon: <FcApproval size={28} color={getIconColor(FcApproval, false)} />,
+          label: "Kyc Studio",
+          items: [
+            {
+              path: "/maindashboard/allverification",
+              icon: <VscVerified size={30} color={getIconColor(VscVerified, isActive("/maindashboard/allverification"))} />,
+              label: "All Verification",
+              active: isActive("/maindashboard/allverification")
+            },
+            {
+              path: "/maindashboard/kyctemplates",
+              icon: <FaRegUser size={26} color={getIconColor(FaRegUser, isActive("/maindashboard/kyctemplates"))} />,
+              label: "Kyc Templates",
+              active: isActive("/maindashboard/kyctemplates")
+            }
+          ]
+        }
+      ]
+    },
+    {
+      title: "WALLET TRANSACTION",
+      items: [
+        {
+          path: "/maindashboard/transactionhistory",
+          icon: <FcCurrencyExchange size={26} color={getIconColor(FcCurrencyExchange, isActive("/maindashboard/transactionhistory"))} />,
+          label: "Transaction History",
+          active: isActive("/maindashboard/transactionhistory")
+        }
+      ]
+    },
+    {
+      title: "DOCUMENTS",
+      items: [
+        {
+          type: "dropdown",
+          icon: <GrDocumentText size={28} color={getIconColor(GrDocumentText, false)} />,
+          label: "Document",
+          items: [
+            {
+              path: "/maindashboard/signed-agreement",
+              icon: <FaFileSignature size={26} color={getIconColor(FaFileSignature, isActive("/maindashboard/signed-agreement"))} />,
+              label: "Signed Agreement",
+              active: isActive("/maindashboard/signed-agreement")
+            }
+          ]
+        },
+        {
+          path: "/maindashboard/yourkyc",
+          icon: <LiaUserLockSolid size={28} color={getIconColor(LiaUserLockSolid, isActive("/maindashboard/yourkyc"))} />,
+          label: "Your Kyc",
+          active: isActive("/maindashboard/yourkyc")
+        },
+        {
+          path: "/maindashboard/drafts",
+          icon: <MdDrafts size={28} color={getIconColor(MdDrafts, isActive("/maindashboard/drafts"))} />,
+          label: "Drafts",
+          active: isActive("/maindashboard/drafts")
+        },
+        {
+          path: "/maindashboard/completed",
+          icon: <GrCompliance size={28} color={getIconColor(GrCompliance, isActive("/maindashboard/completed"))} />,
+          label: "Completed",
+          active: isActive("/maindashboard/completed")
+        }
+      ]
+    },
+    {
+      title: "SETTINGS",
+      items: [
+        {
+          path: "/maindashboard/setting",
+          icon: <MdOutlineSettings size={28} color={getIconColor(MdOutlineSettings, isActive("/maindashboard/setting"))} />,
+          label: "Settings",
+          active: isActive("/maindashboard/setting")
+        }
+      ]
+    }
+  ];
+
+  const showFullSidebar = sidebarOpen || isHovered;
 
   return (
-    <div className={`sidebar ${sidebarOpen ? "" : "collapsed"}`}>
-      <div className="sidebar-all-items-inside-this">
-        <nav>
-          <div className="sidebar-menu-title">
-            <h2 className="sidebar-menu-h2">MENU</h2>
-          </div>
-          <ul className="menu-ul">
-            <li>
-              <Link to="/home">
-                <FaHome size={24} style={{ color: "royalblue" }} />
-                {sidebarOpen && <span className="menu-Home">Home</span>}
-              </Link>
-            </li>
-            <li>
-              <Link to="/analytics">
-                <FcComboChart size={24} className="icon" />
-                {sidebarOpen && <span className="menu-span">Analytics</span>}
-              </Link>
-            </li>
-
-            {/* Users dropdown menu item */}
-            <li
-              className={`dropdown-container ${usersDropdownOpen ? "open" : ""}`}
-            >
-              <div className="dropdown-header-wrapper">
-                <div className="dropdown-header" onClick={toggleUsersDropdown}>
-                  <FaUsers size={24} style={{ color: "royalblue" }} />
-                  {sidebarOpen && (
-                    <>
-                      <span className="menu-span">Users</span>
-                      {usersDropdownOpen ? (
-                        <FaChevronUp size={14} />
-                      ) : (
-                        <FaChevronDown size={14} />
+    <div 
+      className={`sidebar ${sidebarOpen ? "" : "collapsed"} ${darkMode ? "dark" : ""}`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <div className="sidebar-content">
+        {menuSections.map((section, index) => (
+          <nav key={index} className="sidebar-section">
+            {showFullSidebar && <h2 className="section-title">{section.title}</h2>}
+            <ul className="menu-list">
+              {section.items.map((item, itemIndex) => {
+                if (item.type === "dropdown") {
+                  return (
+                    <li
+                      key={itemIndex}
+                      className={`menu-item ${openDropdown === item.label ? "open" : ""}`}
+                    >
+                      <div
+                        className="menu-link dropdown-header"
+                        onClick={() => toggleDropdown(item.label)}
+                      >
+                        <span className="icon-wrapper">{item.icon}</span>
+                        {showFullSidebar && (
+                          <>
+                            <span className="menu-label">{item.label}</span>
+                            <span className="dropdown-arrow">
+                              {openDropdown === item.label ? (
+                                <FaChevronUp size={12} color={darkMode ? "#a0aec0" : "#6c757d"} />
+                              ) : (
+                                <FaChevronDown size={12} color={darkMode ? "#a0aec0" : "#6c757d"} />
+                              )}
+                            </span>
+                          </>
+                        )}
+                      </div>
+                      {(showFullSidebar && openDropdown === item.label) && (
+                        <ul className="dropdown-menu">
+                          {item.items.map((subItem, subIndex) => (
+                            <li
+                              key={subIndex}
+                              className={`submenu-item ${subItem.active ? "active" : ""}`}
+                            >
+                              <Link
+                                to={subItem.path}
+                                className="submenu-link"
+                              >
+                                <span className="submenu-icon" >{subItem.icon}</span>
+                                <span className='dropdown-inside-menu-items'>{subItem.label}</span>
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
                       )}
-                    </>
-                  )}
-                </div>
-
-                {sidebarOpen && usersDropdownOpen && (
-                  <ul className="dropdown-menu">
-                    <li>
-                      <Link to="/role-management" className="dropdown-item">
-                        <SiGooglecampaignmanager360
-                          size={18}
-                          className="dropdown-icon"
-                        />
-                        <span>Role Management</span>
-                      </Link>
                     </li>
-                    <li>
-                      <Link to="/my-team" className="dropdown-item">
-                        <FaUsersSlash size={18} className="dropdown-icon" />
-                        <span>My Team</span>
-                      </Link>
-                    </li>
-                  </ul>
-                )}
-              </div>
-            </li>
-
-            {/* DevTool dropdown menu item */}
-            <li
-              className={`dropdown-container ${devToolDropdownOpen ? "open" : ""}`}
-            >
-              <div className="dropdown-header-wrapper">
-                <div
-                  className="dropdown-header"
-                  onClick={toggleDevToolDropdown}
-                >
-                  <FcDoNotMix size={24} style={{ color: "royalblue" }} />
-                  {sidebarOpen && (
-                    <>
-                      <span className="menu-span">DevTool</span>
-                      {devToolDropdownOpen ? (
-                        <FaChevronUp size={14} />
-                      ) : (
-                        <FaChevronDown size={14} />
-                      )}
-                    </>
-                  )}
-                </div>
-
-                {sidebarOpen && devToolDropdownOpen && (
-                  <ul className="dropdown-menu">
-                    <li>
-                      <Link to="/ip-whitelist" className="dropdown-item">
-                        <SiEclipsemosquitto
-                          size={18}
-                          className="dropdown-icon"
-                        />
-                        <span>IP Whitelist</span>
-                      </Link>
-                    </li>
-                    <li>
-                      <Link to="/webhooks" className="dropdown-item">
-                        <GrInternetExplorer
-                          size={18}
-                          className="dropdown-icon"
-                        />
-                        <span>Webhooks</span>
-                      </Link>
-                    </li>
-                    <li>
-                      <Link to="/logs" className="dropdown-item">
-                        <HiClipboardDocumentList
-                          size={18}
-                          className="dropdown-icon"
-                        />
-                        <span>Logs</span>
-                      </Link>
-                    </li>
-                  </ul>
-                )}
-              </div>
-            </li>
-            {/* Kyc Studio dropdown menu item */}
-            <li
-              className={`dropdown-container ${kycDropdownOpen ? "open" : ""}`}
-            >
-              <div className="dropdown-header-wrapper">
-                <div className="dropdown-header" onClick={toggleKycDropdown}>
-                  <FcApproval size={24} style={{ color: "royalblue" }} />
-                  {sidebarOpen && (
-                    <>
-                      <span className="menu-span">Kyc Studio</span>
-                      {kycDropdownOpen ? (
-                        <FaChevronUp size={14} />
-                      ) : (
-                        <FaChevronDown size={14} />
-                      )}
-                    </>
-                  )}
-                </div>
-
-                {sidebarOpen && kycDropdownOpen && (
-                  <ul className="dropdown-menu">
-                    <li>
-                      <Link to="/Allverification" className="dropdown-item">
-                        <VscVerified size={18} className="dropdown-icon" />
-                        <span>All Verification</span>
-                      </Link>
-                    </li>
-                    <li>
-                      <Link to="/KycTemplates" className="dropdown-item">
-                        <FaRegUser size={18} className="dropdown-icon" />
-                        <span>Kyc Templates</span>
-                      </Link>
-                    </li>
-                  </ul>
-                )}
-              </div>
-            </li>
-          </ul>
-        </nav>
-          {/* end of Kyc Studio dropdown menu item */}
-
-        {/* wallet transaction nav list */}
-        <div className="sidebar-all-items-inside-this">
-          <nav>
-            <div className="sidebar-wallet-title">
-            <h2 className="sidebar-wallet-h2">WALLET TRANSACTION</h2>
-            </div>
-            <ul className="transaction-ul">
-            <li className='transaction-li'>
-                      <Link to="/TransactionHistory" className="dropdown-item">
-                        <FcCurrencyExchange size={28} className="dropdown-icon" />
-                        <span className='transaction-span'>Transaction History</span>
-                      </Link>
-              </li>
-           </ul>
+                  );
+                }
+                return (
+                  <li
+                    key={itemIndex}
+                    className={`menu-item ${item.active ? "active" : ""}`}
+                  >
+                    <Link to={item.path} className="menu-link">
+                      <span className="icon-wrapper">{item.icon}</span>
+                      {showFullSidebar && <span className="menu-label">{item.label}</span>}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
           </nav>
-        </div>
-            {/* end of wallet transaction nav list */}
-
+        ))}
       </div>
     </div>
   );
