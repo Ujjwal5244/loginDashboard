@@ -23,7 +23,7 @@
 .nera-logo-para {
   font-size: 25px;
   font-weight: 600;
-  color: #1e90ff;
+  color: #3470b2;
   margin-top: -2px;
   cursor: pointer;
 }
@@ -50,10 +50,13 @@
   width: 500px;
 } */
 
-/* .left-img-1 img {
-  width: 300px;
-  height: 100px;
-} */
+.left-img-1 img {
+  width: 600px;
+  height: 700px;
+  margin-left: 90px;
+  margin-top: 43px;
+  /* background-color: #1d4ed8; */
+}
 
 /* __________right side of the screen____________ */
 
@@ -62,8 +65,10 @@
   flex-direction: column;
   width: 420px !important;
   height: 640px !important;
-  background-color: rgb(237, 241, 242) !important;
+  background-color: white !important;
   border-radius: 10px;
+  margin-right: 110px;
+  margin-top: -20px;
 }
 
 .h2-of-login-form {
@@ -87,26 +92,26 @@
   letter-spacing: 0.8px;
 }
 
-.para-of-h2-of-login-form {
+/* .para-of-h2-of-login-form {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   font-weight: 700;
   margin-top: -7px;
-}
+} */
 
-.login-nifipayment {
-  color: #9a1eff;
+/* .login-nifipayment {
+  color: rgb(62, 61, 61);
   font-weight: 700;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   font-size: 30px;
-}
+} */
 
 .sign-up-of-login-form {
-  color: blue;
+  color: #2563eb;
   cursor: pointer;
 }
 
 .sign-up-of-login-form:hover {
-  color: #9a1eff;
+  color: #2563eb;
 }
 
 .form-container {
@@ -162,7 +167,7 @@
   margin-bottom: 10px;
   border-radius: 5px;
   padding: 8px;
-  background-color: #9a1eff;
+  background-color: #3470b2;
   color: white;
   justify-content: center;
   align-items: center;
@@ -173,7 +178,7 @@
 }
 
 .btn-of-get-otp-login-form:hover {
-  background-color: #7f5b9d;
+  background-color: #0a4686;
 }
 
 /* ______ line of_____ css */
@@ -184,14 +189,14 @@
   align-items: center;
   gap: 8px;
   margin-top: 18px;
-  color: brown;
+  color: rgb(107, 105, 105);
   font-size: 18px;
 }
 
 .straightline-of-login-form {
   width: 100px;
   height: 1px;
-  background-color: rgb(152, 13, 13);
+  background-color: rgb(109, 107, 107);
 }
 
 /* --------- social-login-container css --------- */
@@ -246,173 +251,226 @@
 .sign-up-form {
   display: flex;
   flex-direction: column;
-  width: 100%;
-  height: 100px;
-  background-color: rgb(207, 202, 202);
-  justify-content: center;
-  /* border-radius: 10px; */
-  margin-top: 50px;
+  width: 380px;
+  background-color: rgba(207, 202, 202, 0.3);
+  /* Lighter with transparency */
+  border-radius: 8px;
+  padding: 20px 0;
+  margin-top: 40px;
+  align-items: center;
+  margin-left: 20px;
+  gap: 16px;
+  /* Consistent spacing between elements */
 }
 
 .para-of-login-form {
   display: flex;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 400;
   color: rgb(67, 66, 66);
-  margin-top: -18px;
-  margin-bottom: 20px;
-  width: full;
-  height: 60px;
   align-items: center;
   justify-content: center;
-  /* background-color: bisque; */
-  gap: 5px;
-  border-bottom: 1px solid rgb(92, 91, 91);
+  gap: 6px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(92, 91, 91, 0.2);
+  /* Subtle border */
+  width: 100%;
+  margin: 0;
+  /* Reset margin */
+}
+
+.sign-up-of-login-form {
+  color: #2563eb;
+  /* Consistent blue */
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.sign-up-of-login-form:hover {
+  color: #1d4ed8;
+  /* Darker on hover */
+  text-decoration: underline;
+}
+
+.para-of-2nd-signup-form {
+  color: #2563eb;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  /* Remove default underline */
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.para-of-2nd-signup-form:hover {
+  text-decoration: underline;
+  color: #1d4ed8;
 }
 
 /*    Media Queries for specific breakpoints Base styles (mobile-first approach) */
-/* 
-@media (max-width: 719px) {
+
+
+/* Media Query for 768px */
+@media screen and (max-width: 768px) {
+  .login-form-container {
+    width: 90% !important;
+    margin: 0 auto;
+    height: auto !important;
+  }
+
+  .left-img-1 img {
+    width: 100%;
+    height: auto;
+    margin-left: 0;
+    margin-top: 150px;
+  }
+
   .nera-login-logo-container {
-    display: none;
-  }
-}
-
-.nera-login-logo-container img {
-  width: 30px;
-  height: 30px;
-  border-radius: 30px;
-}
-
-.nera-logo-para {
-  font-size: 20px;
-  font-weight: 600;
-  color: #1e90ff;
-  margin-top: -2px;
-}
-
-.login-form-container {
-  display: flex;
-  flex-direction: column;
-  width: 90%;
-  max-width: 400px;
-  height: auto;
-  padding: 20px 0;
-  margin: 0 auto;
-  background-color: white;
-  border-radius: 10px;
-}
-
-.h2-of-login-form {
-  font-size: 24px;
-  font-weight: 600;
-  color: black;
-  margin: 15px 0 5px;
-  text-align: center;
-}
-
-.para-of-login-form {
-  font-size: 14px;
-  font-weight: 400;
-  color: rgb(67, 66, 66);
-  margin: 0 0 15px;
-  text-align: center;
-}
-
-.input-of-login-form,
-.btn-of-get-otp-login-form {
-  width: calc(100% - 50px);
-  height: 45px;
-  margin: 5px auto 10px;
-}
-
-.line-of-login-form {
-  margin: 15px 0;
-  font-size: 16px;
-}
-
-.straightline-of-login-form {
-  width: 80px;
-}
-
-.social-login-container {
-  flex-direction: column;
-  gap: 0.8rem;
-  margin-top: 1rem;
-}
-
-.btn-of-login-form {
-  padding: 0.6rem;
-  justify-content: center;
-} */
-
-/* Media Queries for specific breakpoints */
-/* @media (min-width: 320px) {
-  .nera-logo-para {
-    font-size: 18px;
-  }
-
-  .login-form-container {
-    width: 300px;
-  }
-} 
-
-@media (min-width: 375px) {
-  .nera-logo-para {
-    font-size: 22px;
-  }
-
-  .login-form-container {
-    width: 340px;
-  }
-
-  .h2-of-login-form {
-    font-size: 26px;
-  }
-
-  .para-of-login-form {
-    font-size: 16px;
-  }
-}
-
-@media (min-width: 420px) {
-  .nera-login-logo-container img {
-    width: 35px;
-    height: 35px;
-  }
-
-  .nera-logo-para {
-    font-size: 25px;
-  }
-
-  .login-form-container {
-    width: 380px;
-  }
-
-  .h2-of-login-form {
-    font-size: 28px;
-  }
-
-  .social-login-container {
-    flex-direction: row;
-    justify-content: center;
-  }
-
-  .btn-of-login-form {
-    padding: 0.75rem 1rem;
-  }
-}
-*/
-
-/* Additional responsive adjustments */
-/* @media (max-height: 700px) {
-  .h2-of-login-form {
-    margin-top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
   }
 
   .input-of-login-form,
   .btn-of-get-otp-login-form {
-    height: 40px;
-    margin-bottom: 8px;
+    width: 90%;
   }
-} */
+
+  .sign-up-form {
+    width: 90%;
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 550px) {
+  .left-img-1 img {
+    content: url('../assets/responsive-img-login.webp');
+    width: 360px;
+    height: 160px;
+    margin-left: 0;
+    margin-top: 0;
+    /* background-color: #1d4ed8; */
+    margin-top: 90px;
+  }
+
+  .left-side {
+    width: full;
+    height: 280px;
+    /* background-color: #1d4ed8; */
+  }
+
+  .nera-login-logo-container {
+    margin-left: 20px;
+  }
+
+  .right-side {
+    width: full;
+    height: 500px;
+    /* background-color: #d8ac1d; */
+  }
+
+  /* .para-of-h2-of-login-form {
+    font-weight: 500;
+    font-size: 25px;
+  } */
+
+  .sign-up-form {
+    margin-left: 15px;
+  }
+}
+
+/* Media Query for 425px */
+@media screen and (max-width: 425px) {
+  .nera-logo-para {
+    font-size: 20px;
+  }
+
+  .h2-of-login-form h2 {
+    font-size: 24px !important;
+  }
+
+  .input-of-login-form,
+  .btn-of-get-otp-login-form {
+    width: 100%;
+  }
+
+  .line-of-login-form {
+    font-size: 14px;
+  }
+
+  .straightline-of-login-form {
+    width: 80px;
+  }
+
+  .sign-up-form {
+    padding: 16px 0;
+  }
+}
+
+/* Media Query for 375px */
+@media screen and (max-width: 375px) {
+  .nera-logo-para {
+    font-size: 18px;
+  }
+
+  .login-nifipayment {
+    font-size: 24px;
+  }
+
+  .h2-of-login-form h2 {
+    font-size: 22px !important;
+  }
+
+  .input-of-login-form,
+  .btn-of-get-otp-login-form {
+    font-size: 14px;
+    height: 50px;
+  }
+
+  .btn-of-login-form {
+    width: 45px;
+    height: 40px;
+  }
+}
+
+/* Media Query for 320px */
+@media screen and (max-width: 320px) {
+  .nera-logo-para {
+    font-size: 16px;
+  }
+
+  .login-nifipayment {
+    font-size: 22px;
+  }
+
+  .input-of-login-form,
+  .btn-of-get-otp-login-form {
+    font-size: 13px;
+    height: 48px;
+  }
+
+  .h2-of-login-form h2 {
+    font-size: 20px !important;
+  }
+
+  .social-login-container {
+    gap: 0.5rem;
+  }
+
+  .btn-of-login-form {
+    width: 42px;
+    height: 38px;
+    font-size: 18px;
+  }
+
+  .para-of-login-form {
+    font-size: 14px;
+  }
+
+  .para-of-2nd-signup-form {
+    font-size: 14px;
+  }
+}

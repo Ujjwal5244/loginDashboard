@@ -1,111 +1,150 @@
 .header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: var(--header-height);
-    background-color: var(--light-bg);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    z-index: 100;
-    transition: var(--transition);
-  }
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 83px;
+  background-color: #3570B2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  transition: var(--transition);
+  /* height: 100px; */
+}
 
-  .nifi-logo img{
-    width: 140px;
-    height: 25px;
-    align-items: center;
-  }
-  
-  .app.dark-mode .header {
-    background-color: var(--dark-sidebar);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-  }
-  
-  .header-left, .header-right {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-  }
-  
-  .toggle-btn, .theme-toggle, .profile-btn {
-    background: none;
-    border: none;
-    color: var(--light-text);
-    cursor: pointer;
-    font-size: 1.2rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 5px;
-    border-radius: 50%;
-    transition: var(--transition);
-  }
-  
-  .app.dark-mode .toggle-btn, 
-  .app.dark-mode .theme-toggle, 
-  .app.dark-mode .profile-btn {
-    color: var(--dark-text);
-  }
-  
-  .toggle-btn:hover, 
-  .theme-toggle:hover, 
-  .profile-btn:hover {
-    background-color: rgba(0, 0, 0, 0.1);
-  }
-  
-  .app.dark-mode .toggle-btn:hover, 
-  .app.dark-mode .theme-toggle:hover, 
-  .app.dark-mode .profile-btn:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-  }
-  
-  /* Profile dropdown */
-  .profile-dropdown {
-    position: relative;
-    display: inline-block;
-  }
-  
-  .dropdown-content {
+.nifi-logo-name {
+  display: flex;
+  width: 180px;
+  height: 28px;
+  color: white;
+  font-size: 25px;
+  font-weight: 600;
+  margin-top: -4px;
+  align-items: center;
+  justify-content: center;
+}
+
+.app.dark-mode .header {
+  background-color: #1b2235;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.header-left,
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.header-right {
+  margin-right: 30px;
+}
+
+.header-center {
+  color: white;
+  font-size: 20px;
+  margin-top: -4px;
+  font-weight: 400;
+}
+
+.toggle-btn,
+.theme-toggle,
+.profile-btn {
+  background: none;
+  border: none;
+  color: var(--light-text);
+  cursor: pointer;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  border-radius: 50%;
+  transition: var(--transition);
+}
+
+.app.dark-mode .toggle-btn,
+.app.dark-mode .theme-toggle,
+.app.dark-mode .profile-btn {
+  color: var(--dark-text);
+}
+
+.toggle-btn:hover,
+.theme-toggle:hover,
+.profile-btn:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.app.dark-mode .toggle-btn:hover,
+.app.dark-mode .theme-toggle:hover,
+.app.dark-mode .profile-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Profile dropdown */
+.profile-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background-color: white;
+  min-width: 170px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 5px;
+}
+
+.profile-dropdown .dropdown-content.show {
+  display: flex;
+  flex-direction: column;
+}
+
+.My-profile-dropdown-header {
+  display: flex;
+  /* justify-content: space-between; */
+  align-items: center;
+  gap: 15px;
+  text-align: left;
+  /* background-color: tomato; */
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+.My-profile-dropdown-header:hover {
+  background-color: #60a3eb !important;
+  width: full;
+  border-radius: 5px;
+}
+
+.dropdown-icon-right {
+  margin-left: 8px;
+  font-size: 21px;
+  font-weight: 900;
+  /* Font Awesome supports 100-900 weights */
+}
+
+.app.dark-mode .dropdown-content {
+  background-color: #2a3447;
+}
+
+.app.dark-mode .My-profile-dropdown-header:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+@media (max-width: 700px) {
+  .header-center {
     display: none;
-    position: absolute;
-    right: 0;
-    background-color: var(--light-bg);
-    min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 1;
-    border-radius: 4px;
-    overflow: hidden;
   }
-  
-  .app.dark-mode .dropdown-content {
-    background-color: var(--dark-sidebar);
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.4);
-  }
-  
-  .profile-dropdown:hover .dropdown-content {
-    display: block;
-  }
-  
-  .dropdown-content a {
-    color: var(--light-text);
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-    transition: var(--transition);
-  }
-  
-  .app.dark-mode .dropdown-content a {
-    color: var(--dark-text);
-  }
-  
-  .dropdown-content a:hover {
-    background-color: rgba(0, 0, 0, 0.1);
-  }
-  
-  .app.dark-mode .dropdown-content a:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-  }
+}
