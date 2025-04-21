@@ -41,7 +41,7 @@ const Sidebar = ({ sidebarOpen, darkMode }) => {
     }
     if ([FcApproval, FcCurrencyExchange].includes(iconComponent.type)) 
       return "";
-    return "#6c757d";
+    return "white";
   };
 
   const menuSections = [

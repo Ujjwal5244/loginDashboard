@@ -5,8 +5,8 @@
   --header-height: 83px;
   --transition: all 0.3s ease;
   --primary-color: white;
-  --text-color: #3a3a3a;
-  --text-light: #6c757d;
+  --text-color: white;
+  --text-light: white;
   --border-color: #e9ecef;
   --hover-bg: #d4e7fa;
   --active-bg: #3f92eb;
@@ -16,7 +16,7 @@
 
   width: var(--sidebar-width);
   height: calc(100vh - var(--header-height));
-  background: white;
+  background: #3570B2;
   position: fixed;
   left: 0;
   top: var(--header-height);
@@ -178,14 +178,18 @@
   width: auto !important;
 }
 
-.icon-wrapper svg {
-  color: var(--text-light);
+
+.menu-item.active .menu-link .icon-wrapper svg,
+.menu-item.active .menu-link:hover .icon-wrapper svg {
+  color: white !important;
 }
 
-.menu-item.active .icon-wrapper svg,
 .menu-link:hover .icon-wrapper svg {
-  color: black;
+  color: black !important;
 }
+
+
+
 
 /* Labels */
 .menu-label {
@@ -255,16 +259,12 @@
   height: 18px;
 }
 
-.submenu-icon svg {
-  color: white;
-}
-
 .submenu-link:hover .submenu-icon svg {
-  color: gray !important;
+  color: black !important;
 }
 
 .submenu-item.active .submenu-icon svg {
-  color: white !important;
+  color: black !important;
 }
 
 /* Collapsed State Styles */
