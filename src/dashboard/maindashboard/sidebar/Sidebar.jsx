@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Sidebar.css";
 import { Link, useLocation } from "react-router-dom";
 import {
@@ -27,8 +27,29 @@ const Sidebar = ({ sidebarOpen, darkMode }) => {
     setOpenDropdown(openDropdown === dropdown ? null : dropdown);
   };
 
+  useEffect(() => {
+    menuSections.forEach((section) => {
+      section.items.forEach((item) => {
+        if (item.type === "dropdown") {
+          const hasActiveChild = item.items.some(
+            (subItem) => isActive(subItem.path)
+          );
+          if (hasActiveChild) {
+            setOpenDropdown(item.label);
+          }
+        }
+      });
+    });
+  }, [location.pathname]);
+
   const isActive = (path) => {
-    return location.pathname === path || location.pathname.startsWith(`${path}/`);
+    return (
+      location.pathname === path ||
+      location.pathname.startsWith(`${path}/`) ||
+      (path === "/maindashboard/home" && 
+       (location.pathname === "/maindashboard" || 
+        location.pathname === "/maindashboard/"))
+    );
   };
 
   const getIconColor = (iconComponent, active = false) => {
@@ -50,24 +71,24 @@ const Sidebar = ({ sidebarOpen, darkMode }) => {
       items: [
         {
           path: "/maindashboard/home",
-          icon: <FaHome size={28} color={getIconColor(FaHome, isActive("/maindashboard/home"))} />,
+          icon: <FaHome size={25} color={getIconColor(FaHome, isActive("/maindashboard/home"))} />,
           label: "Home",
           active: isActive("/maindashboard/home")
         },
         {
           path: "/maindashboard/analytics",
-          icon: <MdAnalytics size={30} color={getIconColor(MdAnalytics, isActive("/maindashboard/analytics"))} />,
+          icon: <MdAnalytics size={25} color={getIconColor(MdAnalytics, isActive("/maindashboard/analytics"))} />,
           label: "Analytics",
           active: isActive("/maindashboard/analytics")
         },
         {
           type: "dropdown",
-          icon: <FaUsers size={28} color={getIconColor(FaUsers, false)} />,
+          icon: <FaUsers size={27} color={getIconColor(FaUsers, false)} />,
           label: "Users",
           items: [
             {
               path: "/maindashboard/role-management",
-              icon: <SiGooglecampaignmanager360 size={26} color={getIconColor(SiGooglecampaignmanager360, isActive("/maindashboard/role-management"))} />,
+              icon: <SiGooglecampaignmanager360 size={23} color={getIconColor(SiGooglecampaignmanager360, isActive("/maindashboard/role-management"))} />,
               label: "Role Management",
               active: isActive("/maindashboard/role-management")
             },
@@ -81,18 +102,18 @@ const Sidebar = ({ sidebarOpen, darkMode }) => {
         },
         {
           type: "dropdown",
-          icon: <MdOutlineImportantDevices size={28} color={getIconColor(MdOutlineImportantDevices, false)} />,
+          icon: <MdOutlineImportantDevices size={23} color={getIconColor(MdOutlineImportantDevices, false)} />,
           label: "DevTool",
           items: [
             {
               path: "/maindashboard/ip-whitelist",
-              icon: <SiEclipsemosquitto size={26} color={getIconColor(SiEclipsemosquitto, isActive("/maindashboard/ip-whitelist"))} />,
+              icon: <SiEclipsemosquitto size={20} color={getIconColor(SiEclipsemosquitto, isActive("/maindashboard/ip-whitelist"))} />,
               label: "IP Whitelist",
               active: isActive("/maindashboard/ip-whitelist")
             },
             {
               path: "/maindashboard/webhooks",
-              icon: <GrInternetExplorer size={26} color={getIconColor(GrInternetExplorer, isActive("/maindashboard/webhooks"))} />,
+              icon: <GrInternetExplorer size={20} color={getIconColor(GrInternetExplorer, isActive("/maindashboard/webhooks"))} />,
               label: "Webhooks",
               active: isActive("/maindashboard/webhooks")
             },
@@ -106,18 +127,18 @@ const Sidebar = ({ sidebarOpen, darkMode }) => {
         },
         {
           type: "dropdown",
-          icon: <FcApproval size={28} color={getIconColor(FcApproval, false)} />,
+          icon: <FcApproval size={24} color={getIconColor(FcApproval, false)} />,
           label: "Kyc Studio",
           items: [
             {
               path: "/maindashboard/allverification",
-              icon: <VscVerified size={30} color={getIconColor(VscVerified, isActive("/maindashboard/allverification"))} />,
+              icon: <VscVerified size={33} color={getIconColor(VscVerified, isActive("/maindashboard/allverification"))} />,
               label: "All Verification",
               active: isActive("/maindashboard/allverification")
             },
             {
               path: "/maindashboard/kyctemplates",
-              icon: <FaRegUser size={26} color={getIconColor(FaRegUser, isActive("/maindashboard/kyctemplates"))} />,
+              icon: <FaRegUser size={18} color={getIconColor(FaRegUser, isActive("/maindashboard/kyctemplates"))} />,
               label: "Kyc Templates",
               active: isActive("/maindashboard/kyctemplates")
             }
@@ -141,7 +162,7 @@ const Sidebar = ({ sidebarOpen, darkMode }) => {
       items: [
         {
           type: "dropdown",
-          icon: <GrDocumentText size={28} color={getIconColor(GrDocumentText, false)} />,
+          icon: <GrDocumentText size={22} color={getIconColor(GrDocumentText, false)} />,
           label: "Document",
           items: [
             {
@@ -160,13 +181,13 @@ const Sidebar = ({ sidebarOpen, darkMode }) => {
         },
         {
           path: "/maindashboard/drafts",
-          icon: <MdDrafts size={28} color={getIconColor(MdDrafts, isActive("/maindashboard/drafts"))} />,
+          icon: <MdDrafts size={25} color={getIconColor(MdDrafts, isActive("/maindashboard/drafts"))} />,
           label: "Drafts",
           active: isActive("/maindashboard/drafts")
         },
         {
           path: "/maindashboard/completed",
-          icon: <GrCompliance size={28} color={getIconColor(GrCompliance, isActive("/maindashboard/completed"))} />,
+          icon: <GrCompliance size={24} color={getIconColor(GrCompliance, isActive("/maindashboard/completed"))} />,
           label: "Completed",
           active: isActive("/maindashboard/completed")
         }
@@ -177,7 +198,7 @@ const Sidebar = ({ sidebarOpen, darkMode }) => {
       items: [
         {
           path: "/maindashboard/setting",
-          icon: <MdOutlineSettings size={28} color={getIconColor(MdOutlineSettings, isActive("/maindashboard/setting"))} />,
+          icon: <MdOutlineSettings size={24} color={getIconColor(MdOutlineSettings, isActive("/maindashboard/setting"))} />,
           label: "Settings",
           active: isActive("/maindashboard/setting")
         }
@@ -215,9 +236,9 @@ const Sidebar = ({ sidebarOpen, darkMode }) => {
                             <span className="menu-label">{item.label}</span>
                             <span className="dropdown-arrow">
                               {openDropdown === item.label ? (
-                                <FaChevronUp size={12} color={darkMode ? "#a0aec0" : "#6c757d"} />
+                                <FaChevronUp size={12} color={darkMode ? "white" : "white"} />
                               ) : (
-                                <FaChevronDown size={12} color={darkMode ? "#a0aec0" : "#6c757d"} />
+                                <FaChevronDown size={12} color={darkMode ? "white" : "white"} />
                               )}
                             </span>
                           </>

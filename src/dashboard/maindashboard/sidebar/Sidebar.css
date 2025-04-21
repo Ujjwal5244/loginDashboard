@@ -2,7 +2,7 @@
 .sidebar {
   --sidebar-width: 280px;
   --sidebar-collapsed-width: 80px;
-  --header-height: 83px;
+  --header-height: 72px;
   --transition: all 0.3s ease;
   --primary-color: white;
   --text-color: white;
@@ -10,7 +10,7 @@
   --border-color: #e9ecef;
   --hover-bg: #d4e7fa;
   --active-bg: #3f92eb;
-  --section-title-color: #3470b2;
+  --section-title-color: white;
   --icon-size: 20px;
   --collapsed-bg-color: #3470b2;
 
@@ -74,7 +74,7 @@
 
 .dropdown-inside-menu-items {
   font-family: "Ubuntu", sans-serif;
-  font-weight: 500;
+  font-weight: 400;
   font-size: 17px;
   /* font-style: italic; */
 }
@@ -123,7 +123,7 @@
 .section-title {
   color: var(--section-title-color);
   font-size: 0.9rem;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   padding: 0 1.5rem 0.5rem;
@@ -196,7 +196,7 @@
   font-family: "Roboto", sans-serif;
   flex-grow: 1;
   font-size: 21px;
-  font-weight: 600;
+  font-weight: 400;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -264,7 +264,7 @@
 }
 
 .submenu-item.active .submenu-icon svg {
-  color: black !important;
+  color: white !important;
 }
 
 /* Collapsed State Styles */
@@ -315,6 +315,8 @@
   color: white !important;
 }
 
+
+
 /* Responsive Adjustments */
 @media (max-width: 768px) {
   .sidebar:not(.collapsed) {
@@ -325,3 +327,6 @@
     padding-left: 3rem;
   }
 }
+
+
+
