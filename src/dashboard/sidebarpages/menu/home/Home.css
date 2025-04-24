@@ -1,7 +1,682 @@
-.card-container {
-    display: flex;
-    flex-wrap: wrap;
-    width: 100%;
-    height: 100%;
-    gap: 20px;
+/* Home.css */
+
+/* Import Google Fonts (Add this at the top of your CSS) */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Roboto:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap");
+
+.main-home {
+  font-family:
+    "Inter",
+    "Manrope",
+    "Poppins",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    sans-serif;
+  max-width: 950px;
+  margin: 0 auto;
+  padding: 20px;
+  color: #2d3748;
+  /* background-color: #059669; */
 }
+
+.welcome-of-person-name-in-home {
+  text-align: center;
+  font-size: 22px;
+  margin-bottom: 30px;
+  font-weight: 600; /* Semi-bold for better prominence */
+  font-family: "Segoe UI", "Poppins", sans-serif; /* Modern font stack */
+  background: linear-gradient(
+    45deg,
+    #3b82f6,
+    #8b5cf6,
+    #ec4899
+  ); /* Gradient colors */
+  -webkit-background-clip: text; /* Apply gradient to text */
+  background-clip: text;
+  color: transparent; /* Hide default color */
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+  letter-spacing: 0.5px; /* Slightly spaced letters */
+  transition: all 0.3s ease; /* Smooth hover effect */
+}
+
+/* Optional: Add hover animation */
+.welcome-of-person-name-in-home:hover {
+  transform: scale(1.02); /* Slight zoom on hover */
+}
+
+/* Floating KYC Button */
+.complete-Kyc-verification-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 40px;
+  z-index: 1000;
+  background: linear-gradient(135deg, #3470b2, #4a9fe0); /* Lighter blue */
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 30px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+  transition: all 0.3s ease;
+  opacity: 1; /* Hidden by default */
+  transform: translateY(-20px);
+}
+
+/* Show button when scrolled */
+.complete-Kyc-verification-btn.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Hover effect */
+.complete-Kyc-verification-btn:hover {
+  background: linear-gradient(135deg, #3470b2, #4a9fe0); /* Lighter blue */
+  transform: translateY(2px) !important;
+  box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4);
+}
+
+/* Pulse animation for urgency */
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(79, 70, 229, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(79, 70, 229, 0);
+  }
+}
+
+.complete-Kyc-verification-btn.pulse {
+  animation: pulse 1.5s infinite;
+}
+
+/* Container 1 - Profile Section */
+.main-home-container-1 {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border-radius: 16px;
+  padding: 30px;
+  margin-bottom: 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
+}
+
+.home-profile-img-container {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 30px;
+  border: 4px solid #e2e8f0;
+  transition: all 0.3s ease;
+}
+
+.home-profile-img-container:hover {
+  transform: scale(1.05);
+  border-color: #4f46e5;
+}
+
+.home-profile-img-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.home-profile-info-container {
+  flex: 1;
+}
+
+.home-profile-name {
+  font-family: "Manrope", "Poppins", sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 5px;
+  color: #1e293b;
+}
+
+.home-profile-email {
+  font-size: 16px;
+  color: #3470b2;
+  margin-bottom: 15px;
+}
+
+.home-profile-email,
+.wallet-card-title {
+  font-family: "Roboto", "Open Sans", system-ui, sans-serif;
+  font-weight: 500;
+}
+
+.home-profile-verified-container {
+  display: flex;
+  align-items: center;
+  background: #fffbeb;
+  padding: 8px 15px;
+  border-radius: 20px;
+  width: fit-content;
+}
+
+.home-profile-verified {
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #d97706;
+  margin-right: 8px;
+}
+
+.animate-pulse {
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Container 2 - Wallet Cards */
+.main-home-container-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(285px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.card-container-1 {
+  background: white;
+  border-radius: 16px;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  border: 1px solid #e2e8f0;
+}
+
+.card-container-1:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+}
+
+.info-card-container-wallet {
+  flex: 1;
+  /* gap: 5px; */
+}
+
+.wallet-card-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.wallet-card-amount-value {
+  font-family: "Space Mono", "IBM Plex Mono", monospace;
+  font-size: 28px;
+  font-weight: 500;
+  color: #1e293b;
+  margin: 0;
+}
+.wallet-card-kyc-pending {
+  font-family: "Manrope", "Poppins", sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  color: #1e293b;
+  margin: 0;
+}
+
+.wallet-card-amount {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  /* background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#home-wallet-ruppes {
+  font-size: 24px;
+}
+
+.wallet-card-amount img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  /* filter: brightness(0) invert(1); */
+}
+
+.wallet-card-kyc-img img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+/* Container 3 - Additional Content */
+
+/* __________main-home-container-3____________  */
+.main-home-container-3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 25px;
+  margin-bottom: 30px;
+}
+
+/* Personal Information Card */
+.personal-info-card-container {
+  background: white;
+  border-radius: 16px;
+  padding: 25px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e2e8f0;
+  transition: all 0.3s ease;
+}
+
+.personal-info-card-container:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+
+.personal-info-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 25px;
+  color: #4f46e5;
+}
+
+.personal-info-icon {
+  font-size: 20px;
+  margin-right: 12px;
+  color: #3470b2;
+}
+
+.personal-info-header h2 {
+  font-family: "Manrope", sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0;
+  color: #1e293b;
+}
+
+.personal-info-details {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.personal-info-item {
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 15px;
+  transition: all 0.2s ease;
+}
+
+.personal-info-item:hover {
+  background: #f1f5f9;
+  transform: translateX(3px);
+}
+
+.info-item-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.info-item-icon {
+  font-size: 14px;
+  margin-right: 10px;
+  color: #64748b;
+}
+
+.personal-info-item h3 {
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #64748b;
+  margin: 0;
+}
+
+.info-item-value {
+  font-family: "Space Mono", monospace;
+  font-size: 16px;
+  font-weight: 500;
+  color: #1e293b;
+  margin: 0;
+  padding-left: 24px;
+}
+
+/* Verification Status Card */
+.verification-status-card-container {
+  background: white;
+  border-radius: 16px;
+  padding: 25px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e2e8f0;
+  transition: all 0.3s ease;
+}
+
+.verification-status-card-container:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+
+.verification-status-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 25px;
+  color: #4f46e5;
+}
+
+.verification-status-icon {
+  font-size: 20px;
+  margin-right: 12px;
+  color: #3470b2;
+}
+
+.verification-status-header h2 {
+  font-family: "Manrope", sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0;
+  color: #1e293b;
+}
+
+.verification-status-items {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.verification-status-item {
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.2s ease;
+}
+
+.verification-status-item:hover {
+  background: #f1f5f9;
+}
+
+.status-item-header {
+  display: flex;
+  align-items: center;
+}
+
+.status-item-icon {
+  font-size: 14px;
+  margin-right: 10px;
+}
+
+.verification-status-item h3 {
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #64748b;
+  margin: 0;
+}
+
+.status-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: "Inter", sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 5px 10px;
+  border-radius: 20px;
+}
+
+.verified .status-badge {
+  background: #ecfdf5;
+  color: #059669;
+}
+
+.pending .status-badge {
+  background: #fffbeb;
+  color: #d97706;
+}
+
+.not-verified .status-badge {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.status-icon {
+  font-size: 14px;
+}
+
+.verification-divider {
+  height: 1px;
+  background: #e2e8f0;
+  margin: 15px 0;
+}
+
+.verification-overall-status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background: #f8fafc;
+  border-radius: 12px;
+}
+
+/* __________main-home-container-4____________ */
+.main-home-container-4 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 25px;
+  margin-bottom: 30px;
+}
+
+/* Company & Billing Cards - Shared Styles */
+.company-information-card-container,
+.billing-information-card-container {
+  background: white;
+  border-radius: 16px;
+  padding: 25px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e2e8f0;
+  transition: all 0.3s ease;
+  height: 100%;
+}
+
+.company-information-card-container:hover,
+.billing-information-card-container:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+/* Card Headers */
+.h1-of-company-info,
+.billing-information-of-home-profile {
+  font-family: "Manrope", sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 25px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #e2e8f0;
+  background: #3470b2;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Info Items */
+.company-info-item,
+.billing-info-item {
+  margin-bottom: 20px;
+  padding: 15px;
+  background: #f8fafc;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.company-info-item:hover,
+.billing-info-item:hover {
+  background: #f1f5f9;
+  transform: translateX(3px);
+}
+
+.company-info-item h2,
+.billing-info-item h2 {
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #64748b;
+  margin-bottom: 8px;
+}
+
+.company-info-item p,
+.billing-info-item p {
+  font-family: "Space Mono", monospace;
+  font-size: 16px;
+  font-weight: 500;
+  color: #1e293b;
+  margin: 0;
+}
+
+/* Company Link Button */
+.company-link {
+  display: inline-block;
+  padding: 8px 16px;
+  background: #3470b2;
+  color: white !important;
+  border-radius: 8px;
+  text-decoration: none;
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  margin-top: 8px;
+}
+
+.company-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(79, 70, 229, 0.3);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .main-home-container-4 {
+    grid-template-columns: 1fr;
+  }
+
+  .company-information-card-container,
+  .billing-information-card-container {
+    padding: 20px;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .main-home-container-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .personal-info-card-container,
+  .verification-status-card-container {
+    padding: 20px;
+  }
+}
+
+/* Responsive css of Floating KYC Button Adjustments */
+@media (max-width: 768px) {
+  .main-home-container-1 {
+    flex-direction: column;
+    text-align: center;
+    padding: 25px;
+  }
+
+  .home-profile-img-container {
+    margin-right: 0;
+    margin-bottom: 20px;
+  }
+
+  .home-profile-verified-container {
+    margin: 0 auto;
+  }
+
+  .main-home-container-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-home {
+    padding: 15px;
+  }
+
+  .home-profile-name {
+    font-size: 24px;
+  }
+
+  .card-container-1 {
+    padding: 20px;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .complete-Kyc-verification-btn {
+    padding: 10px 20px;
+    font-size: 15px;
+    right: 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .complete-Kyc-verification-btn {
+    padding: 10px 18px;
+    font-size: 14px;
+    right: 35px;
+    bottom: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .complete-Kyc-verification-btn {
+    padding: 8px 16px;
+    font-size: 13px;
+    right: 25px;
+    bottom: 60px;
+    border-radius: 20px; 
+  }
+  .billing-information-card-container{
+    margin-bottom: 0px;
+  }
+}
+
+@media (max-width: 360px) {
+  .complete-Kyc-verification-btn {
+    padding: 8px 12px;
+    font-size: 12px;
+    right: 30px;
+    /* margin-bottom: 60px; */
+  }
+  .billing-information-card-container{
+    margin-bottom: 40px;
+  }
+}
+
+
+

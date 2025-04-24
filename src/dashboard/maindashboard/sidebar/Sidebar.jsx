@@ -9,6 +9,8 @@ import {
   FaUsersSlash,
   FaRegUser,
   FaFileSignature,
+  FaTimes,
+  FaBars
 } from "react-icons/fa";
 import { LiaUserLockSolid } from "react-icons/lia";
 import { FcApproval, FcCurrencyExchange } from "react-icons/fc";
@@ -18,7 +20,7 @@ import { GrInternetExplorer, GrDocumentText, GrCompliance } from "react-icons/gr
 import { HiClipboardDocumentList } from "react-icons/hi2";
 import { VscVerified } from "react-icons/vsc";
 
-const Sidebar = ({ sidebarOpen, darkMode }) => {
+const Sidebar = ({ sidebarOpen, darkMode, toggleSidebar, isMobile }) => {
   const location = useLocation();
   const [openDropdown, setOpenDropdown] = useState(null);
   const [isHovered, setIsHovered] = useState(false);
@@ -71,30 +73,30 @@ const Sidebar = ({ sidebarOpen, darkMode }) => {
       items: [
         {
           path: "/maindashboard/home",
-          icon: <FaHome size={25} color={getIconColor(FaHome, isActive("/maindashboard/home"))} />,
+          icon: <FaHome size={20} color={getIconColor(FaHome, isActive("/maindashboard/home"))} />,
           label: "Home",
           active: isActive("/maindashboard/home")
         },
         {
           path: "/maindashboard/analytics",
-          icon: <MdAnalytics size={25} color={getIconColor(MdAnalytics, isActive("/maindashboard/analytics"))} />,
+          icon: <MdAnalytics size={20} color={getIconColor(MdAnalytics, isActive("/maindashboard/analytics"))} />,
           label: "Analytics",
           active: isActive("/maindashboard/analytics")
         },
         {
           type: "dropdown",
-          icon: <FaUsers size={27} color={getIconColor(FaUsers, false)} />,
+          icon: <FaUsers size={20} color={getIconColor(FaUsers, false)} />,
           label: "Users",
           items: [
             {
               path: "/maindashboard/role-management",
-              icon: <SiGooglecampaignmanager360 size={23} color={getIconColor(SiGooglecampaignmanager360, isActive("/maindashboard/role-management"))} />,
+              icon: <SiGooglecampaignmanager360 size={18} color={getIconColor(SiGooglecampaignmanager360, isActive("/maindashboard/role-management"))} />,
               label: "Role Management",
               active: isActive("/maindashboard/role-management")
             },
             {
               path: "/maindashboard/my-team",
-              icon: <FaUsersSlash size={28} color={getIconColor(FaUsersSlash, isActive("/maindashboard/my-team"))} />,
+              icon: <FaUsersSlash size={18} color={getIconColor(FaUsersSlash, isActive("/maindashboard/my-team"))} />,
               label: "My Team",
               active: isActive("/maindashboard/my-team")
             }
@@ -102,24 +104,24 @@ const Sidebar = ({ sidebarOpen, darkMode }) => {
         },
         {
           type: "dropdown",
-          icon: <MdOutlineImportantDevices size={23} color={getIconColor(MdOutlineImportantDevices, false)} />,
+          icon: <MdOutlineImportantDevices size={20} color={getIconColor(MdOutlineImportantDevices, false)} />,
           label: "DevTool",
           items: [
             {
               path: "/maindashboard/ip-whitelist",
-              icon: <SiEclipsemosquitto size={20} color={getIconColor(SiEclipsemosquitto, isActive("/maindashboard/ip-whitelist"))} />,
+              icon: <SiEclipsemosquitto size={18} color={getIconColor(SiEclipsemosquitto, isActive("/maindashboard/ip-whitelist"))} />,
               label: "IP Whitelist",
               active: isActive("/maindashboard/ip-whitelist")
             },
             {
               path: "/maindashboard/webhooks",
-              icon: <GrInternetExplorer size={20} color={getIconColor(GrInternetExplorer, isActive("/maindashboard/webhooks"))} />,
+              icon: <GrInternetExplorer size={18} color={getIconColor(GrInternetExplorer, isActive("/maindashboard/webhooks"))} />,
               label: "Webhooks",
               active: isActive("/maindashboard/webhooks")
             },
             {
               path: "/maindashboard/logs",
-              icon: <HiClipboardDocumentList size={26} color={getIconColor(HiClipboardDocumentList, isActive("/maindashboard/logs"))} />,
+              icon: <HiClipboardDocumentList size={18} color={getIconColor(HiClipboardDocumentList, isActive("/maindashboard/logs"))} />,
               label: "Logs",
               active: isActive("/maindashboard/logs")
             }
@@ -127,12 +129,12 @@ const Sidebar = ({ sidebarOpen, darkMode }) => {
         },
         {
           type: "dropdown",
-          icon: <FcApproval size={24} color={getIconColor(FcApproval, false)} />,
+          icon: <FcApproval size={20} color={getIconColor(FcApproval, false)} />,
           label: "Kyc Studio",
           items: [
             {
               path: "/maindashboard/allverification",
-              icon: <VscVerified size={33} color={getIconColor(VscVerified, isActive("/maindashboard/allverification"))} />,
+              icon: <VscVerified size={18} color={getIconColor(VscVerified, isActive("/maindashboard/allverification"))} />,
               label: "All Verification",
               active: isActive("/maindashboard/allverification")
             },
@@ -151,7 +153,7 @@ const Sidebar = ({ sidebarOpen, darkMode }) => {
       items: [
         {
           path: "/maindashboard/transactionhistory",
-          icon: <FcCurrencyExchange size={26} color={getIconColor(FcCurrencyExchange, isActive("/maindashboard/transactionhistory"))} />,
+          icon: <FcCurrencyExchange size={20} color={getIconColor(FcCurrencyExchange, isActive("/maindashboard/transactionhistory"))} />,
           label: "Transaction History",
           active: isActive("/maindashboard/transactionhistory")
         }
@@ -162,12 +164,12 @@ const Sidebar = ({ sidebarOpen, darkMode }) => {
       items: [
         {
           type: "dropdown",
-          icon: <GrDocumentText size={22} color={getIconColor(GrDocumentText, false)} />,
+          icon: <GrDocumentText size={20} color={getIconColor(GrDocumentText, false)} />,
           label: "Document",
           items: [
             {
               path: "/maindashboard/signed-agreement",
-              icon: <FaFileSignature size={26} color={getIconColor(FaFileSignature, isActive("/maindashboard/signed-agreement"))} />,
+              icon: <FaFileSignature size={18} color={getIconColor(FaFileSignature, isActive("/maindashboard/signed-agreement"))} />,
               label: "Signed Agreement",
               active: isActive("/maindashboard/signed-agreement")
             }
@@ -175,19 +177,19 @@ const Sidebar = ({ sidebarOpen, darkMode }) => {
         },
         {
           path: "/maindashboard/yourkyc",
-          icon: <LiaUserLockSolid size={28} color={getIconColor(LiaUserLockSolid, isActive("/maindashboard/yourkyc"))} />,
+          icon: <LiaUserLockSolid size={20} color={getIconColor(LiaUserLockSolid, isActive("/maindashboard/yourkyc"))} />,
           label: "Your Kyc",
           active: isActive("/maindashboard/yourkyc")
         },
         {
           path: "/maindashboard/drafts",
-          icon: <MdDrafts size={25} color={getIconColor(MdDrafts, isActive("/maindashboard/drafts"))} />,
+          icon: <MdDrafts size={20} color={getIconColor(MdDrafts, isActive("/maindashboard/drafts"))} />,
           label: "Drafts",
           active: isActive("/maindashboard/drafts")
         },
         {
           path: "/maindashboard/completed",
-          icon: <GrCompliance size={24} color={getIconColor(GrCompliance, isActive("/maindashboard/completed"))} />,
+          icon: <GrCompliance size={20} color={getIconColor(GrCompliance, isActive("/maindashboard/completed"))} />,
           label: "Completed",
           active: isActive("/maindashboard/completed")
         }
@@ -198,7 +200,7 @@ const Sidebar = ({ sidebarOpen, darkMode }) => {
       items: [
         {
           path: "/maindashboard/setting",
-          icon: <MdOutlineSettings size={24} color={getIconColor(MdOutlineSettings, isActive("/maindashboard/setting"))} />,
+          icon: <MdOutlineSettings size={20} color={getIconColor(MdOutlineSettings, isActive("/maindashboard/setting"))} />,
           label: "Settings",
           active: isActive("/maindashboard/setting")
         }
@@ -209,79 +211,105 @@ const Sidebar = ({ sidebarOpen, darkMode }) => {
   const showFullSidebar = sidebarOpen || isHovered;
 
   return (
-    <div 
-      className={`sidebar ${sidebarOpen ? "" : "collapsed"} ${darkMode ? "dark" : ""}`}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      <div className="sidebar-content">
-        {menuSections.map((section, index) => (
-          <nav key={index} className="sidebar-section">
-            {showFullSidebar && <h2 className="section-title">{section.title}</h2>}
-            <ul className="menu-list">
-              {section.items.map((item, itemIndex) => {
-                if (item.type === "dropdown") {
+    <>
+      {/* Mobile overlay */}
+      {isMobile && sidebarOpen && (
+        <div 
+          className="sidebar-overlay"
+          onClick={toggleSidebar}
+        />
+      )}
+      
+      <div 
+        className={`sidebar ${sidebarOpen ? "" : "collapsed"} ${darkMode ? "dark" : ""} ${isMobile ? "mobile" : ""}`}
+        onMouseEnter={!isMobile ? () => setIsHovered(true) : undefined}
+        onMouseLeave={!isMobile ? () => setIsHovered(false) : undefined}
+      >
+        {/* Mobile header */}
+        {isMobile && (
+          <div className="mobile-sidebar-header">
+            <button className="mobile-close-btn" onClick={toggleSidebar}>
+              <FaTimes size={24} />
+            </button>
+          </div>
+        )}
+        
+        <div className="sidebar-content">
+          {menuSections.map((section, index) => (
+            <nav key={index} className="sidebar-section">
+              {showFullSidebar && <h2 className="section-title">{section.title}</h2>}
+              <ul className="menu-list">
+                {section.items.map((item, itemIndex) => {
+                  if (item.type === "dropdown") {
+                    return (
+                      <li
+                        key={itemIndex}
+                        className={`menu-item ${openDropdown === item.label ? "open" : ""}`}
+                      >
+                        <div
+                          className="menu-link dropdown-header"
+                          onClick={() => toggleDropdown(item.label)}
+                          data-tooltip={!showFullSidebar ? item.label : undefined}
+                        >
+                          <span className="icon-wrapper">{item.icon}</span>
+                          {showFullSidebar && (
+                            <>
+                              <span className="menu-label">{item.label}</span>
+                              <span className="dropdown-arrow">
+                                {openDropdown === item.label ? (
+                                  <FaChevronUp size={14} />
+                                ) : (
+                                  <FaChevronDown size={14} />
+                                )}
+                              </span>
+                            </>
+                          )}
+                        </div>
+                        {(showFullSidebar && openDropdown === item.label) && (
+                          <ul className="dropdown-menu">
+                            {item.items.map((subItem, subIndex) => (
+                              <li
+                                key={subIndex}
+                                className={`submenu-item ${subItem.active ? "active" : ""}`}
+                              >
+                                <Link
+                                  to={subItem.path}
+                                  className="submenu-link"
+                                  onClick={isMobile ? toggleSidebar : undefined}
+                                >
+                                  <span className="submenu-icon">{subItem.icon}</span>
+                                  <span className='dropdown-inside-menu-items'>{subItem.label}</span>
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </li>
+                    );
+                  }
                   return (
                     <li
                       key={itemIndex}
-                      className={`menu-item ${openDropdown === item.label ? "open" : ""}`}
+                      className={`menu-item ${item.active ? "active" : ""}`}
                     >
-                      <div
-                        className="menu-link dropdown-header"
-                        onClick={() => toggleDropdown(item.label)}
+                      <Link 
+                        to={item.path} 
+                        className="menu-link"
+                        data-tooltip={!showFullSidebar ? item.label : undefined}
+                        onClick={isMobile ? toggleSidebar : undefined}
                       >
                         <span className="icon-wrapper">{item.icon}</span>
-                        {showFullSidebar && (
-                          <>
-                            <span className="menu-label">{item.label}</span>
-                            <span className="dropdown-arrow">
-                              {openDropdown === item.label ? (
-                                <FaChevronUp size={12} color={darkMode ? "white" : "white"} />
-                              ) : (
-                                <FaChevronDown size={12} color={darkMode ? "white" : "white"} />
-                              )}
-                            </span>
-                          </>
-                        )}
-                      </div>
-                      {(showFullSidebar && openDropdown === item.label) && (
-                        <ul className="dropdown-menu">
-                          {item.items.map((subItem, subIndex) => (
-                            <li
-                              key={subIndex}
-                              className={`submenu-item ${subItem.active ? "active" : ""}`}
-                            >
-                              <Link
-                                to={subItem.path}
-                                className="submenu-link"
-                              >
-                                <span className="submenu-icon" >{subItem.icon}</span>
-                                <span className='dropdown-inside-menu-items'>{subItem.label}</span>
-                              </Link>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
+                        {showFullSidebar && <span className="menu-label">{item.label}</span>}
+                      </Link>
                     </li>
                   );
-                }
-                return (
-                  <li
-                    key={itemIndex}
-                    className={`menu-item ${item.active ? "active" : ""}`}
-                  >
-                    <Link to={item.path} className="menu-link">
-                      <span className="icon-wrapper">{item.icon}</span>
-                      {showFullSidebar && <span className="menu-label">{item.label}</span>}
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          </nav>
-        ))}
+                })}
+              </ul>
+            </nav>
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
