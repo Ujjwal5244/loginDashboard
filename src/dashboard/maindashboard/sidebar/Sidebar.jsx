@@ -19,6 +19,8 @@ import { MdAnalytics, MdDrafts, MdOutlineSettings, MdOutlineImportantDevices } f
 import { GrInternetExplorer, GrDocumentText, GrCompliance } from "react-icons/gr";
 import { HiClipboardDocumentList } from "react-icons/hi2";
 import { VscVerified } from "react-icons/vsc";
+import { SiMonkeytie } from "react-icons/si";
+
 
 const Sidebar = ({ sidebarOpen, darkMode, toggleSidebar, isMobile }) => {
   const location = useLocation();
@@ -124,6 +126,12 @@ const Sidebar = ({ sidebarOpen, darkMode, toggleSidebar, isMobile }) => {
               icon: <HiClipboardDocumentList size={18} color={getIconColor(HiClipboardDocumentList, isActive("/maindashboard/logs"))} />,
               label: "Logs",
               active: isActive("/maindashboard/logs")
+            },
+            {
+              path: "/maindashboard/api-credential",
+              icon: <SiMonkeytie size={18} color={getIconColor(HiClipboardDocumentList, isActive("/maindashboard/api-credential"))} />,
+              label: "Api-Credential",
+              active: isActive("/maindashboard/api-credential")
             }
           ]
         },
@@ -182,10 +190,10 @@ const Sidebar = ({ sidebarOpen, darkMode, toggleSidebar, isMobile }) => {
           active: isActive("/maindashboard/yourkyc")
         },
         {
-          path: "/maindashboard/drafts",
-          icon: <MdDrafts size={20} color={getIconColor(MdDrafts, isActive("/maindashboard/drafts"))} />,
-          label: "Drafts",
-          active: isActive("/maindashboard/drafts")
+          path: "/maindashboard/Email",
+          icon: <MdDrafts size={20} color={getIconColor(MdDrafts, isActive("/maindashboard/Email"))} />,
+          label: "Email Box",
+          active: isActive("/maindashboard/Email")
         },
         {
           path: "/maindashboard/completed",

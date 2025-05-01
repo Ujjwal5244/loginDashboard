@@ -1,0 +1,155 @@
+
+/* _______main-home-container-5_________ */
+.main-home-container-5 {
+  max-width: 940px;
+  margin-top: 30px;
+  padding: 2rem;
+  background: #ffffff;
+  border-radius: 12px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  border: 1px solid #e2e8f0;
+}
+
+.document-verification-status-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 3rem;
+  color: #2c3e50;
+}
+
+.document-verification-status-header h2 {
+  margin-left: 1rem;
+  font-size: 1.4rem;
+  font-weight: 600;
+  /* background-color: #27ae60; */
+}
+
+.document-verification-status-icon {
+  font-size: 1.5rem;
+  color: #3498db;
+}
+
+.home-upload-file-document-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.adharcard-upload-file-document,
+.pancard-upload-file-document {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.5rem;
+  background: #f8f9fa;
+  border-radius: 10px;
+  border: 2px dashed #d1d5db;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  text-align: center;
+  min-height: 120px;
+}
+
+.adharcard-upload-file-document:hover,
+.pancard-upload-file-document:hover {
+  border-color: #3498db;
+  background: #f0f7ff;
+  transform: translateY(-5px);
+}
+
+.adharcard-upload-file-document h2,
+.pancard-upload-file-document h2 {
+  margin-top: 1rem;
+  color: #2c3e50;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+/* Hidden file input */
+.upload-input {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+}
+
+/* Uploaded file info */
+.upload-info {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #27ae60;
+  font-weight: 500;
+  display: none;
+}
+
+/* Progress bar */
+.upload-progress {
+  width: 100%;
+  height: 6px;
+  background: #e0e0e0;
+  border-radius: 3px;
+  margin-top: 1rem;
+  overflow: hidden;
+  display: none;
+}
+
+.upload-progress-bar {
+  height: 100%;
+  background: #3498db;
+  width: 0%;
+  transition: width 0.3s ease;
+}
+
+/* Success state */
+.upload-success .document-verification-status-icon {
+  color: #27ae60;
+}
+
+.upload-success {
+  border-color: #27ae60;
+  background: #e8f5e9;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .home-upload-file-document-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .main-home-container-5 {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 650px) {
+  .home-upload-file-document-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .main-home-container-5 {
+    padding: 1.5rem;
+  }
+  .document-verification-status-header h2 {
+    margin-left: 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+    /* background-color: #27ae60; */
+  }
+  .verification-status-border-of-line {
+    width: full;
+    height: 2px;
+    border: 1px solid #e2e8f0;
+    margin-top: -35px;
+    margin-bottom: 35px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+
+  }
+}

@@ -375,15 +375,15 @@
 
 .verification-status-header {
   display: flex;
-  align-items: center;
-  margin-bottom: 25px;
-  color: #4f46e5;
+  align-items: left;
+  margin-bottom: 35px;
+  gap: 10px;
 }
 
 .verification-status-icon {
-  font-size: 20px;
-  margin-right: 12px;
+  font-size: 22px;
   color: #3470b2;
+  margin-top: 5px;
 }
 
 .verification-status-header h2 {
@@ -397,7 +397,7 @@
 .verification-status-items {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 25px;
 }
 
 .verification-status-item {
@@ -573,8 +573,22 @@
   box-shadow: 0 5px 15px rgba(79, 70, 229, 0.3);
 }
 
-/* Responsive Adjustments */
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .complete-Kyc-verification-btn {
+    padding: 10px 20px;
+    font-size: 15px;
+    right: 40px;
+  }
+}
+
+
+/* Responsive adjustments */
 @media (max-width: 768px) {
+  .main-home-container-3 {
+    grid-template-columns: 1fr;
+  }
   .main-home-container-4 {
     grid-template-columns: 1fr;
   }
@@ -583,24 +597,6 @@
   .billing-information-card-container {
     padding: 20px;
   }
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .main-home-container-3 {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 480px) {
-  .personal-info-card-container,
-  .verification-status-card-container {
-    padding: 20px;
-  }
-}
-
-/* Responsive css of Floating KYC Button Adjustments */
-@media (max-width: 768px) {
   .main-home-container-1 {
     flex-direction: column;
     text-align: center;
@@ -619,7 +615,21 @@
   .main-home-container-2 {
     grid-template-columns: 1fr;
   }
+  .complete-Kyc-verification-btn {
+    padding: 10px 18px;
+    font-size: 14px;
+    right: 35px;
+    bottom: 15px;
+  }
 }
+
+@media (max-width: 480px) {
+  .personal-info-card-container,
+  .verification-status-card-container {
+    padding: 20px;
+  }
+}
+
 
 @media (max-width: 480px) {
   .main-home {
@@ -633,27 +643,6 @@
   .card-container-1 {
     padding: 20px;
   }
-}
-
-/* Responsive adjustments */
-@media (max-width: 1024px) {
-  .complete-Kyc-verification-btn {
-    padding: 10px 20px;
-    font-size: 15px;
-    right: 40px;
-  }
-}
-
-@media (max-width: 768px) {
-  .complete-Kyc-verification-btn {
-    padding: 10px 18px;
-    font-size: 14px;
-    right: 35px;
-    bottom: 15px;
-  }
-}
-
-@media (max-width: 480px) {
   .complete-Kyc-verification-btn {
     padding: 8px 16px;
     font-size: 13px;

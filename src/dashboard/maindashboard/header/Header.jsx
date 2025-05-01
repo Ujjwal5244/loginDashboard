@@ -25,18 +25,18 @@ const Header = ({ toggleSidebar, darkMode, toggleDarkMode, sidebarOpen }) => {
   return (
     <header className="header">
       <div className="header-left">
-        <button className="toggle-btn" onClick={toggleSidebar}>
+        <button className="toggle-btn custom-toggle" onClick={toggleSidebar}>
           <FaBars size="20" color="white" />
         </button>
-          <div className="nifi-logo-name">
-            <span className="logo-text">Nifi</span>
-            <span className="logo-text">Payments</span>
-          </div>
+        <div className="nifi-logo-name">
+          <span className="logo-text">Nifi</span>
+          <span className="logo-text">Payments</span>
         </div>
+      </div>
       <div className="header-center">SECURE KYC PORTAL</div>
       <div className="header-right">
         <div className="theme-toggle-wrapper">
-          <ThemeToggle  darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+          <ThemeToggle darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
         </div>{" "}
         <div className="profile-dropdown">
           <button className="profile-btn" onClick={toggleDropdown}>

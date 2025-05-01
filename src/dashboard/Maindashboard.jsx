@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "./maindashboard/sidebar/Sidebar";
 import Header from "./maindashboard/header/Header";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import "./Maindashboard.css";
-import Footer from "./maindashboard/footer/Footer";
+import MobileMenu from "./sidebarpages/footer/mobilemenu/Mobilemenu";
+import Footer from "./sidebarpages/footer/footerheader/Footer";
 
 const Maindashboard = ({
   sidebarOpen,
@@ -12,22 +13,30 @@ const Maindashboard = ({
   toggleDarkMode,
 }) => {
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const handleResize = () => setScreenWidth(window.innerWidth);
+    const handleResize = () => {
+      const width = window.innerWidth;
+      setScreenWidth(width);
+      if (width < 700 && sidebarOpen) toggleSidebar();
+    };
+
     window.addEventListener("resize", handleResize);
+    handleResize();
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  }, [sidebarOpen, toggleSidebar]);
+
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [location.pathname]);
 
   const isMobile = screenWidth < 700;
-  const isTablet = screenWidth >= 740 && screenWidth <= 1000;
 
   return (
-    <div
-      className={`h-screen flex flex-col ${
-        darkMode ? "bg-gray-900 text-white" : "bg-white text-black"
-      }`}
-    >
+    <div className={`h-screen flex flex-col ${darkMode ? "bg-gray-900 text-white" : "bg-white text-black"}`}>
       <Header
         sidebarOpen={sidebarOpen}
         toggleSidebar={toggleSidebar}
@@ -36,24 +45,36 @@ const Maindashboard = ({
       />
 
       <div className="flex flex-1 overflow-hidden">
-        {/* Sidebar */}
-        <div
-          className={`sidebar-transition ${sidebarOpen ? "sidebar-open" : "sidebar-closed"}`}
-        >
-          <Sidebar sidebarOpen={sidebarOpen} darkMode={darkMode} />
-        </div>
+        {!mobileMenuOpen && (
+          <div className={`sidebar-transition ${sidebarOpen ? "sidebar-open" : "sidebar-closed"}`}>
+            <Sidebar
+              sidebarOpen={sidebarOpen}
+              darkMode={darkMode}
+              toggleSidebar={toggleSidebar}
+              isMobile={isMobile}
+            />
+          </div>
+        )}
 
-        {/* Main Content Area */}
-        <main
-          className={`main-content-of-dashboard ${
-            !sidebarOpen && !isMobile ? "sidebar-closed" : ""
-          }`}
-        >
+        <main className={`main-content-of-dashboard ${!sidebarOpen && !isMobile ? "sidebar-closed" : ""}`}>
           <Outlet />
         </main>
       </div>
-      {/* Footer */}
-      <Footer darkMode={darkMode} />
+
+      {(mobileMenuOpen || location.pathname === "/Maindashboard/mobilemenu") && (
+        <MobileMenu
+          isOpen={true}
+          onClose={() => {
+            navigate(-1);
+            setMobileMenuOpen(false);
+          }}
+          darkMode={darkMode}
+        />
+      )}
+
+      {!mobileMenuOpen && location.pathname !== "/Maindashboard/mobilemenu" && screenWidth < 500 && (
+        <Footer darkMode={darkMode} onMenuToggle={() => setMobileMenuOpen(true)} />
+      )}
     </div>
   );
 };

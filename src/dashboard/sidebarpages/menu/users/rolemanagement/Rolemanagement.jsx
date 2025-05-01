@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   FiSearch,
   FiEdit2,
@@ -6,43 +6,51 @@ import {
   FiChevronLeft,
   FiChevronRight,
 } from "react-icons/fi";
+import axios from "axios";
+import { baseUrl, decryptText } from "../../../../../encryptDecrypt";
 import "./Rolemanagement.css";
 
 const Rolemanagement = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
   const [newRole, setNewRole] = useState({ name: "", description: "" });
-  const [roles, setRoles] = useState([
-    { id: 1, name: "api partner", description: "—", status: true },
-    { id: 2, name: "baba", description: "life full enjoy", status: true },
-    { id: 3, name: "ceo", description: "—", status: true },
-    { id: 4, name: "IT developer", description: "—", status: true },
-    { id: 5, name: "nice nice", description: "—", status: true },
-    { id: 6, name: "reseller", description: "—", status: true },
-    { id: 7, name: "admin", description: "System administrator", status: true },
-    { id: 8, name: "manager", description: "Department manager", status: true },
-    { id: 9, name: "support", description: "Customer support", status: true },
-    { id: 10, name: "analyst", description: "Data analyst", status: true },
-    { id: 11, name: "designer", description: "UI/UX designer", status: true },
-    {
-      id: 12,
-      name: "marketing",
-      description: "Marketing specialist",
-      status: true,
-    },
-  ]);
-
+  const [roles, setRoles] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [editingRoleId, setEditingRoleId] = useState(null);
+
+  // Fetch roles when component mounts
+  const token = localStorage.getItem("userToken");
+  const fetchRoles = useCallback(async () => {
+  
+    try {
+      const res = await axios.get(`${baseUrl}/api/role/all`, {
+        headers: {
+          authorization: token,
+        },
+      });
+      const dec = await decryptText(res.data.body);
+      console.log("dec", dec);
+      const data = JSON.parse(dec);
+      setRoles(Array.isArray(data.data) ? data.data : []);
+    } catch (err) {
+      console.error(err);
+    
+    } finally {
+    
+    }
+  }, [token]);
+
+  useEffect(() => {
+    fetchRoles();
+  }, [fetchRoles]);
 
   const handleSearch = (e) => {
     e.preventDefault();
-    setCurrentPage(1); // Reset to first page when searching
+    setCurrentPage(1);
   };
 
-  const handleAddRole = () => {
-    setShowAddModal(true);
-  };
+  const handleAddRole = () => setShowAddModal(true);
 
   const handleSaveRole = (e) => {
     e.preventDefault();
@@ -68,29 +76,23 @@ const Rolemanagement = () => {
     );
   };
 
-  const [editingRoleId, setEditingRoleId] = useState(null);
-
-  // Filter roles based on search query
+  // Filter and paginate
   const filteredRoles = roles.filter(
     (role) =>
       role.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       role.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
-
-  // Pagination logic
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
   const currentRows = filteredRoles.slice(indexOfFirstRow, indexOfLastRow);
   const totalPages = Math.ceil(filteredRoles.length / rowsPerPage);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
-  const nextPage = () =>
-    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+  const nextPage = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages));
   const prevPage = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
-
   const handleRowsPerPageChange = (e) => {
     setRowsPerPage(Number(e.target.value));
-    setCurrentPage(1); // Reset to first page when changing rows per page
+    setCurrentPage(1);
   };
 
   return (

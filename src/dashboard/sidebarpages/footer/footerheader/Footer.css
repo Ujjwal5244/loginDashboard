@@ -1,0 +1,109 @@
+.footer-navigation {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between; /* Changed from space-around */
+  align-items: center;
+  background-color: white;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  padding: 8px 5px; /* Adjusted padding */
+  z-index: 1000;
+  height: 56px;
+}
+
+/* Navigation Buttons Container */
+.nav-buttons {
+  display: flex;
+  justify-content: center;
+  flex: 1;
+  max-width: calc(100% - 50px); /* Account for toggle button */
+}
+
+/* Navigation Buttons */
+.nav-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px 5px; /* Reduced padding */
+  color: #7f8c8d;
+  transition: all 0.3s ease;
+  font-size: 12px;
+  flex: 1;
+  max-width: 80px;
+}
+
+/* Toggle Button */
+.footer-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 50px;
+  height: 100%;
+  color: #7f8c8d;
+  transition: color 0.3s ease;
+}
+
+.footer-toggle-btn:hover {
+  color: #3498db;
+}
+
+/* Rest of your existing CSS remains the same */
+.footer-navigation.dark-mode {
+  background-color: #1b2235;
+  box-shadow: 0 -2px 10px rgba(255, 255, 255, 0.1);
+}
+
+.footer-navigation.dark-mode .nav-btn {
+  color: #ccc;
+}
+
+.footer-navigation.dark-mode .nav-btn:hover,
+.footer-navigation.dark-mode .nav-btn.active {
+  color: #4fc3f7;
+}
+
+.footer-navigation.dark-mode .footer-toggle-btn {
+  color: #ccc;
+}
+
+.footer-navigation.dark-mode .footer-toggle-btn:hover {
+  color: #4fc3f7;
+}
+
+.nav-btn:hover {
+  color: #3498db;
+  transform: translateY(-2px);
+}
+
+.nav-icon {
+  font-size: 20px;
+  margin-bottom: 4px;
+}
+
+.nav-btn.active {
+  color: #3498db;
+}
+
+@media (max-width: 350px) {
+  .nav-btn span {
+    display: none;
+  }
+  .nav-icon {
+    margin-bottom: 0;
+  }
+}
+
+@media (min-width: 501px) {
+  .footer-navigation {
+    display: none;
+  }
+}

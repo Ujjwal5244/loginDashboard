@@ -14,6 +14,7 @@ import {
   FaExclamationCircle,
 } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import Uploaddocumnt from "./Uploaddocumnt";
 
 const Home = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -136,7 +137,7 @@ const Home = () => {
         <div className="verification-status-card-container">
           <div className="verification-status-header">
             <FaIdCard className="verification-status-icon" />
-            <h2>KYC Verification Status</h2>
+            <h2 >KYC Verification Status</h2>
           </div>
           <div className="verification-status-items">
             <div className="verification-status-item verified">
@@ -238,6 +239,10 @@ const Home = () => {
           </div>
         </div>
       </div>
+
+      {/* _______upload-documents-funcetion-main-home-container-5_________ */}
+     <Uploaddocumnt />
+      {/* _______upload-documents-funcetion-main-home-container-5_________ */}
     </div>
   );
 };

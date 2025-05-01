@@ -12,7 +12,7 @@
   --active-bg: #3f92eb;
   --section-title-color: rgba(255, 255, 255, 0.7);
   --icon-size: 24px;
-  --collapsed-bg-color: #2a5a8f;
+  --collapsed-bg-color: #3470b2;
   --menu-item-spacing: 8px;
   --section-spacing: 24px;
 
@@ -52,7 +52,7 @@
 /* Collapsed State */
 .sidebar.collapsed {
   width: var(--sidebar-collapsed-width);
-  background: linear-gradient(180deg, #2a5a8f 0%, #1f4a7a 100%);
+  background: #3470b2;
 }
 
 .sidebar.collapsed .dropdown-menu {

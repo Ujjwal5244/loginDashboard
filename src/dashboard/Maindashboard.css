@@ -1,63 +1,54 @@
 .main-content-of-dashboard {
   flex: 1;
   overflow-y: auto;
-  margin-top: 5rem; /* same as mt-20 */
+  margin-top: 5rem;
   transition: all 0.3s ease;
 }
 
-/* Base transition class */
+/* Sidebar transitions */
 .sidebar-transition {
   transition: width 0.3s ease;
   overflow: hidden;
 }
 
-/* Closed by default */
 .sidebar-closed {
   width: 0;
 }
 
-/* Open widths based on screen size */
+/* Sidebar widths */
 .sidebar-open {
-  width: 260px; /* default desktop */
+  width: 260px;
   padding: 10px;
 }
 
-/* Tablet view (740px–1000px) */
+/* Tablet View: Shrink sidebar */
 @media (max-width: 1000px) and (min-width: 740px) {
   .sidebar-open {
     width: 108px;
   }
 }
 
-/* Mobile view (< 700px) – force closed */
+/* Mobile View: Always close sidebar */
 @media (max-width: 699px) {
   .sidebar-open {
     width: 0 !important;
   }
+  .main-content-of-dashboard {
+    padding-bottom: 60px;
+  }
 }
 
-/* Apply padding when sidebar is closed AND screen is larger than 700px */
+/* Adjust padding for main content when sidebar is closed on desktop */
 @media (min-width: 700px) {
   .main-content-of-dashboard.sidebar-closed {
     padding-left: 90px;
-    padding-right: 1rem; /* same as p-4 */
+    padding-right: 1rem;
   }
 }
 
-/* Apply padding when screen width is between 700px and 1000px */
+/* Tablet content padding */
 @media (min-width: 700px) and (max-width: 1000px) {
   .main-content-of-dashboard {
-    padding-left: 2rem; /* adjust padding as needed */
+    padding-left: 7rem;
   }
 }
-
-
-
-
-
-
-
-/* Adjustments for for sidebar on smaller screens */
-
-
-

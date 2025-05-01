@@ -42,7 +42,7 @@
     margin-top: -20px;
 }
 
-.title {
+.signup-title {
     font-size: 34px;
     font-weight: 500;
     margin-bottom: 25px;
@@ -61,11 +61,11 @@
     text-decoration: underline;
 }
 
-.input-group {
+.signup-input-group {
     margin-bottom: 15px;
 }
 
-.label {
+.signup-label {
     display: block;
     margin-bottom: 5px;
     font-weight: 300;
@@ -291,7 +291,7 @@
         border-radius: 8px;
     }
 
-    .title {
+    .signup-title {
         font-size: 28px;
     }
 
@@ -325,7 +325,7 @@
         padding: 1rem;
     }
 
-    .title {
+    .signup-title {
         font-size: 24px;
         margin-bottom: 1rem;
     }
@@ -351,11 +351,11 @@
         padding: 1rem;
     }
 
-    .title {
+    .signup-title {
         font-size: 22px;
     }
 
-    .input-group {
+    .signup-input-group {
         margin-bottom: 10px;
     }
 

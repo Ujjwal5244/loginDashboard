@@ -1,26 +1,36 @@
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import './App.css';
-import Login from './login/Login';
-import Signup from './signup/Signup';
-import Maindashboard from './dashboard/Maindashboard';
-import Home from './dashboard/sidebarpages/menu/home/Home';
-import Analytics from './dashboard/sidebarpages/menu/analytics/Analytics';
-import Rolemanagement from './dashboard/sidebarpages/menu/users/rolemanagement/Rolemanagement';
-import Myteam from './dashboard/sidebarpages/menu/users/myteam/Myteam';
-import Ipwhitelist from './dashboard/sidebarpages/menu/devtool/ipwhitelist/Ipwhitelist';
-import Webhooks from './dashboard/sidebarpages/menu/devtool/webhooks/Webhooks';
-import Logs from './dashboard/sidebarpages/menu/devtool/logs/Logs';
-import Allverification from './dashboard/sidebarpages/menu/kycstudio/allverification/Allverification';
-import Kyctemplate from './dashboard/sidebarpages/menu/kycstudio/kyctemplates/Kyctemplate';
-import Transactionhistory from './dashboard/sidebarpages/wallettransaction/transactionhistory/Transactionhistory';
-import SignAgreement from './dashboard/sidebarpages/document/documentfile/SignAgreement';
-import Yourkyc from './dashboard/sidebarpages/document/yourkyc/Yourkyc';
-import Draf from './dashboard/sidebarpages/document/drafts/Draf';
-import Completed from './dashboard/sidebarpages/document/completed/Completed';
-import Setting from './dashboard/sidebarpages/setting/Setting';
-import Myprofile from './dashboard/headerpages/myprofile/Myprofile';
-import Kycstatus from './dashboard/headerpages/kycstatus/Kycstatus';
+import React, { useState } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import "./App.css";
+import Login from "./login/Login";
+import Signup from "./signup/Signup";
+import Maindashboard from "./dashboard/Maindashboard";
+import Home from "./dashboard/sidebarpages/menu/home/Home";
+import Analytics from "./dashboard/sidebarpages/menu/analytics/Analytics";
+import Rolemanagement from "./dashboard/sidebarpages/menu/users/rolemanagement/Rolemanagement";
+import Myteam from "./dashboard/sidebarpages/menu/users/myteam/Myteam";
+import Ipwhitelist from "./dashboard/sidebarpages/menu/devtool/ipwhitelist/Ipwhitelist";
+import Webhooks from "./dashboard/sidebarpages/menu/devtool/webhooks/Webhooks";
+import Logs from "./dashboard/sidebarpages/menu/devtool/logs/Logs";
+import Allverification from "./dashboard/sidebarpages/menu/kycstudio/allverification/Allverification";
+import Kyctemplate from "./dashboard/sidebarpages/menu/kycstudio/kyctemplates/Kyctemplate";
+import SignAgreement from "./dashboard/sidebarpages/document/documentfile/SignAgreement";
+import Yourkyc from "./dashboard/sidebarpages/document/yourkyc/Yourkyc";
+import Completed from "./dashboard/sidebarpages/document/completed/Completed";
+import Setting from "./dashboard/sidebarpages/setting/Setting";
+import Myprofile from "./dashboard/headerpages/myprofile/Myprofile";
+import Kycstatus from "./dashboard/headerpages/kycstatus/Kycstatus";
+import Apicredential from "./dashboard/sidebarpages/menu/devtool/api-credential/Apicredential";
+import Transactionhistory from "./dashboard/sidebarpages/wallettransaction/Transactionhistory";
+import Email from "./dashboard/sidebarpages/document/email/emailnotification/Email";
+import EmailDetail from "./dashboard/sidebarpages/document/email/emaildetail/Emaildetail";
+import Emaildashboard from "./dashboard/sidebarpages/document/email/Emaildashboard";
+import Verification from "./dashboard/headerpages/myprofile/Verification";
+import Trash from "./dashboard/sidebarpages/document/email/trash/Trash";
+import Sent from "./dashboard/sidebarpages/document/email/sent/Sent";
+import Starred from "./dashboard/sidebarpages/document/email/starred/Starred";
+import Drafts from "./dashboard/sidebarpages/document/email/drafts/Drafts";
+import Compose from "./dashboard/sidebarpages/document/email/compose/Compose";
+import MobileMenu from "./dashboard/sidebarpages/footer/mobilemenu/Mobilemenu";
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -32,16 +42,16 @@ function App() {
 
   const toggleDarkMode = () => {
     setDarkMode((prevMode) => !prevMode);
-    document.body.classList.toggle('dark-mode', !darkMode);
+    document.body.classList.toggle("dark-mode", !darkMode);
   };
 
   return (
     <Router>
-      <div className={`app ${darkMode ? 'dark-mode' : ''}`}>
+      <div className={`app ${darkMode ? "dark-mode" : ""}`}>
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          
+
           <Route
             path="/Maindashboard"
             element={
@@ -61,17 +71,35 @@ function App() {
             <Route path="ip-whitelist" element={<Ipwhitelist />} />
             <Route path="webhooks" element={<Webhooks />} />
             <Route path="logs" element={<Logs />} />
+            <Route path="api-credential" element={<Apicredential />} />
             <Route path="allverification" element={<Allverification />} />
             <Route path="kyctemplates" element={<Kyctemplate />} />
             <Route path="transactionhistory" element={<Transactionhistory />} />
             <Route path="signed-agreement" element={<SignAgreement />} />
-            <Route path="yourkyc" element={<Yourkyc /> } />
-            <Route path="drafts" element={<Draf /> } />
-            <Route path="completed" element={<Completed /> } />
-            <Route path="setting" element={<Setting /> } />
+            <Route path="yourkyc" element={<Yourkyc />} />
+            {/* ---------------------all email pagese routes--------------------------- */}
+            <Route
+              path="Email"
+              element={
+                <Emaildashboard sidebarOpen={sidebarOpen} darkMode={darkMode} />
+              }
+            >
+              <Route index element={<Email />} />
+              <Route path=":id" element={<EmailDetail />} />
+              <Route path="trash" element={<Trash />} />
+              <Route path="sent" element={<Sent />} />
+              <Route path="starred" element={<Starred />} />
+              <Route path="drafts" element={<Drafts />} />
+              <Route path="compose" element={<Compose />} />
+            </Route>
+            {/* ---------------------end email pagese routes--------------------------- */}
+            <Route path="completed" element={<Completed />} />
+            <Route path="setting" element={<Setting />} />
 
             <Route path="myprofile" element={<Myprofile />} />
-            <Route path="kycstatus" element={<Kycstatus /> } />
+            <Route path="verification" element={<Verification />} />
+            <Route path="kycstatus" element={<Kycstatus />} />
+            <Route path="mobilemenu" element={<MobileMenu />} />
           </Route>
         </Routes>
       </div>

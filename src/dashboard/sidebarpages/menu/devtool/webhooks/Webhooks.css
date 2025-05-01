@@ -1,0 +1,272 @@
+/* Webhooks.css */
+
+.webhook-management-container {
+    padding: 20px;
+  }
+  
+  .webhook-title {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  .webhook-subtitle {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 20px;
+  }
+  
+  .webhook-top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  
+  .webhook-search-container {
+    position: relative;
+    width: 300px;
+    margin-bottom: 10px;
+  }
+  
+  .webhook-search-input {
+    width: 100%;
+    padding: 8px 12px 8px 30px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .webhook-search-icon {
+    position: absolute;
+    left: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    color: #888;
+  }
+  
+  .webhook-add-btn {
+    background-color: #3470b2;
+    color: #fff;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .webhook-add-btn:hover {
+    background-color: #3470b2;
+  }
+  
+  /* Add Form */
+  .webhook-add-form {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .webhook-form-group {
+    margin-bottom: 15px;
+  }
+  
+  .webhook-form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  .webhook-form-group input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .webhook-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+  
+  .webhook-cancel-btn,
+  .webhook-submit-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .webhook-cancel-btn {
+    background-color: #ccc;
+    color: #333;
+  }
+  
+  .webhook-submit-btn {
+    background-color: #28a745;
+    color: #fff;
+  }
+  
+  .webhook-submit-btn:hover {
+    background-color: #218838;
+  }
+  
+  /* Table Styles */
+  .webhook-table-container {
+    overflow-x: auto;
+  }
+  
+  .webhook-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .webhook-table th,
+  .webhook-table td {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    text-align: left;
+    color: black; /* <-- add this */
+
+  }
+  .webhook-table th {
+    background-color: #f2f2f2;
+  }
+  .webhook-table td {
+    background-color: #fff;
+  }
+  
+  .webhook-edit-btn,
+  .webhook-delete-btn,
+  .webhook-save-btn,
+  .webhook-cancel-edit-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    margin: 0 4px;
+  }
+  
+  /* Card Styles */
+  .webhook-mobile-cards-container {
+    display: none;
+  }
+  
+  .webhook-card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    padding: 15px;
+  }
+  
+  .webhook-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .webhook-card-title {
+    font-weight: bold;
+    font-size: 18px;
+    color: black;
+  }
+  
+  .webhook-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .webhook-card-row {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .webhook-card-label {
+    font-weight: bold;
+    color: #555;
+    margin-bottom: 2px;
+  }
+  
+  .webhook-card-value {
+    color: #333;
+  }
+  
+  /* Edit Input */
+  .webhook-edit-input {
+    width: 100%;
+    padding: 5px 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  /* RESPONSIVE BREAKPOINTS */
+  
+  /* Tablets - below 768px */
+  @media (max-width: 768px) {
+    .webhook-table-container {
+      display: none;
+    }
+    .webhook-title {
+      text-align: center;
+    }
+    .webhook-subtitle {
+      text-align: center;
+    }
+    .webhook-top-bar {
+      flex-direction: column;
+      align-items: center;
+    }
+    .webhook-mobile-cards-container {
+      display: block;
+    }
+  }
+  
+  /* Large Mobiles - below 425px */
+  @media (max-width: 425px) {
+    .webhook-management-container {
+      padding: 10px;
+    }
+    .webhook-search-container {
+      width: 100%;
+    }
+    .webhook-top-bar {
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+  
+  /* Normal Mobiles - below 375px */
+  @media (max-width: 375px) {
+    .webhook-card-title {
+      font-size: 16px;
+    }
+    .webhook-card-label {
+      font-size: 13px;
+    }
+    .webhook-card-value {
+      font-size: 13px;
+    }
+  }
+  
+  /* Smallest Devices - below 320px */
+  @media (max-width: 320px) {
+    .webhook-card {
+      padding: 10px;
+    }
+    .webhook-title {
+      text-align: center;
+      font-size: 25px;
+    }
+    .webhook-subtitle{
+      text-align: center;
+      font-size: 14px;
+    }
+    .webhook-card-title {
+      font-size: 14px;
+    }
+  }
