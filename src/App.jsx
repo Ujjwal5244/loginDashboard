@@ -31,6 +31,8 @@ import Starred from "./dashboard/sidebarpages/document/email/starred/Starred";
 import Drafts from "./dashboard/sidebarpages/document/email/drafts/Drafts";
 import Compose from "./dashboard/sidebarpages/document/email/compose/Compose";
 import MobileMenu from "./dashboard/sidebarpages/footer/mobilemenu/Mobilemenu";
+import { GrToast } from "react-icons/gr";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -47,6 +49,7 @@ function App() {
 
   return (
     <Router>
+      <ToastContainer/>
       <div className={`app ${darkMode ? "dark-mode" : ""}`}>
         <Routes>
           <Route path="/" element={<Login />} />

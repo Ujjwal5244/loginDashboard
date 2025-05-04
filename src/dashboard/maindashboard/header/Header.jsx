@@ -9,18 +9,37 @@ import {
   faCheckCircle,
   faSignOutAlt,
 } from "@fortawesome/free-solid-svg-icons";
+import axios from "axios";
+import { baseUrl } from "../../../encryptDecrypt";
 
 const Header = ({ toggleSidebar, darkMode, toggleDarkMode, sidebarOpen }) => {
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  const handleLogout = () => {
-    // Add your logout logic here (clear tokens, etc.)
-    navigate("/"); // Redirect to login page after logout
-  };
+    // logout api
+  const handleLogout = async () => {
+    const token = localStorage.getItem("userToken");
+    try {
+      const response = await axios.post(
+        `${baseUrl}/api/user/logout`,
+        {},
+        {
+          headers: {
+            authorization: token,
+          },
+        }
+      );
 
+    } catch (error) {
+      console.error("Logout error:", error);
+    } finally {
+      localStorage.clear();
+      navigate("/");
+    }
+  };
   const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
   const closeDropdown = () => setDropdownOpen(false);
+
 
   return (
     <header className="header">
@@ -67,12 +86,8 @@ const Header = ({ toggleSidebar, darkMode, toggleDarkMode, sidebarOpen }) => {
                 />{" "}
                 KYC Status
               </Link>
-              <a
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleLogout();
-                }}
+              <button
+                onClick={handleLogout}
                 className="My-profile-dropdown-header"
               >
                 <FontAwesomeIcon
@@ -81,7 +96,7 @@ const Header = ({ toggleSidebar, darkMode, toggleDarkMode, sidebarOpen }) => {
                   color="red"
                 />{" "}
                 Logout
-              </a>
+              </button>
             </div>
           )}
         </div>

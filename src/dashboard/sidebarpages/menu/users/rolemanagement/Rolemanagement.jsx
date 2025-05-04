@@ -7,8 +7,13 @@ import {
   FiChevronRight,
 } from "react-icons/fi";
 import axios from "axios";
-import { baseUrl, decryptText } from "../../../../../encryptDecrypt";
+import {
+  baseUrl,
+  decryptText,
+  encryptText,
+} from "../../../../../encryptDecrypt";
 import "./Rolemanagement.css";
+import { toast } from "react-toastify";
 
 const Rolemanagement = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -18,26 +23,43 @@ const Rolemanagement = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [editingRoleId, setEditingRoleId] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [editRoleData, setEditRoleData] = useState({
+    name: "",
+    description: "",
+  });
 
-  // Fetch roles when component mounts
   const token = localStorage.getItem("userToken");
+
+  // Fetch roles from API
   const fetchRoles = useCallback(async () => {
-  
+    setLoading(true);
     try {
       const res = await axios.get(`${baseUrl}/api/role/all`, {
-        headers: {
-          authorization: token,
-        },
+        headers: { authorization: token },
       });
       const dec = await decryptText(res.data.body);
-      console.log("dec", dec);
       const data = JSON.parse(dec);
-      setRoles(Array.isArray(data.data) ? data.data : []);
+
+      const filterRoles = data.roles.filter((role) => 
+        role.roleStatus != "delete"
+     );
+      // Map the API response to your expected format
+      const formattedRoles = filterRoles.map((role) => ({
+        id: role.id,
+        name: role.roleName,
+        description: role.roleDescription,
+        status: role.roleStatus === "active", // Convert to boolean
+      }));
+      setRoles(formattedRoles);
+      // console.log(formattedRoles, "formattedRoles");
+      // console.log(filterRoles, "filterRoles");
+
     } catch (err) {
       console.error(err);
-    
+      toast.error("Failed to fetch roles");
     } finally {
-    
+      setLoading(false);
     }
   }, [token]);
 
@@ -45,36 +67,182 @@ const Rolemanagement = () => {
     fetchRoles();
   }, [fetchRoles]);
 
+  // Create new role
+  const handleSaveRole = async (e) => {
+    e.preventDefault();
+    if (!newRole.name.trim()) return;
+
+    setLoading(true);
+    try {
+      const payload = {
+        roleName: newRole.name,
+        roleDescription: newRole.description || "",
+      };
+
+      const encryptedPayload = await encryptText(payload);
+
+      const response = await axios.post(
+        `${baseUrl}/api/role/create`,
+        { body: encryptedPayload },
+        {
+          headers: { authorization: token },
+        }
+      );
+
+      const decrypted = await decryptText(response.data.body);
+      const data = JSON.parse(decrypted);
+
+      if (response.data.success) {
+        toast.success("Role created successfully");
+        setShowAddModal(false);
+        setNewRole({ name: "", description: "" });
+        fetchRoles(); // Refresh the list
+      } else {
+        throw new Error(data.message || "Failed to create role");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(
+        error.response?.data?.message || error.message || "Error creating role"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Update existing role
+  const handleUpdateRole = async (roleId) => {
+    if (!editRoleData.name.trim()) return;
+
+    setLoading(true);
+    try {
+      const payload = {
+        roleId,
+        roleName: editRoleData.name,
+        roleDescription: editRoleData.description || "",
+      };
+
+      const encryptedPayload = await encryptText(payload);
+
+      const response = await axios.put(
+        `${baseUrl}/api/role/update`,
+        { body: encryptedPayload },
+        {
+          headers: { authorization: token },
+        }
+      );
+
+      const decrypted = await decryptText(response.data.body);
+      const data = JSON.parse(decrypted);
+
+      if (response.data.success) {
+        toast.success("Role updated successfully");
+        setEditingRoleId(null);
+        fetchRoles(); // Refresh the list
+      } else {
+        throw new Error(data.message || "Failed to update role");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(
+        error.response?.data?.message || error.message || "Error updating role"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Delete role
+  const handleDeleteRole = async (roleId) => {
+    if (!window.confirm("Are you sure you want to delete this role?")) return;
+
+    setLoading(true);
+    try {
+      const payload = { roleId };
+      const encryptedPayload = await encryptText(payload);
+
+      const response = await axios.delete(`${baseUrl}/api/role/${roleId}`, {
+        data: { body: encryptedPayload },
+        headers: { authorization: token },
+      });
+
+      const decrypted = await decryptText(response.data.body);
+      const data = JSON.parse(decrypted);
+
+      if (response.data.success) {
+        toast.success("Role deleted successfully");
+        fetchRoles(); // Refresh the list
+      } else {
+        throw new Error(data.message || "Failed to delete role");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(
+        error.response?.data?.message || error.message || "Error deleting role"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Toggle role status
+  // Update toggleRoleStatus to match API expectations
+  const toggleRoleStatus = async (roleId, currentStatus) => {
+    setLoading(true);
+    try {
+      const payload = {
+        roleId,
+        status: currentStatus ? "delete" : "active", // Match API status values
+      };
+
+      const encryptedPayload = await encryptText(payload);
+
+      const response = await axios.put(
+        `${baseUrl}/api/role/update/67fe3d93305cca823b4c2489?author`,
+        { body: encryptedPayload },
+        {
+          headers: { authorization: token },
+        }
+      );
+
+      const decrypted = await decryptText(response.data.body);
+      const data = JSON.parse(decrypted);
+
+      if (response.data.success) {
+        toast.success(
+          `Role ${!currentStatus ? "activated" : "deactivated"} successfully`
+        );
+        fetchRoles(); // Refresh the list
+      } else {
+        throw new Error(data.message || "Failed to update role status");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(
+        error.response?.data?.message ||
+          error.message ||
+          "Error updating role status"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+  // When starting to edit a role
+  const startEditing = (role) => {
+    setEditingRoleId(role.id);
+    setEditRoleData({
+      name: role.name,
+      description: role.description,
+    });
+  };
+
+  // another filed
   const handleSearch = (e) => {
     e.preventDefault();
     setCurrentPage(1);
   };
 
   const handleAddRole = () => setShowAddModal(true);
-
-  const handleSaveRole = (e) => {
-    e.preventDefault();
-    if (newRole.name.trim() === "") return;
-
-    const newRoleObj = {
-      id: roles.length + 1,
-      name: newRole.name,
-      description: newRole.description || "—",
-      status: true,
-    };
-
-    setRoles([...roles, newRoleObj]);
-    setNewRole({ name: "", description: "" });
-    setShowAddModal(false);
-  };
-
-  const toggleRoleStatus = (id) => {
-    setRoles(
-      roles.map((role) =>
-        role.id === id ? { ...role, status: !role.status } : role
-      )
-    );
-  };
 
   // Filter and paginate
   const filteredRoles = roles.filter(
@@ -88,7 +256,8 @@ const Rolemanagement = () => {
   const totalPages = Math.ceil(filteredRoles.length / rowsPerPage);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
-  const nextPage = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+  const nextPage = () =>
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
   const prevPage = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
   const handleRowsPerPageChange = (e) => {
     setRowsPerPage(Number(e.target.value));
@@ -147,21 +316,19 @@ const Rolemanagement = () => {
           </thead>
           <tbody>
             {currentRows.length > 0 ? (
-              currentRows.map((role) => (
+              currentRows.map((role, index) => (
                 <tr key={role.id}>
-                  <td>{role.id}</td>
+                  <td>{index + 1}</td>
+                  {/* Use index instead of role.id for SR.NO */}
                   <td>
                     {editingRoleId === role.id ? (
                       <input
-                        value={role.name}
+                        value={editRoleData.name}
                         onChange={(e) =>
-                          setRoles((prev) =>
-                            prev.map((r) =>
-                              r.id === role.id
-                                ? { ...r, name: e.target.value }
-                                : r
-                            )
-                          )
+                          setEditRoleData({
+                            ...editRoleData,
+                            name: e.target.value,
+                          })
                         }
                       />
                     ) : (
@@ -171,19 +338,16 @@ const Rolemanagement = () => {
                   <td>
                     {editingRoleId === role.id ? (
                       <input
-                        value={role.description}
+                        value={editRoleData.description}
                         onChange={(e) =>
-                          setRoles((prev) =>
-                            prev.map((r) =>
-                              r.id === role.id
-                                ? { ...r, description: e.target.value }
-                                : r
-                            )
-                          )
+                          setEditRoleData({
+                            ...editRoleData,
+                            description: e.target.value,
+                          })
                         }
                       />
                     ) : (
-                      role.description
+                      role.description || "—" // Show dash for empty descriptions
                     )}
                   </td>
                   <td>
@@ -191,10 +355,13 @@ const Rolemanagement = () => {
                       <input
                         type="checkbox"
                         checked={role.status}
-                        onChange={() => toggleRoleStatus(role.id)}
+                        onChange={() => toggleRoleStatus(role.id, role.status)}
+                        disabled={loading}
                       />
                       <span className="slider round"></span>
                     </label>
+                    <span className="status-text">
+                    </span>
                   </td>
                   <td className="actions">
                     {editingRoleId === role.id ? (
@@ -214,9 +381,7 @@ const Rolemanagement = () => {
                     )}
                     <button
                       className="delete-icon"
-                      onClick={() =>
-                        setRoles((prev) => prev.filter((r) => r.id !== role.id))
-                      }
+                      onClick={()=>handleDeleteRole(role.id)}
                     >
                       <FiTrash2 />
                     </button>
@@ -225,7 +390,11 @@ const Rolemanagement = () => {
               ))
             ) : (
               <tr className="no-results">
-                <td colSpan="5">No roles found matching your search</td>
+                <td colSpan="5">
+                  {loading
+                    ? "Loading..."
+                    : "No roles found matching your search"}
+                </td>
               </tr>
             )}
           </tbody>
