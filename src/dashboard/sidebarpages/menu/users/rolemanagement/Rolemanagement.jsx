@@ -41,9 +41,9 @@ const Rolemanagement = () => {
       const dec = await decryptText(res.data.body);
       const data = JSON.parse(dec);
 
-      const filterRoles = data.roles.filter((role) => 
-        role.roleStatus != "delete"
-     );
+      const filterRoles = data.roles.filter(
+        (role) => role.roleStatus != "delete"
+      );
       // Map the API response to your expected format
       const formattedRoles = filterRoles.map((role) => ({
         id: role.id,
@@ -54,7 +54,6 @@ const Rolemanagement = () => {
       setRoles(formattedRoles);
       // console.log(formattedRoles, "formattedRoles");
       // console.log(filterRoles, "filterRoles");
-
     } catch (err) {
       console.error(err);
       toast.error("Failed to fetch roles");
@@ -67,7 +66,7 @@ const Rolemanagement = () => {
     fetchRoles();
   }, [fetchRoles]);
 
-  // Create new role
+  // __________________Create new role_____________
   const handleSaveRole = async (e) => {
     e.preventDefault();
     if (!newRole.name.trim()) return;
@@ -92,7 +91,7 @@ const Rolemanagement = () => {
       const decrypted = await decryptText(response.data.body);
       const data = JSON.parse(decrypted);
 
-      if (response.data.success) {
+      if (response) {
         toast.success("Role created successfully");
         setShowAddModal(false);
         setNewRole({ name: "", description: "" });
@@ -117,7 +116,6 @@ const Rolemanagement = () => {
     setLoading(true);
     try {
       const payload = {
-        roleId,
         roleName: editRoleData.name,
         roleDescription: editRoleData.description || "",
       };
@@ -125,7 +123,7 @@ const Rolemanagement = () => {
       const encryptedPayload = await encryptText(payload);
 
       const response = await axios.put(
-        `${baseUrl}/api/role/update`,
+        `${baseUrl}/api/role/update/${editingRoleId}`,
         { body: encryptedPayload },
         {
           headers: { authorization: token },
@@ -134,8 +132,9 @@ const Rolemanagement = () => {
 
       const decrypted = await decryptText(response.data.body);
       const data = JSON.parse(decrypted);
+      console.log(data);
 
-      if (response.data.success) {
+      if (data) {
         toast.success("Role updated successfully");
         setEditingRoleId(null);
         fetchRoles(); // Refresh the list
@@ -191,14 +190,12 @@ const Rolemanagement = () => {
     setLoading(true);
     try {
       const payload = {
-        roleId,
-        status: currentStatus ? "delete" : "active", // Match API status values
+        roleStatus: currentStatus ? "inactive" : "active", // Match API status values
       };
-
       const encryptedPayload = await encryptText(payload);
 
       const response = await axios.put(
-        `${baseUrl}/api/role/update/67fe3d93305cca823b4c2489?author`,
+        `${baseUrl}/api/role/update/${roleId}`,
         { body: encryptedPayload },
         {
           headers: { authorization: token },
@@ -208,7 +205,7 @@ const Rolemanagement = () => {
       const decrypted = await decryptText(response.data.body);
       const data = JSON.parse(decrypted);
 
-      if (response.data.success) {
+      if (response) {
         toast.success(
           `Role ${!currentStatus ? "activated" : "deactivated"} successfully`
         );
@@ -360,28 +357,35 @@ const Rolemanagement = () => {
                       />
                       <span className="slider round"></span>
                     </label>
-                    <span className="status-text">
-                    </span>
+                    <span className="status-text"></span>
                   </td>
                   <td className="actions">
                     {editingRoleId === role.id ? (
                       <button
                         className="edit-icon"
-                        onClick={() => setEditingRoleId(null)}
+                        onClick={() => handleUpdateRole(role.id)}
+                        disabled={loading} // Optional: Disable while loading
                       >
                         ✅
                       </button>
                     ) : (
                       <button
                         className="edit-icon"
-                        onClick={() => setEditingRoleId(role.id)}
+                        onClick={() => {
+                          setEditingRoleId(role.id);
+                          setEditRoleData({
+                            name: role.name,
+                            description: role.description || "",
+                          });
+                        }}
                       >
                         <FiEdit2 />
                       </button>
                     )}
+
                     <button
                       className="delete-icon"
-                      onClick={()=>handleDeleteRole(role.id)}
+                      onClick={() => handleDeleteRole(role.id)}
                     >
                       <FiTrash2 />
                     </button>
