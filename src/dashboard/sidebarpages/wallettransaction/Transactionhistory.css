@@ -341,6 +341,81 @@
   font-style: italic;
 }
 
+/*___________ Main container csss for items-per-page selector */
+.tm-items-per-page {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+}
+
+.tm-items-per-page label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #555;
+  white-space: nowrap;
+}
+
+.tm-items-per-page select {
+  padding: 6px 12px;
+  padding-right: 28px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background-color: #fff;
+  background-position: right 8px center;
+  background-size: 16px;
+  font-size: 14px;
+  color: #111827;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  appearance: none;
+  min-width: 80px;
+}
+
+/* Hover state */
+.tm-items-per-page select:hover {
+  border-color: #9ca3af;
+}
+
+/* Focus state */
+.tm-items-per-page select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+/* Disabled state */
+.tm-items-per-page select:disabled {
+  background-color: #f3f4f6;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* Dark mode styles */
+.dark .tm-items-per-page label {
+  color: #d1d5db;
+}
+
+.dark .tm-items-per-page select {
+  background-color: #1f2937;
+  border-color: #4b5563;
+  color: #f9fafb;
+}
+
+.dark .tm-items-per-page select:hover {
+  border-color: #6b7280;
+}
+
+.dark .tm-items-per-page select:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+}
+
+.dark .tm-items-per-page select:disabled {
+  background-color: #374151;
+  color: #6b7280;
+}
+
 @media (min-width: 769px) {
   /* Ensure table is displayed normally on larger screens */
   .tm-table {
@@ -443,6 +518,15 @@
     gap: 1rem;
     align-items: center;
   }
+
+  .tm-table-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+  
+
   .tm-title {
     align-items: center;
   }
@@ -542,3 +626,6 @@
     justify-content: center;
   }
 }
+
+
+

@@ -68,13 +68,18 @@
   }
   
   .webhook-form-group {
-    margin-bottom: 15px;
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
   }
   
   .webhook-form-group label {
     display: block;
     font-weight: bold;
     margin-bottom: 5px;
+    color: #333;
+    font-size: 0.9rem;
   }
   
   .webhook-form-group input {
@@ -82,6 +87,29 @@
     padding: 8px 12px;
     border: 1px solid #ccc;
     border-radius: 5px;
+  }
+
+  .webhook-form-group select {
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    background-color: white;
+    transition: border-color 0.2s ease;
+  }
+  .webhook-form-group select:focus {
+    outline: none;
+    border-color: #4a90e2;
+    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+  }
+  .webhook-form-group select:disabled {
+    background-color: #f5f5f5;
+    color: #999;
+    cursor: not-allowed;
+  }
+  
+  .webhook-form-group select option {
+    padding: 0.5rem;
   }
   
   .webhook-form-actions {
@@ -203,6 +231,94 @@
     border: 1px solid #ccc;
     border-radius: 5px;
   }
+
+  /* Pagination styles */
+/* Pagination and items per page styles */
+.webhook-table-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  padding: 10px 0;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.webhook-items-per-page {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.webhook-items-per-page label {
+  font-size: 14px;
+  color: #555;
+}
+
+.webhook-items-per-page select {
+  padding: 6px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+}
+
+.webhook-pagination-info {
+  font-size: 14px;
+  color: #666;
+}
+
+.webhook-pagination {
+  display: flex;
+  gap: 8px;
+}
+
+.webhook-pagination-button {
+  padding: 6px 12px;
+  min-width: 36px;
+  border: 1px solid #ddd;
+  background-color: white;
+  color: #333;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.webhook-pagination-button:hover:not(:disabled) {
+  background-color: #f0f0f0;
+}
+
+.webhook-pagination-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.webhook-pagination-button.active {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+  font-weight: bold;
+}
+
+/* only this is pagination Responsive adjustments */
+@media (max-width: 768px) {
+  .webhook-table-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .webhook-items-per-page {
+    justify-content: center;
+  }
+  
+  .webhook-pagination-info {
+    text-align: center;
+  }
+  
+  .webhook-pagination {
+    justify-content: center;
+  }
+}
+
   
   /* RESPONSIVE BREAKPOINTS */
   
@@ -270,3 +386,4 @@
       font-size: 14px;
     }
   }
+  

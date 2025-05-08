@@ -34,6 +34,7 @@ const Rolemanagement = () => {
   // Fetch roles from API
   const fetchRoles = useCallback(async () => {
     setLoading(true);
+
     try {
       const res = await axios.get(`${baseUrl}/api/role/all`, {
         headers: { authorization: token },

@@ -227,16 +227,47 @@ body.darkMode .title {
   color: #c0392b;
 }
 
+/* _______pagination css______ */
+
 .table-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px;
-  background: #f8f9fa;
-  border-top: 1px solid #eee;
-  font-size: 14px;
+  padding: 10px;
+  margin-top: 10px;
 }
 
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.items-per-page {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.items-per-page select {
+  padding: 5px 8px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+.page-navigation {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.page-navigation button {
+  padding: 5px 10px;
+  border: 1px solid #ddd;
+  background: #f5f5f5;
+  border-radius: 4px;
+  cursor: pointer;
+}
 .entries-select {
   display: flex;
   align-items: center;
@@ -248,31 +279,29 @@ body.darkMode .title {
   border: 1px solid #ddd;
   border-radius: 4px;
 }
-
-.pagination button {
-  padding: 6px 12px;
-  margin: 0 3px;
+.page-navigation button {
+  padding: 5px 10px;
   border: 1px solid #ddd;
+  background: #f5f5f5;
   border-radius: 4px;
-  background: white;
   cursor: pointer;
-  transition: all 0.2s;
 }
 
-.pagination button:disabled {
-  color: #aaa;
+.page-navigation button:disabled {
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
-.pagination .active-page {
-  background-color: #3470b2;
-  color: white;
-  border-color: #3470b2;
+/* Dark mode styles */
+.dark .items-per-page select,
+.dark .page-navigation button {
+  background: #333;
+  color: #fff;
+  border-color: #555;
 }
 
-.pagination button:not(.active-page):not(:disabled):hover {
-  background-color: #f1f1f1;
-}
+
+
 
 /* Ipwhitelist.css */
 

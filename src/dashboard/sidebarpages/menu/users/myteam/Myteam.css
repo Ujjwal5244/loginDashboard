@@ -474,6 +474,30 @@
   color: #ef4444;
 }
 
+/* when user click edit icon css */
+.kyc-edit-input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.kyc-edit-select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+  font-size: 14px;
+}
+
+.kyc-edit-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
 /* No Data Row */
 .kyc-no-data-row {
   text-align: center;
@@ -724,7 +748,13 @@
     gap: 8px;
     margin-top: 12px;
   }
-
+  .kyc-verified-badge{
+    display: flex;
+    gap: 5px;
+  }
+  .verified-icon{
+    margin-top: 4px;
+  }
   /* Header adjustments */
   .kyc-page-header {
     display: flex;
@@ -844,3 +874,4 @@
     padding: 4px 8px;
   }
 }
+
