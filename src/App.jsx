@@ -13,7 +13,6 @@ import Webhooks from "./dashboard/sidebarpages/menu/devtool/webhooks/Webhooks";
 import Logs from "./dashboard/sidebarpages/menu/devtool/logs/Logs";
 import Allverification from "./dashboard/sidebarpages/menu/kycstudio/allverification/Allverification";
 import Kyctemplate from "./dashboard/sidebarpages/menu/kycstudio/kyctemplates/Kyctemplate";
-import SignAgreement from "./dashboard/sidebarpages/document/documentfile/SignAgreement";
 import Yourkyc from "./dashboard/sidebarpages/document/yourkyc/Yourkyc";
 import Completed from "./dashboard/sidebarpages/document/completed/Completed";
 import Setting from "./dashboard/sidebarpages/setting/Setting";
@@ -33,6 +32,9 @@ import Compose from "./dashboard/sidebarpages/document/email/compose/Compose";
 import MobileMenu from "./dashboard/sidebarpages/footer/mobilemenu/Mobilemenu";
 import { GrToast } from "react-icons/gr";
 import { ToastContainer } from "react-toastify";
+import SignedAgreement from "./dashboard/sidebarpages/document/documentfile/SignedAgreement";
+import SignAgreement from "./dashboard/headerpages/myprofile/SignAgreement";
+import PdfSign from "./dashboard/headerpages/myprofile/PdfSign";
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -78,7 +80,7 @@ function App() {
             <Route path="allverification" element={<Allverification />} />
             <Route path="kyctemplates" element={<Kyctemplate />} />
             <Route path="transactionhistory" element={<Transactionhistory />} />
-            <Route path="signed-agreement" element={<SignAgreement />} />
+            <Route path="signed-agreement" element={<SignedAgreement />} />
             <Route path="yourkyc" element={<Yourkyc />} />
             {/* ---------------------all email pagese routes--------------------------- */}
             <Route
@@ -101,6 +103,8 @@ function App() {
 
             <Route path="myprofile" element={<Myprofile />} />
             <Route path="verification" element={<Verification />} />
+            <Route path="sign-agreement" element={<SignAgreement />} />
+            <Route path="pdf-sign" element={<PdfSign />} />
             <Route path="kycstatus" element={<Kycstatus />} />
             <Route path="mobilemenu" element={<MobileMenu />} />
           </Route>

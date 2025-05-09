@@ -1,72 +1,218 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import "./Verification.css";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { baseUrl, decryptText } from "../../../encryptDecrypt";
+import { toast } from "react-toastify";
 
 const Verification = () => {
-  const [step, setStep] = useState("aadhaar"); // 'aadhaar', 'pan', 'bank'
-  
+  const navigate = useNavigate();
+  const [step, setStep] = useState("aadhaar");
+  const [loading, setLoading] = useState(false);
+  const token = localStorage.getItem("userToken");
+
   // Aadhaar state
   const [aadhaar, setAadhaar] = useState("");
   const [aadhaarTransactionId, setAadhaarTransactionId] = useState("");
   const [aadhaarOtp, setAadhaarOtp] = useState("");
   const [isAadhaarVerified, setIsAadhaarVerified] = useState(false);
+  const [isAadhaarOtpSent, setIsAadhaarOtpSent] = useState(false);
 
   // PAN state
   const [pan, setPan] = useState("");
   const [panTransactionId, setPanTransactionId] = useState("");
-  const [panOtp, setPanOtp] = useState("");
   const [isPanVerified, setIsPanVerified] = useState(false);
 
   // Bank state
   const [bankAccount, setBankAccount] = useState("");
   const [ifsc, setIfsc] = useState("");
-  const [bankOtp, setBankOtp] = useState("");
   const [bankTransactionId, setBankTransactionId] = useState("");
   const [isBankVerified, setIsBankVerified] = useState(false);
 
-  // Aadhaar functions
-  const handleSendAadhaarOtp = () => {
-    setAadhaarTransactionId("TXN" + Math.floor(Math.random() * 100000));
-    alert("OTP sent to mobile linked with Aadhaar");
-  };
 
-  const handleVerifyAadhaarOtp = () => {
-    if (aadhaarOtp === "123456") {
+ // Aadhaar functions (no makeApiCall)
+const handleSendAadhaarOtp = useCallback(async () => {
+  // 1. validation
+  if (aadhaar.length !== 12 || aadhaarTransactionId.trim().length < 6) {
+    toast.error("Please enter valid Aadhaar and Transaction ID");
+    return;
+  }
+
+  setLoading(true);
+  try {
+    // 2. build payload (add your location here)
+    const payload = {
+      aadharNumber: aadhaar,
+      txnId: aadhaarTransactionId,
+      location: "28.6139,77.2090"  // static, or replace with your geolocation logic
+    };
+
+    // 3. raw axios call
+    const response = await axios.post(
+      `${baseUrl}/api/user/aadhar/validate`,
+      payload,
+      { headers: { authorization: token } }
+    );
+
+    // 5. check & toast
+    if (response) {
+      toast.success("OTP sent to mobile linked with Aadhaar");
+      setIsAadhaarOtpSent(true);
+      return response;
+    } else {
+      throw new Error(data.message || "OTP send failed");
+    }
+
+  } catch (error) {
+    // handle errors
+    toast.error(
+      error.response?.data?.message ||
+      error.message ||
+      "Error processing Aadhaar OTP request"
+    );
+    console.error("Aadhaar OTP send error:", error);
+    throw error;
+  } finally {
+    setLoading(false);
+  }
+}, [aadhaar, aadhaarTransactionId, baseUrl, token, decryptText]);
+
+
+const handleVerifyAadhaarOtp = useCallback(async () => {
+  // 1. Validate OTP length
+  if (aadhaarOtp.length !== 6) {
+    toast.error("Please enter a valid 6-digit OTP");
+    return;
+  }
+
+  setLoading(true);
+  try {
+    // 2. Build payload (you can uncomment aadharNumber if your API needs it)
+    const payload = {
+      txnId: aadhaarTransactionId,
+      otp: aadhaarOtp
+    };
+
+    // 3. Raw axios POST
+    const response = await axios.post(
+      `${baseUrl}/api/user/aadhar/otp-submit`,
+      payload,
+      { headers: { authorization: token } }
+    );
+
+    // 5. Check status and toast
+    if (response) {
+      toast.success("Aadhaar verified successfully");
       setIsAadhaarVerified(true);
       setStep("pan");
+      return response;
     } else {
-      alert("Invalid OTP");
+      throw new Error(response.message || "Verification failed");
     }
-  };
 
-  // PAN functions
-  const handleSendPanOtp = () => {
-    setPanTransactionId("PTXN" + Math.floor(Math.random() * 100000));
-    alert("OTP sent to mobile/email linked with PAN");
-  };
+  } catch (error) {
+    toast.error(
+      error.response?.message ||
+      error.message ||
+      "Error verifying Aadhaar OTP"
+    );
+    console.error("Aadhaar verification error:", error);
+    throw error;
+  } finally {
+    setLoading(false);
+  }
+}, [
+  aadhaarOtp,
+  aadhaarTransactionId,
+  baseUrl,
+  token,
+  decryptText,
+  setIsAadhaarVerified,
+  setStep
+]);
 
-  const handleVerifyPanOtp = () => {
-    if (panOtp === "789012") {
+  // PAN verification
+const handleVerifyPan = useCallback(async () => {
+  if (pan.length !== 10 || panTransactionId.trim().length < 6) {
+    toast.error("Please enter valid PAN and Transaction ID");
+    return;
+  }
+
+  setLoading(true);
+  try {
+    const payload = {
+      panNumber: pan,
+      transactionId: panTransactionId
+    };
+
+    const response = await axios.post(
+      `${baseUrl}/api/user/validate-pan`,
+      payload,
+      { headers: { authorization: token } }
+    );
+
+    if (response) {
+      toast.success("PAN verified successfully");
       setIsPanVerified(true);
       setStep("bank");
+      return response;
     } else {
-      alert("Invalid PAN OTP");
+      throw new Error(response.message || "PAN verification failed");
     }
-  };
+  } catch (error) {
+    toast.error(
+      error.response?.data?.message ||
+      error.message ||
+      "Error verifying PAN"
+    );
+    console.error("PAN verification error:", error);
+    throw error;
+  } finally {
+    setLoading(false);
+  }
+}, [pan, panTransactionId, token]);
 
-  // Bank functions
-  const handleSendBankOtp = () => {
-    setBankTransactionId("BTXN" + Math.floor(Math.random() * 100000));
-    alert("Bank OTP sent");
-  };
+// Bank verification
+const handleVerifyBank = useCallback(async () => {
+  if (!bankAccount || !ifsc || bankTransactionId.trim().length < 6) {
+    toast.error("Please enter all bank details correctly");
+    return;
+  }
 
-  const handleVerifyBankOtp = () => {
-    if (bankOtp === "654321") {
+  setLoading(true);
+  try {
+    const payload = {
+      accountNumber: bankAccount,
+      ifscCode: ifsc,
+      txnId: bankTransactionId
+    };
+
+    const response = await axios.post(
+      `${baseUrl}/api/user/validate-bank`,
+      payload,
+      { headers: { authorization: token } }
+    );
+
+    if (response) {
+      toast.success("Bank details verified successfully");
       setIsBankVerified(true);
-      alert("All verifications completed!");
+      navigate("/Maindashboard/sign-agreement");
+      return response;
     } else {
-      alert("Invalid Bank OTP");
+      throw new Error(response.message || "Bank verification failed");
     }
-  };
+  } catch (error) {
+    toast.error(
+      error.response?.data?.message ||
+      error.message ||
+      "Error verifying bank details"
+    );
+    console.error("Bank verification error:", error);
+    throw error;
+  } finally {
+    setLoading(false);
+  }
+}, [bankAccount, ifsc, bankTransactionId, navigate, token]);
 
   return (
     <div className="verification-container">
@@ -79,156 +225,138 @@ const Verification = () => {
       <div className="verification-stepper">
         <div className={`stepper-step ${step === "aadhaar" ? "active" : ""} ${isAadhaarVerified ? "completed" : ""}`}>
           <div className="step-number">1</div>
-          <div className="step-label">Aadhaar</div>
         </div>
         <div className={`stepper-line ${step === "pan" || step === "bank" ? "active" : ""}`}></div>
         <div className={`stepper-step ${step === "pan" ? "active" : ""} ${isPanVerified ? "completed" : ""}`}>
           <div className="step-number">2</div>
-          <div className="step-label">PAN</div>
         </div>
         <div className={`stepper-line ${step === "bank" ? "active" : ""}`}></div>
         <div className={`stepper-step ${step === "bank" ? "active" : ""} ${isBankVerified ? "completed" : ""}`}>
           <div className="step-number">3</div>
-          <div className="step-label">Bank</div>
         </div>
       </div>
 
       {/* Form Content */}
       <div className="verification-content">
-        {/* Aadhaar Step */}
         {step === "aadhaar" && (
           <div className="verification-section">
             <h3>Aadhaar Verification</h3>
-            <p className="instruction-text">Please enter your 12-digit Aadhaar number</p>
-            <div className="input-group">
-              <input
-                type="text"
-                placeholder="Aadhaar Number"
-                value={aadhaar}
-                onChange={(e) => setAadhaar(e.target.value)}
-                maxLength="12"
-              />
-              <button 
+            <p className="instruction-text">Enter your Aadhaar number and Transaction ID to receive OTP.</p>
+            <input
+              type="text"
+              placeholder="Aadhaar Number"
+              value={aadhaar}
+              onChange={(e) => {
+                setAadhaar(e.target.value);
+                setIsAadhaarOtpSent(false);
+              }}
+              maxLength="12"
+              disabled={loading}
+            />
+            <input
+              type="text"
+              placeholder="Transaction ID"
+              value={aadhaarTransactionId}
+              onChange={(e) => {
+                setAadhaarTransactionId(e.target.value);
+                setIsAadhaarOtpSent(false);
+              }}
+              disabled={loading}
+            />
+            {!isAadhaarOtpSent && (
+              <button
                 className="primary-btn"
                 onClick={handleSendAadhaarOtp}
-                disabled={aadhaar.length !== 12}
+                disabled={aadhaar.length !== 12 || aadhaarTransactionId.trim().length < 6 || loading}
               >
-                Send OTP
+                {loading ? "Sending..." : "Send OTP"}
               </button>
-            </div>
-            
-            {aadhaarTransactionId && (
-              <div className="otp-group">
+            )}
+
+            {isAadhaarOtpSent && (
+              <>
                 <p className="transaction-id">Transaction ID: {aadhaarTransactionId}</p>
                 <input
                   type="text"
-                  placeholder="Enter 6-digit OTP"
+                  placeholder="Enter OTP"
                   value={aadhaarOtp}
                   onChange={(e) => setAadhaarOtp(e.target.value)}
                   maxLength="6"
+                  disabled={loading}
                 />
-                <button 
+                <button
                   className="primary-btn"
                   onClick={handleVerifyAadhaarOtp}
-                  disabled={aadhaarOtp.length !== 6}
+                  disabled={aadhaarOtp.length !== 6 || loading}
                 >
-                  Verify OTP
+                  {loading ? "Verifying..." : "Verify OTP"}
                 </button>
-              </div>
+              </>
             )}
           </div>
         )}
 
-        {/* PAN Step */}
         {step === "pan" && (
           <div className="verification-section">
             <h3>PAN Verification</h3>
-            <p className="instruction-text">Please enter your 10-digit PAN number</p>
-            <div className="input-group">
-              <input
-                type="text"
-                placeholder="PAN Number (e.g., AAAAA0000A)"
-                value={pan}
-                onChange={(e) => setPan(e.target.value.toUpperCase())}
-                maxLength="10"
-              />
-              <button 
-                className="primary-btn"
-                onClick={handleSendPanOtp}
-                disabled={pan.length !== 10}
-              >
-                Send OTP
-              </button>
-            </div>
-            
-            {panTransactionId && (
-              <div className="otp-group">
-                <p className="transaction-id">Transaction ID: {panTransactionId}</p>
-                <input
-                  type="text"
-                  placeholder="Enter 6-digit OTP"
-                  value={panOtp}
-                  onChange={(e) => setPanOtp(e.target.value)}
-                  maxLength="6"
-                />
-                <button 
-                  className="primary-btn"
-                  onClick={handleVerifyPanOtp}
-                  disabled={panOtp.length !== 6}
-                >
-                  Verify PAN
-                </button>
-              </div>
-            )}
+            <p className="instruction-text">Enter your PAN number and Transaction ID</p>
+            <input
+              type="text"
+              placeholder="PAN Number"
+              value={pan}
+              onChange={(e) => setPan(e.target.value.toUpperCase())}
+              maxLength="10"
+              disabled={loading}
+            />
+            <input
+              type="text"
+              placeholder="Transaction ID"
+              value={panTransactionId}
+              onChange={(e) => setPanTransactionId(e.target.value)}
+              disabled={loading}
+            />
+            <button
+              className="primary-btn"
+              onClick={handleVerifyPan}
+              disabled={pan.length !== 10 || panTransactionId.trim().length < 6 || loading}
+            >
+              {loading ? "Verifying..." : "Verify PAN"}
+            </button>
           </div>
         )}
 
-        {/* Bank Step */}
         {step === "bank" && (
           <div className="verification-section">
-            <h3>Bank Details Verification</h3>
-            <p className="instruction-text">Please enter your bank account details</p>
-            <div className="bank-inputs">
-              <input
-                type="text"
-                placeholder="Account Number"
-                value={bankAccount}
-                onChange={(e) => setBankAccount(e.target.value)}
-              />
-              <input
-                type="text"
-                placeholder="IFSC Code"
-                value={ifsc}
-                onChange={(e) => setIfsc(e.target.value.toUpperCase())}
-              />
-              <button 
-                className="primary-btn"
-                onClick={handleSendBankOtp}
-                disabled={!bankAccount || !ifsc}
-              >
-                Send OTP
-              </button>
-            </div>
-            
-            {bankTransactionId && (
-              <div className="otp-group">
-                <p className="transaction-id">Transaction ID: {bankTransactionId}</p>
-                <input
-                  type="text"
-                  placeholder="Enter 6-digit OTP"
-                  value={bankOtp}
-                  onChange={(e) => setBankOtp(e.target.value)}
-                  maxLength="6"
-                />
-                <button 
-                  className="primary-btn"
-                  onClick={handleVerifyBankOtp}
-                  disabled={bankOtp.length !== 6}
-                >
-                  Verify Bank
-                </button>
-              </div>
-            )}
+            <h3>Bank Verification</h3>
+            <p className="instruction-text">Enter your bank details and Transaction ID</p>
+            <input
+              type="text"
+              placeholder="Account Number"
+              value={bankAccount}
+              onChange={(e) => setBankAccount(e.target.value)}
+              disabled={loading}
+            />
+            <input
+              type="text"
+              placeholder="IFSC Code"
+              value={ifsc}
+              onChange={(e) => setIfsc(e.target.value.toUpperCase())}
+              disabled={loading}
+            />
+            <input
+              type="text"
+              placeholder="Transaction ID"
+              value={bankTransactionId}
+              onChange={(e) => setBankTransactionId(e.target.value)}
+              disabled={loading}
+            />
+            <button
+              className="primary-btn"
+              onClick={handleVerifyBank}
+              disabled={!bankAccount || !ifsc || bankTransactionId.trim().length < 6 || loading}
+            >
+              {loading ? "Verifying..." : "Verify Bank Details"}
+            </button>
           </div>
         )}
       </div>

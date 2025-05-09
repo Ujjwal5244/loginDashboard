@@ -1,0 +1,204 @@
+/* Main container styles */
+.sign-agreement-container {
+  font-family: 'Arial', sans-serif;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Header section styles */
+.sign-agreement-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.sign-header h1 {
+  font-size: 28px;
+  margin: 0;
+  color: #2c3e50;
+}
+
+.sign-header p {
+  margin: 5px 0 0;
+  color: #7f8c8d;
+  font-size: 16px;
+}
+
+/* Download button styles */
+.download-btn {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.download-btn:hover {
+  background-color: #2980b9;
+}
+
+.download-btn:disabled {
+  background-color: #95a5a6;
+  cursor: not-allowed;
+}
+
+/* PDF preview section styles */
+.pdf-preview {
+  margin: 30px 0;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  min-height: 600px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f9f9f9;
+  flex-grow: 1;
+}
+
+.pdf-preview iframe {
+  border: none;
+}
+
+.pdf-preview p {
+  color: #7f8c8d;
+  font-size: 18px;
+}
+
+/* Terms and conditions styles - MOVED TO BOTTOM */
+.terms-container {
+  margin-top: auto; 
+  padding: 20px;
+  max-width: 1200px;
+  height: 115px;
+  background-color: #f8f9fa;
+  border-top: 1px solid #e0e0e0;
+}
+
+.terms-content {
+  border-radius: 8px;
+  max-width: 100%;
+}
+
+.terms-content h2 {
+  margin-top: -10px;
+  color: #2c3e50;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+.terms-checkbox{
+  /* background-color: #27ae60; */
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 0;
+  display: flex;
+  align-items: center;
+}
+
+/* .sign-terms-checkbox {
+  display: flex;
+} */
+
+.terms-checkbox input {
+  margin-right: 10px;
+  width: 18px;
+  height: 18px;
+}
+
+.terms-checkbox label {
+  font-size: 16px;
+  color: #34495e;
+}
+
+/* Terms buttons styles */
+.terms-buttons {
+  display: flex;
+  gap: 15px;
+  margin-top: -10px;
+  margin-right: 90px;
+}
+
+.decline-btn, .accept-btn {
+  padding: 10px 25px;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.decline-btn {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+}
+
+.decline-btn:hover {
+  background-color: #c0392b;
+}
+
+.accept-btn {
+  background-color: #2ecc71;
+  color: white;
+  border: none;
+}
+
+.accept-btn:hover {
+  background-color: #27ae60;
+}
+
+.accept-btn:disabled {
+  background-color: #95a5a6;
+  cursor: not-allowed;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .pdf-preview {
+    min-height: 400px;
+  }
+  
+  .terms-buttons {
+    justify-content: center;
+    width: 100%;
+  }
+  
+  .terms-checkbox {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .download-btn, .decline-btn, .accept-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .sign-agreement-container {
+    padding: 15px;
+  }
+  
+  .pdf-preview {
+    min-height: 300px;
+    margin: 20px 0;
+  }
+  
+  .terms-container {
+    padding: 20px 15px;
+  }
+}
