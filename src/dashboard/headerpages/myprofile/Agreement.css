@@ -1,6 +1,6 @@
 /* Main container styles */
 .sign-agreement-container {
-  font-family: 'Arial', sans-serif;
+  font-family: "Arial", sans-serif;
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
@@ -13,7 +13,7 @@
 /* Header section styles */
 .sign-agreement-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   margin-bottom: 30px;
   padding-bottom: 20px;
@@ -24,36 +24,14 @@
   font-size: 28px;
   margin: 0;
   color: #2c3e50;
+  text-align: center;
 }
 
 .sign-header p {
   margin: 5px 0 0;
   color: #7f8c8d;
   font-size: 16px;
-}
-
-/* Download button styles */
-.download-btn {
-  background-color: #3498db;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.3s;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.download-btn:hover {
-  background-color: #2980b9;
-}
-
-.download-btn:disabled {
-  background-color: #95a5a6;
-  cursor: not-allowed;
+  text-align: center;
 }
 
 /* PDF preview section styles */
@@ -82,7 +60,7 @@
 
 /* Terms and conditions styles - MOVED TO BOTTOM */
 .terms-container {
-  margin-top: auto; 
+  margin-top: auto;
   padding: 20px;
   max-width: 1200px;
   height: 115px;
@@ -101,7 +79,7 @@
   border-bottom: 1px solid #eee;
   padding-bottom: 10px;
 }
-.terms-checkbox{
+.terms-checkbox {
   /* background-color: #27ae60; */
   display: flex;
   justify-content: space-between;
@@ -110,9 +88,14 @@
   align-items: center;
 }
 
-/* .sign-terms-checkbox {
+.sign-terms-checkbox {
   display: flex;
-} */
+  align-items: flex-start; 
+}
+
+.checkbox-margin-top {
+  margin-top: 3px;
+}
 
 .terms-checkbox input {
   margin-right: 10px;
@@ -133,7 +116,8 @@
   margin-right: 90px;
 }
 
-.decline-btn, .accept-btn {
+.decline-btn,
+.accept-btn {
   padding: 10px 25px;
   border-radius: 5px;
   font-size: 16px;
@@ -171,20 +155,21 @@
   .pdf-preview {
     min-height: 400px;
   }
-  
+
   .terms-buttons {
     justify-content: center;
     width: 100%;
+    margin-top: 20px;
   }
-  
+
   .terms-checkbox {
     flex-direction: column;
     align-items: flex-start;
   }
-  
-  .download-btn, .decline-btn, .accept-btn {
-    width: 100%;
-    justify-content: center;
+
+  .terms-container {
+    padding: 20px 15px;
+    height: auto;
   }
 }
 
@@ -192,13 +177,14 @@
   .sign-agreement-container {
     padding: 15px;
   }
-  
+
   .pdf-preview {
     min-height: 300px;
     margin: 20px 0;
   }
-  
+
   .terms-container {
     padding: 20px 15px;
+    height: auto;
   }
 }

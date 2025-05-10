@@ -1,69 +1,59 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './SignAgreement.css';
-import { baseUrl } from '../../../encryptDecrypt';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import "./Agreement.css";
+import { baseUrl } from "../../../encryptDecrypt";
 
-const SignAgreement = () => {
+const Agreement = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem("userToken");
 
-  const [pdfUrl, setPdfUrl] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [pdfUrl, setPdfUrl] = useState("");
+  const [loading, setLoading] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
-  const [showTerms, setShowTerms] = useState(true);
 
   useEffect(() => {
-    if (!showTerms) {
-      const fetchPdf = async () => {
-        try {
-          const response = await fetch("/api/user/preview/kill", {
-            headers: {
-              authorization: `Bearer ${token}`,
-            },
-          });
+    const fetchPdf = async () => {
+      setLoading(true);
 
-          if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message || 'Failed to fetch PDF');
-          }
+      try {
+        const response = await fetch(`${baseUrl}/api/user/preview/kill`, {
+          headers: {
+            authorization: token,
+            "Content-Type": "application/json",
+          },
+        });
 
-          const data = await response.json();
-          if (data.url) {
-            setPdfUrl(url);
-          } else {
-            throw new Error('No PDF URL found in response');
-          }
-        } catch (error) {
-          console.error('Failed to fetch PDF:', error);
-        } finally {
-          setLoading(false);
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || "Failed to fetch PDF");
         }
-      };
 
-      fetchPdf();
-    }
+        const data = await response.json();
+        if (data.url) {
+          setPdfUrl(data.url);
+        } else {
+          throw new Error("No PDF URL found in response");
+        }
+      } catch (error) {
+        console.error("Failed to fetch PDF:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPdf();
 
     return () => {
       if (pdfUrl) {
         URL.revokeObjectURL(pdfUrl);
       }
     };
-  }, [token, showTerms]);
-
-  const handleDownload = () => {
-    if (!pdfUrl) return;
-    const link = document.createElement('a');
-    link.href = pdfUrl;
-    link.download = 'Signed-Agreement.pdf';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
+  }, [token]);
 
   const handleAcceptTerms = () => {
     if (acceptedTerms) {
       setShowTerms(false);
-      navigate('/Maindashboard/pdf-sign');
+      navigate("/Maindashboard/pdf-sign");
     } else {
       alert("Please accept the terms and conditions to proceed.");
     }
@@ -78,16 +68,9 @@ const SignAgreement = () => {
     <div className="sign-agreement-container">
       <div className="sign-agreement-header">
         <div className="sign-header">
-          <h1>Your Signed Agreement</h1>
+          <h1>Your Agreement Document</h1>
           <p>Preview and download your document</p>
         </div>
-        <button
-          className="download-btn"
-          onClick={handleDownload}
-          disabled={loading || !pdfUrl}
-        >
-          {loading ? 'Generating PDF...' : '⬇ Download PDF'}
-        </button>
       </div>
 
       <div className="pdf-preview">
@@ -99,7 +82,7 @@ const SignAgreement = () => {
             height="600px"
           />
         ) : (
-          <p>{loading ? 'Loading PDF preview...' : 'No PDF available.'}</p>
+          <p>{loading ? "Loading PDF preview..." : "No PDF available."}</p>
         )}
       </div>
       <div className="terms-container">
@@ -107,10 +90,11 @@ const SignAgreement = () => {
           <h2>Terms and Conditions</h2>
         </div>
         <div className="terms-checkbox">
-          <div className='sign-terms-checkbox'>
+          <div className="sign-terms-checkbox">
             <input
               type="checkbox"
               id="acceptTerms"
+              className="checkbox-margin-top"
               checked={acceptedTerms}
               onChange={(e) => setAcceptedTerms(e.target.checked)}
             />
@@ -129,11 +113,11 @@ const SignAgreement = () => {
             >
               Accept & Continue
             </button>
-          </div>  
-        </div>      
+          </div>
+        </div>
       </div>
     </div>
   );
 };
 
-export default SignAgreement;
+export default Agreement;

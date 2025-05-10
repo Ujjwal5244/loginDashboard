@@ -33,8 +33,8 @@ import MobileMenu from "./dashboard/sidebarpages/footer/mobilemenu/Mobilemenu";
 import { GrToast } from "react-icons/gr";
 import { ToastContainer } from "react-toastify";
 import SignedAgreement from "./dashboard/sidebarpages/document/documentfile/SignedAgreement";
-import SignAgreement from "./dashboard/headerpages/myprofile/SignAgreement";
 import PdfSign from "./dashboard/headerpages/myprofile/PdfSign";
+import Agreement from "./dashboard/headerpages/myprofile/Agreement";
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -103,7 +103,7 @@ function App() {
 
             <Route path="myprofile" element={<Myprofile />} />
             <Route path="verification" element={<Verification />} />
-            <Route path="sign-agreement" element={<SignAgreement />} />
+            <Route path="sign-agreement" element={<Agreement />} />
             <Route path="pdf-sign" element={<PdfSign />} />
             <Route path="kycstatus" element={<Kycstatus />} />
             <Route path="mobilemenu" element={<MobileMenu />} />
