@@ -45,43 +45,109 @@
 }
 
 /* Buttons */
-button {
-  background-color: #3498db;
+/* Base button styles */
+.pdf-sign-button {
+  background-color: #2980b9;
   color: white;
   border: none;
-  padding: 0.8rem 1.5rem;
-  border-radius: 6px;
-  font-size: 1rem;
+  padding: 10px 20px;
+  margin: 8px;
+  border-radius: 4px;
   cursor: pointer;
+  font-size: 16px;
   transition: all 0.3s ease;
-  font-weight: 500;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-button:hover {
-  background-color: #2980b9;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+.pdf-sign-button:hover {
+  background-color: #3498db;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
-button:disabled {
-  background-color: #bdc3c7;
+.pdf-sign-button:active {
+  background-color: #2472a4;
+  transform: translateY(0);
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+}
+
+.pdf-sign-button:disabled {
+  background-color: #95a5a6;
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
 }
 
-/* Back button */
-.signature-container > button {
+/* Specific button styles */
+.pdf-sign-back-button {
   background-color: #7f8c8d;
-  margin-bottom: 1.5rem;
+  margin-bottom: 20px;
 }
 
-.signature-container > button:hover {
+.pdf-sign-back-button:hover {
   background-color: #95a5a6;
+}
+
+.pdf-sign-proceed-button {
+  background-color: #2980b9;
+  padding: 12px 25px;
+}
+
+.pdf-sign-clear-button {
+  background-color: #e74c3c;
+}
+
+.pdf-sign-clear-button:hover {
+  background-color: #c0392b;
+}
+
+.pdf-sign-otp-button,
+.pdf-sign-verify-button {
+  background-color: #27ae60;
+}
+
+.pdf-sign-otp-button:hover,
+.pdf-sign-verify-button:hover {
+  background-color: #2ecc71;
+}
+
+.pdf-sign-submit-button {
+  background-color: #2980b9;
+  padding: 12px 30px;
+  font-size: 18px;
+  margin-top: 20px;
+}
+
+/* Button container styles */
+.signature-methods {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.canvas-controls {
+  margin-top: 15px;
+}
+
+.submit-section {
+  text-align: center;
+  margin-top: 25px;
+}
+
+.mobile-input,
+.otp-input {
+  display: flex;
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.mobile-input input,
+.otp-input input {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
 }
 
 /* Method-specific sections */

@@ -11,8 +11,6 @@ import Myteam from "./dashboard/sidebarpages/menu/users/myteam/Myteam";
 import Ipwhitelist from "./dashboard/sidebarpages/menu/devtool/ipwhitelist/Ipwhitelist";
 import Webhooks from "./dashboard/sidebarpages/menu/devtool/webhooks/Webhooks";
 import Logs from "./dashboard/sidebarpages/menu/devtool/logs/Logs";
-import Allverification from "./dashboard/sidebarpages/menu/kycstudio/allverification/Allverification";
-import Kyctemplate from "./dashboard/sidebarpages/menu/kycstudio/kyctemplates/Kyctemplate";
 import Yourkyc from "./dashboard/sidebarpages/document/yourkyc/Yourkyc";
 import Completed from "./dashboard/sidebarpages/document/completed/Completed";
 import Setting from "./dashboard/sidebarpages/setting/Setting";
@@ -35,6 +33,9 @@ import { ToastContainer } from "react-toastify";
 import SignedAgreement from "./dashboard/sidebarpages/document/documentfile/SignedAgreement";
 import PdfSign from "./dashboard/headerpages/myprofile/PdfSign";
 import Agreement from "./dashboard/headerpages/myprofile/Agreement";
+import KycStudio from "./dashboard/sidebarpages/menu/kycstudio/KycStudio";
+import Createfile from "./dashboard/headerpages/createdocumentpage/Createfile";
+import Requestfile from "./dashboard/headerpages/createdocumentpage/request/Requestfile";
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -51,7 +52,7 @@ function App() {
 
   return (
     <Router>
-      <ToastContainer/>
+      <ToastContainer />
       <div className={`app ${darkMode ? "dark-mode" : ""}`}>
         <Routes>
           <Route path="/" element={<Login />} />
@@ -71,14 +72,20 @@ function App() {
             <Route index element={<Home />} />
             <Route path="home" element={<Home />} />
             <Route path="analytics" element={<Analytics />} />
-            <Route path="role-management" element={<Rolemanagement />} />
-            <Route path="my-team" element={<Myteam />} />
+            <Route
+              path="role-management"
+              element={<Rolemanagement darkMode={darkMode} />}
+            />
+            <Route path="my-team" element={<Myteam darkMode={darkMode} />} />
             <Route path="ip-whitelist" element={<Ipwhitelist />} />
             <Route path="webhooks" element={<Webhooks />} />
             <Route path="logs" element={<Logs />} />
             <Route path="api-credential" element={<Apicredential />} />
-            <Route path="allverification" element={<Allverification />} />
-            <Route path="kyctemplates" element={<Kyctemplate />} />
+            <Route
+              path="kycstudio"
+              element={<KycStudio darkMode={darkMode} />}
+            />
+
             <Route path="transactionhistory" element={<Transactionhistory />} />
             <Route path="signed-agreement" element={<SignedAgreement />} />
             <Route path="yourkyc" element={<Yourkyc />} />
@@ -107,6 +114,9 @@ function App() {
             <Route path="pdf-sign" element={<PdfSign />} />
             <Route path="kycstatus" element={<Kycstatus />} />
             <Route path="mobilemenu" element={<MobileMenu />} />
+            {/* ---------------------create header pagese routes--------------------------- */}
+            <Route path="createfile" element={<Createfile />} />
+            <Route path="requestfile" element={<Requestfile />} />
           </Route>
         </Routes>
       </div>

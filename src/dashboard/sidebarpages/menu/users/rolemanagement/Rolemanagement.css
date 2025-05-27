@@ -7,6 +7,7 @@
     BlinkMacSystemFont,
     sans-serif;
   padding: 1rem;
+  /* background-color: #3470b2; */
 }
 
 /* Default styles for 800px and above (row layout) */
@@ -17,11 +18,12 @@
   align-items: center;
   background: white;
   border-radius: 12px;
-  margin-bottom: 3.5rem;
+  margin-bottom: 1.5rem;
+  /* padding: 1rem; */
   gap: 1rem;
 }
 
-.rolemanagement-container1-left h1 {
+/* .rolemanagement-container1-left h1 {
   font-size: 1.5rem;
   font-weight: 700;
   color: #111827;
@@ -37,12 +39,13 @@
   font-weight: 400;
   letter-spacing: 0.01em;
   line-height: 1.5;
-}
+} */
 
 .rolemanagement-container1-right {
   display: flex;
-  flex-direction: row;
   align-items: center;
+  width: 100%;
+  justify-content: space-between;
   gap: 1.5rem;
 }
 
@@ -50,17 +53,18 @@
   position: relative;
   display: flex;
   align-items: center;
+  justify-content: center;
 }
 
-.search-icon {
+.Rolemanagement-search-icon {
   position: absolute;
   left: 14px;
   color: #9ca3af;
   width: 18px;
   height: 18px;
+  margin-top: -15px;
 }
-
-.rolemanagement-container1-right-search input {
+.rolemanagement-container1-right-search-input {
   padding: 0.75rem 1.5rem 0.75rem 2.5rem;
   border: 1px solid #e5e7eb;
   border-radius: 8px;
@@ -73,7 +77,7 @@
   font-weight: 400;
 }
 
-.rolemanagement-container1-right-search input:focus {
+.rolemanagement-container1-right-search-input:focus {
   outline: none;
   border-color: #3b82f6;
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
@@ -81,14 +85,13 @@
   width: 250px;
 }
 
-.rolemanagement-container1-right-search input::placeholder {
+.rolemanagement-container1-right-search-input::placeholder {
   color: #9ca3af;
   font-weight: 400;
 }
 
 .rolemanagement-right-add-button {
-  display: flex;
-}
+  display: flex;}
 
 .rolemanagement-container1-right-add-button {
   background-color: #3470b2;
@@ -106,7 +109,7 @@
   letter-spacing: 0.01em;
   width: 140px;
   height: 46px;
-  margin-top: -5px;
+  margin-top: -20px;
 }
 
 .rolemanagement-container1-right-add-button:hover {
@@ -247,7 +250,7 @@ input:checked + .slider:before {
 }
 
 /* Table Footer */
-.table-footer {
+.Rolemanagement-table-footer-pagination-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -258,7 +261,7 @@ input:checked + .slider:before {
   gap: 1rem;
 }
 
-.rows-per-page {
+.Rolemanagement-table-footer-pagination-rows-per-page {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -273,29 +276,30 @@ input:checked + .slider:before {
   transition: all 0.2s;
 }
 
-.rows-per-page-select:hover {
+.Rolemanagement-pagination-rows-per-page-select:hover {
   border-color: #9ca3af;
 }
-.showing-entries {
+.Rolemanagemen-table-footer-pagination-showing-entries {
   margin: 0 1rem;
 }
 
-.rows-per-page-select:focus {
+.Rolemanagement-pagination-rows-per-page-select:focus {
   outline: none;
   border-color: #3b82f6;
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
-.pagination {
+.Rolemanagement-table-footer-pagination {
   display: flex;
   align-items: center;
   gap: 0.25rem;
 }
 
-.pagination button {
+.Rolemanagement-table-footer-pagination-button {
   padding: 0.5rem 0.75rem;
   border: 1px solid #e5e7eb;
   background: white;
+  color: #6b7280;
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s;
@@ -306,18 +310,19 @@ input:checked + .slider:before {
   height: 2.25rem;
 }
 
-.pagination button:hover:not(:disabled) {
-  background: #f3f4f6;
+.Rolemanagement-table-footer-pagination-button:hover:not(:disabled) {
+  background: #3b82f6;
   border-color: #d1d5db;
+  color: white;
 }
 
-.pagination button.active {
+.Rolemanagement-table-footer-pagination-button.active {
   background: #3b82f6;
   color: white;
   border-color: #3b82f6;
 }
 
-.pagination button:disabled {
+.Rolemanagement-table-footer-pagination-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
@@ -461,6 +466,150 @@ input:checked + .slider:before {
   background: #2563eb;
 }
 
+/* ____________________________dark mode css________________________________  */
+
+/* Dark Mode Styles */
+.main-rolemanagement.dark-mode {
+  /* background-color: #1a202c; */
+  color: #e2e8f0;
+}
+
+/* Header */
+.rolemanagement-container1.dark {
+  background-color: #111827;
+  color: #e2e8f0;
+}
+
+/* Table */
+.dark-mode .role-table {
+  color: #e2e8f0;
+}
+
+.dark-mode .role-table th {
+  background-color: #2d3748;
+  color: #e2e8f0;
+  border-bottom-color: #4a5568;
+}
+
+.dark-mode .role-table td {
+  color: #cbd5e0;
+  border-bottom-color: #4a5568;
+}
+
+.dark-mode .role-table tr:hover {
+  background-color: #2d3748;
+}
+
+/* Search Input */
+.dark-mode .rolemanagement-container1-right-search input {
+  background-color: #2d3748;
+  border-color: #4a5568;
+  color: #e2e8f0;
+}
+
+.dark-mode .rolemanagement-container1-right-search input:focus {
+  background-color: #2d3748;
+  border-color: #63b3ed;
+  box-shadow: 0 0 0 3px rgba(99, 179, 237, 0.1);
+}
+
+.dark-mode .rolemanagement-container1-right-search input::placeholder {
+  color: #a0aec0;
+}
+
+/* Buttons */
+.dark-mode .rolemanagement-container1-right-add-button {
+  background-color: #4299e1;
+}
+
+.dark-mode .rolemanagement-container1-right-add-button:hover {
+  background-color: #3182ce;
+}
+
+/* Pagination */
+.dark-mode .Rolemanagement-table-footer-pagination-button {
+  background-color: #2d3748;
+  border-color: #4a5568;
+  color: #e2e8f0;
+}
+
+.dark-mode .Rolemanagement-table-footer-pagination-button:hover:not(:disabled) {
+  background-color: #4299e1;
+  border-color: #4299e1;
+  color: white;
+}
+
+.dark-mode .Rolemanagement-table-footer-pagination-button.active {
+  background-color: #4299e1;
+  color: white;
+  border-color: #4299e1;
+}
+
+.dark-mode .Rolemanagement-pagination-rows-per-page-select {
+  background-color: #2d3748;
+  border-color: #4a5568;
+  color: #e2e8f0;
+}
+
+/* Modal */
+.dark-mode .add-role-modal {
+  background-color: #2d3748;
+  color: #e2e8f0;
+}
+
+.dark-mode .modal-header {
+  border-bottom-color: #4a5568;
+}
+
+.dark-mode .form-group input,
+.dark-mode .form-group textarea {
+  background-color: #2d3748;
+  border-color: #4a5568;
+  color: #e2e8f0;
+}
+
+.dark-mode .form-group input:focus,
+.dark-mode .form-group textarea:focus {
+  border-color: #63b3ed;
+  box-shadow: 0 0 0 3px rgba(99, 179, 237, 0.1);
+}
+
+.dark-mode .cancel-btn {
+  background-color: #2d3748;
+  border-color: #4a5568;
+  color: #e2e8f0;
+}
+
+.dark-mode .cancel-btn:hover {
+  background-color: #4a5568;
+}
+
+/* Switch */
+.dark-mode .slider {
+  background-color: #4a5568;
+}
+
+/* Responsive table cards */
+.dark-mode .role-table tr {
+  background-color: #2d3748;
+  border-color: #4a5568;
+}
+
+.dark-mode .role-table td {
+  border-bottom-color: #4a5568;
+}
+
+.dark-mode .role-table td::before {
+  color: #e2e8f0;
+}
+
+/* No results */
+.dark-mode .no-results td {
+  color: #a0aec0;
+}
+/* ____________________________end of dark mode css________________________________  */
+
+
 /* Styles for screens less than 800px (column layout) */
 @media (max-width: 768px) {
   .rolemanagement-container1 {
@@ -471,19 +620,18 @@ input:checked + .slider:before {
     gap: 1.5rem;
     width: full;
   }
-  .rolemanagement-container1-left{
+  /* .rolemanagement-container1-left {
     display: flex;
     flex-direction: column;
     justify-content: center;
     text-align: center;
     width: 100%;
   }
-  
+
   .rolemanagement-container1-left h1 {
     font-size: 1.75rem;
     text-align: center;
-    /* background-color: #2563eb; */
-  }
+  } */
 
   .rolemanagement-container1-right {
     flex-direction: column;
@@ -512,7 +660,6 @@ input:checked + .slider:before {
   }
 }
 
-
 /* --------this  styles only for tables, remain the same until the media queries----------- */
 
 /* Responsive Table Styles */
@@ -540,7 +687,9 @@ input:checked + .slider:before {
     border-radius: 12px;
     padding: 1rem;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
   }
 
   .role-table tr:hover {
@@ -569,15 +718,22 @@ input:checked + .slider:before {
   }
 
   /* Add labels manually for accessibility */
-  .role-table td:nth-child(1)::before { content: "SR.NO."; }
-  .role-table td:nth-child(2)::before { content: "ROLENAME"; }
-  .role-table td:nth-child(3)::before { content: "ROLEDESCRIPTION"; }
-  .role-table td:nth-child(4)::before { content: "ROLESTATUS"; }
-  .role-table td:nth-child(5)::before { content: "ACTIONS"; }
-
+  .role-table td:nth-child(1)::before {
+    content: "SR.NO.";
+  }
+  .role-table td:nth-child(2)::before {
+    content: "ROLENAME";
+  }
+  .role-table td:nth-child(3)::before {
+    content: "ROLEDESCRIPTION";
+  }
+  .role-table td:nth-child(4)::before {
+    content: "ROLESTATUS";
+  }
+  .role-table td:nth-child(5)::before {
+    content: "ACTIONS";
+  }
 }
-
-
 
 @media (max-width: 500px) {
   /* Small screens - transform table into card layout */
@@ -657,18 +813,18 @@ input:checked + .slider:before {
   }
 
   /* Footer adjustments */
-  .table-footer {
+  .Rolemanagement-table-footer-pagination-container {
     flex-direction: column;
     align-items: stretch;
     gap: 0.5rem;
   }
 
-  .showing-entries {
+  .Rolemanagemen-table-footer-pagination-showing-entries {
     margin: 0;
     text-align: center;
   }
 
-  .pagination {
+  .Rolemanagement-table-footer-pagination {
     justify-content: center;
   }
 
@@ -721,7 +877,7 @@ input:checked + .slider:before {
     font-size: 16px;
   }
 
-  .pagination button {
+  .Rolemanagement-table-footer-pagination-button {
     min-width: 1.75rem;
     height: 1.75rem;
     padding: 0.25rem 0.5rem;

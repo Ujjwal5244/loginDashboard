@@ -2,13 +2,37 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { baseUrl, decryptText } from "../../../encryptDecrypt";
+import { baseUrl, decryptText, encryptText } from "../../../encryptDecrypt";
 import "./Myprofile.css";
 
 const Myprofile = () => {
   const token = localStorage.getItem("userToken");
   const [image, setImage] = useState(null);
   const [profileData, setProfileData] = useState(null);
+  const [formData, setFormData] = useState({
+    name: { first: "", middle: "", last: "" },
+    email: "",
+    mobile: "",
+    companyName: "",
+    companyAddress: {
+      line1: "",
+      line2: "",
+      city: "",
+      state: "",
+      country: "",
+      pincode: "",
+    },
+    billingAddress: {
+      line1: "",
+      line2: "",
+      city: "",
+      state: "",
+      country: "",
+      pincode: "",
+    },
+    certificateNo: "",
+    gstNo: "",
+  });
   const navigate = useNavigate();
 
   // Image Upload
@@ -19,8 +43,7 @@ const Myprofile = () => {
     }
   };
 
-
-  // Fetch Profile Data
+  // ____________________Fetch Profile Data_______________________
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -33,6 +56,36 @@ const Myprofile = () => {
 
         if (data.status === "success") {
           setProfileData(data.data);
+          // Initialize form data with profile data
+          const nameParts = data.data.name?.split(" ") || ["", ""];
+          setFormData({
+            name: {
+              first: nameParts[0] || "",
+              middle: nameParts.length > 2 ? nameParts[1] : "",
+              last: nameParts.length > 2 ? nameParts[2] : nameParts[1] || "",
+            },
+            email: data.data.email || "",
+            mobile: data.data.mobile || "",
+            companyName: data.data.companyName || "",
+            companyAddress: {
+              line1: data.data.companyAddress?.line1 || "",
+              line2: data.data.companyAddress?.line2 || "",
+              city: data.data.companyAddress?.city || "",
+              state: data.data.companyAddress?.state || "",
+              country: data.data.companyAddress?.country || "",
+              pincode: data.data.companyAddress?.pincode || "",
+            },
+            billingAddress: {
+              line1: data.data.billingAddress?.line1 || "",
+              line2: data.data.billingAddress?.line2 || "",
+              city: data.data.billingAddress?.city || "",
+              state: data.data.billingAddress?.state || "",
+              country: data.data.billingAddress?.country || "",
+              pincode: data.data.billingAddress?.pincode || "",
+            },
+            certificateNo: data.data.certificateNo || "",
+            gstNo: data.data.gstNo || "",
+          });
         } else {
           throw new Error(data.message || "Failed to fetch profile");
         }
@@ -45,12 +98,39 @@ const Myprofile = () => {
     fetchProfile();
   }, [token]);
 
+  const handleInputChange = (e, section, field) => {
+    const { value } = e.target;
+    if (section) {
+      setFormData((prev) => ({
+        ...prev,
+        [section]: {
+          ...prev[section],
+          [field]: value,
+        },
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [field]: value,
+      }));
+    }
+  };
 
-  
-  const handleSaveAndNext = () => {
+  const handleNameChange = (e, part) => {
+    const { value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      name: {
+        ...prev.name,
+        [part]: value,
+      },
+    }));
+  };
+
+  const handleSaveAndNext = async () => {
     const requiredInputs = document.querySelectorAll('input[placeholder*="*"]');
     let allFilled = true;
-  
+
     requiredInputs.forEach((input) => {
       if (!input.value.trim()) {
         allFilled = false;
@@ -59,15 +139,56 @@ const Myprofile = () => {
         input.classList.remove("input-error");
       }
     });
-  
+
     if (!allFilled) {
       toast.error("Please fill in all required fields marked with *");
       return;
     }
-  
-    navigate("/Maindashboard/verification");
+
+    try {
+      // Prepare the data for API
+      const fullName =
+        `${formData.name.first} ${formData.name.middle ? formData.name.middle + " " : ""}${formData.name.last}`.trim();
+
+      const updateData = {
+        name: fullName,
+        email: formData.email,
+        mobile: formData.mobile,
+        companyName: formData.companyName,
+        companyAddress: formData.companyAddress,
+        billingAddress: formData.billingAddress,
+        certificateNo: formData.certificateNo,
+        gstNo: formData.gstNo,
+      };
+
+      // Encrypt the data before sending
+      const encryptedData = await encryptText(updateData);
+
+      const res = await axios.put(
+        `${baseUrl}/api/user/profile`,
+        { body: encryptedData },
+        { headers: { authorization: token } }
+      );
+
+      const decryptedResponse = await decryptText(res.data.body);
+      const responseData = JSON.parse(decryptedResponse);
+      console.log(responseData, "responseData");
+      toast.success(responseData.message);
+      navigate("/Maindashboard/verification");
+
+      // if (responseData.status === "success") {
+      //   toast.success("Profile updated successfully");
+      //   navigate("/Maindashboard/verification");
+      // } else {
+      //   throw new Error(responseData.message || "Failed to update profile");
+      // }
+    } catch (err) {
+      const decryptedResponse = await decryptText(err?.res?.data?.body);
+      const responseData = JSON.parse(decryptedResponse);
+      console.log(responseData, "responseData");
+      toast.error(responseData.message);
+    }
   };
-  
 
   return (
     <div className="kyc-container">
@@ -98,52 +219,152 @@ const Myprofile = () => {
           </label>
         </div>
         <div className="form-row">
-          <input type="text" placeholder="First Name *" defaultValue={profileData?.name?.split(" ")[0] || ""} />
-          <input type="text" placeholder="Middle Name" />
-          <input type="text" placeholder="Last Name *" defaultValue={profileData?.name?.split(" ")[1] || ""} />
+          <input
+            type="text"
+            placeholder="First Name *"
+            value={formData.name.first}
+            onChange={(e) => handleNameChange(e, "first")}
+          />
+          <input
+            type="text"
+            placeholder="Middle Name"
+            value={formData.name.middle}
+            onChange={(e) => handleNameChange(e, "middle")}
+          />
+          <input
+            type="text"
+            placeholder="Last Name *"
+            value={formData.name.last}
+            onChange={(e) => handleNameChange(e, "last")}
+          />
         </div>
         <div className="form-row">
-          <input type="tel" placeholder="Mobile Number *" defaultValue={profileData?.mobile || ""} />
-          <input type="email" placeholder="Email *" defaultValue={profileData?.email || ""} />
+          <input
+            type="tel"
+            placeholder="Mobile Number *"
+            value={formData.mobile}
+            onChange={(e) => handleInputChange(e, null, "mobile")}
+          />
+          <input
+            type="email"
+            placeholder="Email *"
+            value={formData.email}
+            onChange={(e) => handleInputChange(e, null, "email")}
+          />
         </div>
       </div>
 
       <div className="form-section">
         <h2>Company Information</h2>
         <div className="form-row">
-          <input type="text" placeholder="Company Name *" defaultValue={profileData?.companyName || ""} />
+          <input
+            type="text"
+            placeholder="Company Name *"
+            value={formData.companyName}
+            onChange={(e) => handleInputChange(e, null, "companyName")}
+          />
         </div>
         <div className="form-row">
-          <input type="text" placeholder="Address Line 1 *" defaultValue={profileData?.companyAddress?.line1 || ""} />
-          <input type="text" placeholder="Address Line 2" defaultValue={profileData?.companyAddress?.line2 || ""} />
+          <input
+            type="text"
+            placeholder="Address Line 1 *"
+            value={formData.companyAddress.line1}
+            onChange={(e) => handleInputChange(e, "companyAddress", "line1")}
+          />
+          <input
+            type="text"
+            placeholder="Address Line 2"
+            value={formData.companyAddress.line2}
+            onChange={(e) => handleInputChange(e, "companyAddress", "line2")}
+          />
         </div>
         <div className="form-row">
-          <input type="text" placeholder="Pincode *" defaultValue={profileData?.companyAddress?.pincode || ""} />
-          <input type="text" placeholder="State *" defaultValue={profileData?.companyAddress?.state || ""} />
+          <input
+            type="text"
+            placeholder="Pincode *"
+            value={formData.companyAddress.pincode}
+            onChange={(e) => handleInputChange(e, "companyAddress", "pincode")}
+          />
+          <input
+            type="text"
+            placeholder="State *"
+            value={formData.companyAddress.state}
+            onChange={(e) => handleInputChange(e, "companyAddress", "state")}
+          />
         </div>
         <div className="form-row">
-          <input type="text" placeholder="City *" defaultValue={profileData?.companyAddress?.city || ""} />
-          <input type="text" placeholder="Country *" defaultValue={profileData?.companyAddress?.country || ""} />
+          <input
+            type="text"
+            placeholder="City *"
+            value={formData.companyAddress.city}
+            onChange={(e) => handleInputChange(e, "companyAddress", "city")}
+          />
+          <input
+            type="text"
+            placeholder="Country *"
+            value={formData.companyAddress.country}
+            onChange={(e) => handleInputChange(e, "companyAddress", "country")}
+          />
         </div>
       </div>
 
       <div className="form-section">
         <h2>Billing Information</h2>
         <div className="form-row">
-          <input type="text" placeholder="Certificate No" defaultValue={profileData?.certificateNo || ""} />
-          <input type="text" placeholder="GST No" defaultValue={profileData?.gstNo || ""} />
+          <input
+            type="text"
+            placeholder="Certificate No"
+            value={formData.certificateNo}
+            onChange={(e) => handleInputChange(e, null, "certificateNo")}
+          />
+          <input
+            type="text"
+            placeholder="GST No"
+            value={formData.gstNo}
+            onChange={(e) => handleInputChange(e, null, "gstNo")}
+          />
         </div>
         <div className="form-row">
-          <input type="text" placeholder="Address Line 1 *" defaultValue={profileData?.billingAddress?.line1 || ""} />
-          <input type="text" placeholder="Address Line 2" defaultValue={profileData?.billingAddress?.line2 || ""} />
+          <input
+            type="text"
+            placeholder="Address Line 1 *"
+            value={formData.billingAddress.line1}
+            onChange={(e) => handleInputChange(e, "billingAddress", "line1")}
+          />
+          <input
+            type="text"
+            placeholder="Address Line 2"
+            value={formData.billingAddress.line2}
+            onChange={(e) => handleInputChange(e, "billingAddress", "line2")}
+          />
         </div>
         <div className="form-row">
-          <input type="text" placeholder="Pincode *" defaultValue={profileData?.billingAddress?.pincode || ""} />
-          <input type="text" placeholder="State *" defaultValue={profileData?.billingAddress?.state || ""} />
+          <input
+            type="text"
+            placeholder="Pincode *"
+            value={formData.billingAddress.pincode}
+            onChange={(e) => handleInputChange(e, "billingAddress", "pincode")}
+          />
+          <input
+            type="text"
+            placeholder="State *"
+            value={formData.billingAddress.state}
+            onChange={(e) => handleInputChange(e, "billingAddress", "state")}
+          />
         </div>
         <div className="form-row">
-          <input type="text" placeholder="City *" defaultValue={profileData?.billingAddress?.city || ""} />
-          <input type="text" placeholder="Country *" defaultValue={profileData?.billingAddress?.country || ""} />
+          <input
+            type="text"
+            placeholder="City *"
+            value={formData.billingAddress.city}
+            onChange={(e) => handleInputChange(e, "billingAddress", "city")}
+          />
+          <input
+            type="text"
+            placeholder="Country *"
+            value={formData.billingAddress.country}
+            onChange={(e) => handleInputChange(e, "billingAddress", "country")}
+          />
         </div>
       </div>
 

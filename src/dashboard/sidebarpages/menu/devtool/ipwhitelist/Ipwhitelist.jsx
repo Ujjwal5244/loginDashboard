@@ -194,10 +194,10 @@ const Ipwhitelist = ({ darkMode }) => {
 
   return (
     <div className={`ip-management-container ${darkMode ? "dark" : ""}`}>
-      <h1 className="title">IP Whitelist Management</h1>
+      {/* <h1 className="title">IP Whitelist Management</h1>
       <p className="subtitle">
         Secure your account by managing trusted IP addresses
-      </p>
+      </p> */}
 
       <div className="top-bar">
         <div className="ip-search-container">
@@ -365,15 +365,15 @@ const Ipwhitelist = ({ darkMode }) => {
             </table>
 
             {/* TABLE FOOTER */}
-            <div className="table-footer">
-              <div className="entries-info">
+            <div className="ip-whitelist-table-footer">
+              <div className="ip-whitelist-entries-info">
                 Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
                 {Math.min(currentPage * itemsPerPage, filteredIps.length)} of{" "}
                 {filteredIps.length} entries
               </div>
 
-              <div className="pagination-controls">
-                <div className="items-per-page">
+              <div className="ip-whitelist-pagination-controls">
+                <div className="ip-whitelist-items-per-page">
                   <span>Items per page:</span>
                   <select
                     value={itemsPerPage}
@@ -390,12 +390,13 @@ const Ipwhitelist = ({ darkMode }) => {
                   </select>
                 </div>
 
-                <div className="page-navigation">
+                <div className="ip-whitelist-page-navigation">
                   <button
                     onClick={() =>
                       setCurrentPage((prev) => Math.max(prev - 1, 1))
                     }
                     disabled={currentPage === 1}
+                    className="ip-whitelist-page-navigation-button"
                   >
                     Previous
                   </button>
@@ -409,6 +410,7 @@ const Ipwhitelist = ({ darkMode }) => {
                       setCurrentPage((prev) => Math.min(prev + 1, totalPages))
                     }
                     disabled={currentPage === totalPages || totalPages === 0}
+                     className="ip-whitelist-page-navigation-button-next"
                   >
                     Next
                   </button>

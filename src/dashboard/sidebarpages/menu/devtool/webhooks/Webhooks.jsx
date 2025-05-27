@@ -271,10 +271,10 @@ const Webhooks = () => {
   };
   return (
     <div className="webhook-management-container">
-      <h1 className="webhook-title">Webhook Management</h1>
+      {/* <h1 className="webhook-title">Webhook Management</h1>
       <p className="webhook-subtitle">
         Configure and manage your webhook integrations
-      </p>
+      </p> */}
 
       <div className="webhook-top-bar">
         <div className="webhook-search-container">
@@ -551,7 +551,6 @@ const Webhooks = () => {
         )}
       </div>
 
-      {/* Mobile cards */}
       {/* Mobile cards */}
       <div className="webhook-mobile-cards-container">
         {currentItems.map((item, index) => (

@@ -15,7 +15,7 @@ import {
 import "./Rolemanagement.css";
 import { toast } from "react-toastify";
 
-const Rolemanagement = () => {
+const Rolemanagement = ({darkMode}) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
   const [newRole, setNewRole] = useState({ name: "", description: "" });
@@ -263,21 +263,22 @@ const Rolemanagement = () => {
   };
 
   return (
-    <div className="main-rolemanagement">
+    <div className={`main-rolemanagement ${darkMode ? "dark-mode" : ""}`}>
       {/* Header Section */}
-      <div className="rolemanagement-container1">
-        <div className="rolemanagement-container1-left">
+      <div className={`rolemanagement-container1 p-2 ${darkMode ? "dark" : ""}`}>
+        {/* <div className="rolemanagement-container1-left">
           <h1>Role Management</h1>
           <p>Manage and organize user roles and permissions</p>
-        </div>
+        </div> */}
         <div className="rolemanagement-container1-right">
           <form
             className="rolemanagement-container1-right-search"
             onSubmit={handleSearch}
           >
-            <FiSearch className="search-icon" />
+            <FiSearch className="Rolemanagement-search-icon" />
             <input
               type="text"
+              className='rolemanagement-container1-right-search-input'
               placeholder="Search roles..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -405,13 +406,13 @@ const Rolemanagement = () => {
           </tbody>
         </table>
 
-        <div className="table-footer">
-          <div className="rows-per-page">
+        <div className="Rolemanagement-table-footer-pagination-container">
+          <div className="Rolemanagement-table-footer-pagination-rows-per-page">
             <span>Show</span>
             <select
               value={rowsPerPage}
               onChange={handleRowsPerPageChange}
-              className="rows-per-page-select"
+              className="Rolemanagement-pagination-rows-per-page-select"
             >
               <option value="5">5</option>
               <option value="10">10</option>
@@ -421,16 +422,16 @@ const Rolemanagement = () => {
             </select>
             <span>entries</span>
           </div>
-          <span className="showing-entries">
+          <span className="Rolemanagemen-table-footer-pagination-showing-entries">
             Showing {indexOfFirstRow + 1} to{" "}
             {Math.min(indexOfLastRow, filteredRoles.length)} of{" "}
             {filteredRoles.length} entries
           </span>
-          <div className="pagination">
+          <div className="Rolemanagement-table-footer-pagination">
             <button
               onClick={prevPage}
               disabled={currentPage === 1}
-              className="pagination-button"
+              className="Rolemanagement-table-footer-pagination-button"
             >
               <FiChevronLeft />
             </button>
@@ -451,7 +452,7 @@ const Rolemanagement = () => {
                 <button
                   key={pageNum}
                   onClick={() => paginate(pageNum)}
-                  className={`pagination-button ${currentPage === pageNum ? "active" : ""}`}
+                  className={`Rolemanagement-table-footer-pagination-button ${currentPage === pageNum ? "active" : ""}`}
                 >
                   {pageNum}
                 </button>
@@ -465,7 +466,7 @@ const Rolemanagement = () => {
             {totalPages > 5 && currentPage < totalPages - 2 && (
               <button
                 onClick={() => paginate(totalPages)}
-                className={`pagination-button ${currentPage === totalPages ? "active" : ""}`}
+                className={`Rolemanagement-table-footer-pagination-button ${currentPage === totalPages ? "active" : ""}`}
               >
                 {totalPages}
               </button>
@@ -474,7 +475,7 @@ const Rolemanagement = () => {
             <button
               onClick={nextPage}
               disabled={currentPage === totalPages}
-              className="pagination-button"
+              className="Rolemanagement-table-footer-pagination-button"
             >
               <FiChevronRight />
             </button>

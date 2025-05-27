@@ -29,190 +29,184 @@ const Verification = () => {
   const [bankTransactionId, setBankTransactionId] = useState("");
   const [isBankVerified, setIsBankVerified] = useState(false);
 
+  // Generate a random transaction ID
+  const generateTransactionId = () => {
+    return `TXN${Date.now()}${Math.floor(Math.random() * 1000)}`;
+  };
 
- // Aadhaar functions (no makeApiCall)
-const handleSendAadhaarOtp = useCallback(async () => {
-  // 1. validation
-  if (aadhaar.length !== 12 || aadhaarTransactionId.trim().length < 6) {
-    toast.error("Please enter valid Aadhaar and Transaction ID");
-    return;
-  }
-
-  setLoading(true);
-  try {
-    // 2. build payload (add your location here)
-    const payload = {
-      aadharNumber: aadhaar,
-      txnId: aadhaarTransactionId,
-      location: "28.6139,77.2090"  // static, or replace with your geolocation logic
-    };
-
-    // 3. raw axios call
-    const response = await axios.post(
-      `${baseUrl}/api/user/aadhar/validate`,
-      payload,
-      { headers: { authorization: token } }
-    );
-
-    // 5. check & toast
-    if (response) {
-      toast.success("OTP sent to mobile linked with Aadhaar");
-      setIsAadhaarOtpSent(true);
-      return response;
-    } else {
-      throw new Error(data.message || "OTP send failed");
+  // Aadhaar functions
+  const handleSendAadhaarOtp = useCallback(async () => {
+    if (aadhaar.length !== 12) {
+      toast.error("Please enter valid 12-digit Aadhaar number");
+      return;
     }
 
-  } catch (error) {
-    // handle errors
-    toast.error(
-      error.response?.data?.message ||
-      error.message ||
-      "Error processing Aadhaar OTP request"
-    );
-    console.error("Aadhaar OTP send error:", error);
-    throw error;
-  } finally {
-    setLoading(false);
-  }
-}, [aadhaar, aadhaarTransactionId, baseUrl, token, decryptText]);
+    setLoading(true);
+    try {
+      // Generate transaction ID
+      const txnId = generateTransactionId();
+      setAadhaarTransactionId(txnId);
 
+      const payload = {
+        aadharNumber: aadhaar,
+        txnId: txnId,
+        location: "28.6139,77.2090" // static, or replace with your geolocation logic
+      };
 
-const handleVerifyAadhaarOtp = useCallback(async () => {
-  // 1. Validate OTP length
-  if (aadhaarOtp.length !== 6) {
-    toast.error("Please enter a valid 6-digit OTP");
-    return;
-  }
+      const response = await axios.post(
+        `${baseUrl}/api/user/aadhar/validate`,
+        payload,
+        { headers: { authorization: token } }
+      );
 
-  setLoading(true);
-  try {
-    // 2. Build payload (you can uncomment aadharNumber if your API needs it)
-    const payload = {
-      txnId: aadhaarTransactionId,
-      otp: aadhaarOtp
-    };
+      if (response) {
+        toast.success("OTP sent to mobile linked with Aadhaar");
+        setIsAadhaarOtpSent(true);
+        return response;
+      } else {
+        throw new Error(data.message || "OTP send failed");
+      }
 
-    // 3. Raw axios POST
-    const response = await axios.post(
-      `${baseUrl}/api/user/aadhar/otp-submit`,
-      payload,
-      { headers: { authorization: token } }
-    );
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message ||
+        error.message ||
+        "Error processing Aadhaar OTP request"
+      );
+      console.error("Aadhaar OTP send error:", error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  }, [aadhaar, baseUrl, token]);
 
-    // 5. Check status and toast
-    if (response) {
-      toast.success("Aadhaar verified successfully");
-      setIsAadhaarVerified(true);
-      setStep("pan");
-      return response;
-    } else {
-      throw new Error(response.message || "Verification failed");
+  const handleVerifyAadhaarOtp = useCallback(async () => {
+    if (aadhaarOtp.length !== 6) {
+      toast.error("Please enter a valid 6-digit OTP");
+      return;
     }
 
-  } catch (error) {
-    toast.error(
-      error.response?.message ||
-      error.message ||
-      "Error verifying Aadhaar OTP"
-    );
-    console.error("Aadhaar verification error:", error);
-    throw error;
-  } finally {
-    setLoading(false);
-  }
-}, [
-  aadhaarOtp,
-  aadhaarTransactionId,
-  baseUrl,
-  token,
-  decryptText,
-  setIsAadhaarVerified,
-  setStep
-]);
+    setLoading(true);
+    try {
+      const payload = {
+        txnId: aadhaarTransactionId,
+        otp: aadhaarOtp
+      };
+
+      const response = await axios.post(
+        `${baseUrl}/api/user/aadhar/otp-submit`,
+        payload,
+        { headers: { authorization: token } }
+      );
+
+      if (response) {
+        toast.success("Aadhaar verified successfully");
+        setIsAadhaarVerified(true);
+        setStep("pan");
+        // Generate PAN transaction ID in advance
+        setPanTransactionId(generateTransactionId());
+        return response;
+      } else {
+        throw new Error(response.message || "Verification failed");
+      }
+
+    } catch (error) {
+      toast.error(
+        error.response?.message ||
+        error.message ||
+        "Error verifying Aadhaar OTP"
+      );
+      console.error("Aadhaar verification error:", error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  }, [aadhaarOtp, aadhaarTransactionId, baseUrl, token]);
 
   // PAN verification
-const handleVerifyPan = useCallback(async () => {
-  if (pan.length !== 10 || panTransactionId.trim().length < 6) {
-    toast.error("Please enter valid PAN and Transaction ID");
-    return;
-  }
-
-  setLoading(true);
-  try {
-    const payload = {
-      panNumber: pan,
-      transactionId: panTransactionId
-    };
-
-    const response = await axios.post(
-      `${baseUrl}/api/user/validate-pan`,
-      payload,
-      { headers: { authorization: token } }
-    );
-
-    if (response) {
-      toast.success("PAN verified successfully");
-      setIsPanVerified(true);
-      setStep("bank");
-      return response;
-    } else {
-      throw new Error(response.message || "PAN verification failed");
+  const handleVerifyPan = useCallback(async () => {
+    if (pan.length !== 10) {
+      toast.error("Please enter valid 10-digit PAN");
+      return;
     }
-  } catch (error) {
-    toast.error(
-      error.response?.data?.message ||
-      error.message ||
-      "Error verifying PAN"
-    );
-    console.error("PAN verification error:", error);
-    throw error;
-  } finally {
-    setLoading(false);
-  }
-}, [pan, panTransactionId, token]);
 
-// Bank verification
-const handleVerifyBank = useCallback(async () => {
-  if (!bankAccount || !ifsc || bankTransactionId.trim().length < 6) {
-    toast.error("Please enter all bank details correctly");
-    return;
-  }
+    setLoading(true);
+    try {
+      const payload = {
+        panNumber: pan,
+        transactionId: panTransactionId
+      };
 
-  setLoading(true);
-  try {
-    const payload = {
-      accountNumber: bankAccount,
-      ifscCode: ifsc,
-      txnId: bankTransactionId
-    };
+      const response = await axios.post(
+        `${baseUrl}/api/user/validate-pan`,
+        payload,
+        { headers: { authorization: token } }
+      );
 
-    const response = await axios.post(
-      `${baseUrl}/api/user/validate-bank`,
-      payload,
-      { headers: { authorization: token } }
-    );
-
-    if (response) {
-      toast.success("Bank details verified successfully");
-      setIsBankVerified(true);
-      navigate("/Maindashboard/sign-agreement");
-      return response;
-    } else {
-      throw new Error(response.message || "Bank verification failed");
+      if (response) {
+        toast.success("PAN verified successfully");
+        setIsPanVerified(true);
+        setStep("bank");
+        // Generate Bank transaction ID in advance
+        setBankTransactionId(generateTransactionId());
+        return response;
+      } else {
+        throw new Error(response.message || "PAN verification failed");
+      }
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message ||
+        error.message ||
+        "Error verifying PAN"
+      );
+      console.error("PAN verification error:", error);
+      throw error;
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    toast.error(
-      error.response?.data?.message ||
-      error.message ||
-      "Error verifying bank details"
-    );
-    console.error("Bank verification error:", error);
-    throw error;
-  } finally {
-    setLoading(false);
-  }
-}, [bankAccount, ifsc, bankTransactionId, navigate, token]);
+  }, [pan, panTransactionId, token]);
+
+  // Bank verification
+  const handleVerifyBank = useCallback(async () => {
+    if (!bankAccount || !ifsc) {
+      toast.error("Please enter all bank details correctly");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const payload = {
+        accountNumber: bankAccount,
+        ifscCode: ifsc,
+        txnId: bankTransactionId
+      };
+
+      const response = await axios.post(
+        `${baseUrl}/api/user/validate-bank`,
+        payload,
+        { headers: { authorization: token } }
+      );
+
+      if (response) {
+        toast.success("Bank details verified successfully");
+        setIsBankVerified(true);
+        navigate("/Maindashboard/sign-agreement");
+        return response;
+      } else {
+        throw new Error(response.message || "Bank verification failed");
+      }
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message ||
+        error.message ||
+        "Error verifying bank details"
+      );
+      console.error("Bank verification error:", error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  }, [bankAccount, ifsc, bankTransactionId, navigate, token]);
 
   return (
     <div className="verification-container">
@@ -241,7 +235,7 @@ const handleVerifyBank = useCallback(async () => {
         {step === "aadhaar" && (
           <div className="verification-section">
             <h3>Aadhaar Verification</h3>
-            <p className="instruction-text">Enter your Aadhaar number and Transaction ID to receive OTP.</p>
+            <p className="instruction-text">Enter your Aadhaar number to receive OTP.</p>
             <input
               type="text"
               placeholder="Aadhaar Number"
@@ -253,29 +247,10 @@ const handleVerifyBank = useCallback(async () => {
               maxLength="12"
               disabled={loading}
             />
-            <input
-              type="text"
-              placeholder="Transaction ID"
-              value={aadhaarTransactionId}
-              onChange={(e) => {
-                setAadhaarTransactionId(e.target.value);
-                setIsAadhaarOtpSent(false);
-              }}
-              disabled={loading}
-            />
-            {!isAadhaarOtpSent && (
-              <button
-                className="primary-btn"
-                onClick={handleSendAadhaarOtp}
-                disabled={aadhaar.length !== 12 || aadhaarTransactionId.trim().length < 6 || loading}
-              >
-                {loading ? "Sending..." : "Send OTP"}
-              </button>
-            )}
-
+            
             {isAadhaarOtpSent && (
-              <>
-                <p className="transaction-id">Transaction ID: {aadhaarTransactionId}</p>
+              <div className="transaction-info">
+                <p>Transaction ID: {aadhaarTransactionId}</p>
                 <input
                   type="text"
                   placeholder="Enter OTP"
@@ -284,14 +259,25 @@ const handleVerifyBank = useCallback(async () => {
                   maxLength="6"
                   disabled={loading}
                 />
-                <button
-                  className="primary-btn"
-                  onClick={handleVerifyAadhaarOtp}
-                  disabled={aadhaarOtp.length !== 6 || loading}
-                >
-                  {loading ? "Verifying..." : "Verify OTP"}
-                </button>
-              </>
+              </div>
+            )}
+
+            {!isAadhaarOtpSent ? (
+              <button
+                className="primary-btn"
+                onClick={handleSendAadhaarOtp}
+                disabled={aadhaar.length !== 12 || loading}
+              >
+                {loading ? "Sending..." : "Send OTP"}
+              </button>
+            ) : (
+              <button
+                className="primary-btn"
+                onClick={handleVerifyAadhaarOtp}
+                disabled={aadhaarOtp.length !== 6 || loading}
+              >
+                {loading ? "Verifying..." : "Verify OTP"}
+              </button>
             )}
           </div>
         )}
@@ -299,7 +285,7 @@ const handleVerifyBank = useCallback(async () => {
         {step === "pan" && (
           <div className="verification-section">
             <h3>PAN Verification</h3>
-            <p className="instruction-text">Enter your PAN number and Transaction ID</p>
+            <p className="instruction-text">Enter your PAN number</p>
             <input
               type="text"
               placeholder="PAN Number"
@@ -308,17 +294,13 @@ const handleVerifyBank = useCallback(async () => {
               maxLength="10"
               disabled={loading}
             />
-            <input
-              type="text"
-              placeholder="Transaction ID"
-              value={panTransactionId}
-              onChange={(e) => setPanTransactionId(e.target.value)}
-              disabled={loading}
-            />
+            <div className="transaction-info">
+              <p>Transaction ID: {panTransactionId}</p>
+            </div>
             <button
               className="primary-btn"
               onClick={handleVerifyPan}
-              disabled={pan.length !== 10 || panTransactionId.trim().length < 6 || loading}
+              disabled={pan.length !== 10 || loading}
             >
               {loading ? "Verifying..." : "Verify PAN"}
             </button>
@@ -328,7 +310,7 @@ const handleVerifyBank = useCallback(async () => {
         {step === "bank" && (
           <div className="verification-section">
             <h3>Bank Verification</h3>
-            <p className="instruction-text">Enter your bank details and Transaction ID</p>
+            <p className="instruction-text">Enter your bank details</p>
             <input
               type="text"
               placeholder="Account Number"
@@ -343,17 +325,13 @@ const handleVerifyBank = useCallback(async () => {
               onChange={(e) => setIfsc(e.target.value.toUpperCase())}
               disabled={loading}
             />
-            <input
-              type="text"
-              placeholder="Transaction ID"
-              value={bankTransactionId}
-              onChange={(e) => setBankTransactionId(e.target.value)}
-              disabled={loading}
-            />
+            <div className="transaction-info">
+              <p>Transaction ID: {bankTransactionId}</p>
+            </div>
             <button
               className="primary-btn"
               onClick={handleVerifyBank}
-              disabled={!bankAccount || !ifsc || bankTransactionId.trim().length < 6 || loading}
+              disabled={!bankAccount || !ifsc || loading}
             >
               {loading ? "Verifying..." : "Verify Bank Details"}
             </button>

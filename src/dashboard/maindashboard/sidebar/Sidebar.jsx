@@ -7,10 +7,8 @@ import {
   FaChevronDown,
   FaChevronUp,
   FaUsersSlash,
-  FaRegUser,
   FaFileSignature,
   FaTimes,
-  FaBars
 } from "react-icons/fa";
 import { LiaUserLockSolid } from "react-icons/lia";
 import { FcApproval, FcCurrencyExchange } from "react-icons/fc";
@@ -18,7 +16,6 @@ import { SiGooglecampaignmanager360, SiEclipsemosquitto } from "react-icons/si";
 import { MdAnalytics, MdDrafts, MdOutlineSettings, MdOutlineImportantDevices } from "react-icons/md";
 import { GrInternetExplorer, GrDocumentText, GrCompliance } from "react-icons/gr";
 import { HiClipboardDocumentList } from "react-icons/hi2";
-import { VscVerified } from "react-icons/vsc";
 import { SiMonkeytie } from "react-icons/si";
 
 
@@ -135,27 +132,14 @@ const Sidebar = ({ sidebarOpen, darkMode, toggleSidebar, isMobile }) => {
             }
           ]
         },
-        {
-          type: "dropdown",
-          icon: <FcApproval size={20} color={getIconColor(FcApproval, false)} />,
-          label: "Kyc Studio",
-          items: [
-            {
-              path: "/maindashboard/allverification",
-              icon: <VscVerified size={18} color={getIconColor(VscVerified, isActive("/maindashboard/allverification"))} />,
-              label: "All Verification",
-              active: isActive("/maindashboard/allverification")
-            },
-            {
-              path: "/maindashboard/kyctemplates",
-              icon: <FaRegUser size={18} color={getIconColor(FaRegUser, isActive("/maindashboard/kyctemplates"))} />,
-              label: "Kyc Templates",
-              active: isActive("/maindashboard/kyctemplates")
-            }
-          ]
-        }
-      ]
-    },
+         {
+      path: "/maindashboard/kycstudio",
+      icon: <FcApproval size={23} color={getIconColor(FcApproval, isActive("/maindashboard/kycstudio"))} />,
+      label: "Kycstudio",
+      active: isActive("/maindashboard/kycstudio")
+    }
+  ]
+},
     {
       title: "WALLET TRANSACTION",
       items: [

@@ -2,7 +2,7 @@
 .kyc-team-container {
   padding: 24px;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  background-color: #f8fafc;
+  /* background-color: #f8fafc; */
   min-height: 100vh;
 }
 
@@ -117,7 +117,7 @@
   gap: 16px;
 }
 
-.kyc-header-left .kyc-page-title {
+/* .kyc-header-left .kyc-page-title {
   font-size: 28px;
   font-weight: 700;
   margin: 0;
@@ -130,16 +130,19 @@
   color: #64748b;
   margin: 8px 0 0;
   font-weight: 400;
-}
+} */
 
-.kyc-header-right {
+.team-kyc-header-right {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 16px;
+  width: 100%;
   flex-wrap: wrap;
+  /* background-color: #065f46; */
 }
 
-.kyc-search-container {
+.team-kyc-search-container{
   position: relative;
   display: flex;
   align-items: center;
@@ -148,15 +151,19 @@
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   border: 1px solid #e2e8f0;
   overflow: hidden;
+  padding: 10px;
+  height: 65px;
+  gap: 10px;
 }
 
 .kyc-search-input {
-  padding: 10px 16px 10px 40px;
+  padding: 14px 16px 10px 40px;
   border: none;
   font-size: 14px;
   width: 280px;
   transition: all 0.3s;
   color: #334155;
+  margin-top: 15px;
 }
 
 .kyc-search-input:focus {
@@ -164,11 +171,12 @@
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
 }
 
-.kyc-search-icon {
+.team-kyc-search-icon{
   position: absolute;
-  left: 12px;
   color: #94a3b8;
   font-size: 18px;
+  margin-left: 10px;
+  margin-top: 5px;
 }
 
 .kyc-filter-button {
@@ -207,7 +215,7 @@
   align-items: center;
   gap: 8px;
   transition: all 0.3s;
-  height: 40px;
+  height: 50px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
@@ -677,7 +685,221 @@
   color: #94a3b8;
 }
 
-/* Responsive Adjustments */
+/* ____________________darkmode css__________________________________ */
+/* Dark Mode Styles */
+.kyc-team-container.dark-mode {
+  background-color: #111827;
+  color: #e0e0e0;
+}
+
+/* Modal Dark Mode */
+.dark-mode .kyc-modal {
+  background-color: #2d2d2d;
+  color: #e0e0e0;
+}
+
+.dark-mode .kyc-modal-header-h3 {
+  border-bottom-color: #444;
+  color: white;
+}
+
+.dark-mode .kyc-modal-close {
+  color: #aaa;
+}
+
+.dark-mode .kyc-modal-close:hover {
+  color: #ddd;
+}
+
+.dark-mode .kyc-form-group input,
+.dark-mode .kyc-form-group select {
+  background-color: #333;
+  border-color: #444;
+  color: #e0e0e0;
+}
+
+.dark-mode .kyc-form-group input:focus,
+.dark-mode .kyc-form-group select:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+}
+
+/* Header Dark Mode */
+.dark-mode .team-kyc-search-container {
+  background-color: #333;
+  border-color: #444;
+}
+
+.dark-mode .kyc-search-input {
+  background-color: #333;
+  color: #e0e0e0;
+}
+
+.dark-mode .kyc-filter-button {
+  background-color: #444;
+  color: #e0e0e0;
+}
+
+.dark-mode .kyc-filter-button:hover {
+  background-color: #555;
+}
+
+/* Stats Cards Dark Mode */
+.dark-mode .kyc-stat-card {
+  background-color: #2d2d2d;
+  border-left-color: #3b82f6;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.dark-mode .stat-value {
+  color: #f0f0f0;
+}
+
+.dark-mode .stat-label {
+  color: #aaa;
+}
+
+/* Table Dark Mode */
+.dark-mode .kyc-table-wrapper {
+  background-color: #2d2d2d;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+}
+
+.dark-mode .kyc-data-table th {
+  background-color: #333;
+  color: #bbb;
+  border-bottom-color: #444;
+}
+
+.dark-mode .kyc-data-table td {
+  color: #e0e0e0;
+  border-bottom-color: #444;
+}
+
+.dark-mode .kyc-member-name {
+  color: #f0f0f0;
+}
+
+.dark-mode .kyc-member-email {
+  color: #aaa;
+}
+
+.dark-mode .kyc-join-date {
+  color: #999;
+}
+
+/* Badges Dark Mode */
+.dark-mode .kyc-role-badge.admin {
+  background-color: rgba(29, 78, 216, 0.2);
+}
+
+.dark-mode .kyc-role-badge.manager {
+  background-color: rgba(6, 95, 70, 0.2);
+}
+
+.dark-mode .kyc-role-badge.analyst {
+  background-color: rgba(146, 64, 14, 0.2);
+}
+
+.dark-mode .kyc-role-badge.support {
+  background-color: rgba(91, 33, 182, 0.2);
+}
+
+.dark-mode .kyc-role-badge.developer {
+  background-color: rgba(157, 23, 77, 0.2);
+}
+
+.dark-mode .kyc-status-badge.active {
+  background-color: rgba(22, 101, 52, 0.2);
+}
+
+.dark-mode .kyc-status-badge.inactive {
+  background-color: rgba(153, 27, 27, 0.2);
+}
+
+/* Action Buttons Dark Mode */
+.dark-mode .kyc-action-btn {
+  color: #aaa;
+}
+
+.dark-mode .kyc-action-btn:hover {
+  background-color: #444;
+}
+
+/* Table Footer Dark Mode */
+.dark-mode .kyc-table-footer {
+  background-color: #333;
+  border-top-color: #444;
+}
+
+.dark-mode .kyc-dropdown-toggle {
+  background-color: #444;
+  border-color: #555;
+  color: #e0e0e0;
+}
+
+.dark-mode .kyc-dropdown-menu {
+  background-color: #444;
+  border-color: #555;
+}
+
+.dark-mode .kyc-dropdown-item {
+  color: #e0e0e0;
+}
+
+.dark-mode .kyc-dropdown-item:hover {
+  background-color: #555;
+}
+
+.dark-mode .kyc-dropdown-item.selected {
+  background-color: rgba(59, 130, 246, 0.2);
+}
+
+.dark-mode .kyc-pagination-btn {
+  background-color: #444;
+  border-color: #555;
+  color: #e0e0e0;
+}
+
+.dark-mode .kyc-pagination-btn:hover:not(:disabled) {
+  background-color: #555;
+}
+
+.dark-mode .kyc-pagination-btn.active {
+  background-color: #3b82f6;
+  color: white;
+}
+
+/* Mobile Cards Dark Mode */
+.dark-mode .kyc-mobile-card {
+  background-color: #2d2d2d;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.dark-mode .kyc-card-row {
+  border-bottom-color: #444;
+}
+
+.dark-mode .kyc-card-label {
+  color: #bbb;
+}
+
+/* No Data Message Dark Mode */
+.dark-mode .kyc-no-data-message p {
+  color: #aaa;
+}
+
+.dark-mode .kyc-secondary-button {
+  background-color: #444;
+  color: #e0e0e0;
+  border-color: #555;
+}
+
+.dark-mode .kyc-secondary-button:hover {
+  background-color: #555;
+}
+
+/* ________________________Responsive Adjustments_____________________________ */
 
 /* Mobile Cards - Hidden by default */
 .kyc-mobile-cards {
@@ -763,14 +985,14 @@
     text-align: center;
   }
 
-  .kyc-header-right {
+  .team-kyc-header-right {
     width: 100%;
     margin-top: 16px;
     flex-direction: column;
     gap: 12px;
   }
 
-  .kyc-search-container {
+  .team-kyc-search-container{
     width: 100%;
   }
 

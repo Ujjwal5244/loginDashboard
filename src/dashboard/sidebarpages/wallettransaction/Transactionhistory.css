@@ -64,7 +64,7 @@
 .tm-search-icon {
   position: absolute;
   left: 12px;
-  top: 50%;
+  top: 38%;
   transform: translateY(-50%);
   color: #666;
 }
@@ -96,6 +96,7 @@
   background-color: white;
   cursor: pointer;
   font-weight: 500;
+  color: black;
   transition: all 0.3s ease;
 }
 
@@ -118,6 +119,7 @@
   border: 1px solid #ddd;
   border-radius: 8px;
   background-color: white;
+  color: black;
   cursor: pointer;
   font-weight: 500;
   display: flex;
@@ -584,10 +586,11 @@
     flex-wrap: wrap;
   }
 
-  .tm-filter-btn {
+  .tm-filter-btn{
     flex: 1;
     min-width: 120px;
     text-align: center;
+    color: black;
   }
 }
 

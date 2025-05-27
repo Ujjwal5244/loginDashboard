@@ -3,6 +3,8 @@
   overflow-y: auto;
   margin-top: 5rem;
   transition: all 0.3s ease;
+  /* background-color: bisque; */
+  height: 85vh;
 }
 
 /* Sidebar transitions */

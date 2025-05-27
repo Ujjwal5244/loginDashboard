@@ -7,7 +7,6 @@ import {
   FiUsers,
   FiTool,
   FiFileText,
-  FiCheckCircle,
   FiSettings,
   FiLogOut,
   FiChevronRight,
@@ -53,7 +52,7 @@ const MobileMenu = ({ isOpen, onClose, darkMode }) => {
   const handleNavigation = (path) => {
     console.log("Navigating to:", path);
     navigate(path);
-    // onClose();  
+    // onClose();
   };
 
   const handleGoBack = () => {
@@ -102,8 +101,8 @@ const MobileMenu = ({ isOpen, onClose, darkMode }) => {
   const Dropdown = ({ name, icon, label, children, isOpen, onToggle }) => {
     return (
       <div className={`mobile-app-dropdown ${isOpen ? "open" : ""}`}>
-        <div 
-          className="mobile-app-menu-item" 
+        <div
+          className="mobile-app-menu-item"
           onClick={(e) => onToggle(name, e)}
         >
           <div className="mobile-app-menu-icon">{icon}</div>
@@ -112,7 +111,7 @@ const MobileMenu = ({ isOpen, onClose, darkMode }) => {
             className={`mobile-app-arrow-icon ${isOpen ? "rotate-90" : ""}`}
           />
         </div>
-        <div 
+        <div
           className="mobile-app-dropdown-content"
           onClick={(e) => e.stopPropagation()}
         >
@@ -127,16 +126,14 @@ const MobileMenu = ({ isOpen, onClose, darkMode }) => {
       className={`mobile-app-menu ${isOpen ? "open" : ""} ${darkMode ? "dark-mode" : ""}`}
     >
       <section className={`profile-section ${darkMode ? "dark-mode" : ""}`}>
-
-      {/* ===== BACK BUTTON ===== */}
-      <div 
-        className={`mobile-app-back-button ${darkMode ? "dark-mode" : ""}`}
-        onClick={handleGoBack}
-      >
-        <FiArrowLeft className="back-icon" />
-        {/* <span>Back</span> */}
-      </div>
-
+        {/* ===== BACK BUTTON ===== */}
+        <div
+          className={`mobile-app-back-button ${darkMode ? "dark-mode" : ""}`}
+          onClick={handleGoBack}
+        >
+          <FiArrowLeft className="back-icon" />
+          {/* <span>Back</span> */}
+        </div>
 
         <div className="profile-content-wrapper">
           <div className="profile-avatar">
@@ -246,30 +243,13 @@ const MobileMenu = ({ isOpen, onClose, darkMode }) => {
               />
             </Dropdown>
 
-            <Dropdown
-              name="kyc-studio"
+            <MenuItem
               icon={<FcApproval />}
-              label="KYC Studio"
-              isOpen={openDropdown === "kyc-studio"}
-              onToggle={toggleDropdown}
-            >
-              <MenuItem
-                icon={<FiCheckCircle />}
-                label="All Verification"
-                path="/Maindashboard/allverification"
-                indent
-                active={isActive("/Maindashboard/allverification")}
-                onClick={handleNavigation}
-              />
-              <MenuItem
-                icon={<FiUser />}
-                label="KYC Templates"
-                path="/Maindashboard/kyctemplates"
-                indent
-                active={isActive("/maindashboard/kyctemplates")}
-                onClick={handleNavigation}
-              />
-            </Dropdown>
+              label="Kycstudio"
+              path="/Maindashboard/kycstudio"
+              active={isActive("/Maindashboard/kycstudio")}
+              onClick={handleNavigation}
+            />
           </div>
 
           <div className="mobile-app-menu-group">

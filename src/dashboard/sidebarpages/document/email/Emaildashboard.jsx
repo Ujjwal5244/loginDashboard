@@ -27,61 +27,61 @@ const Emaildashboard = ({ sidebarOpen, darkMode }) => {
     <div className={`email-app ${darkMode ? "dark-mode" : ""}`}>
       {/* Sidebar - always visible */}
       <div className="email-sidebar">
-  <button
-    className="compose-button"
-    onClick={() => navigate("/Maindashboard/Email/compose")}
-  >
-    <FiMail /> Compose
-  </button>
+        <button
+          className="compose-button"
+          onClick={() => navigate("/Maindashboard/Email/compose")}
+        >
+          <FiMail /> Compose
+        </button>
 
-  <ul className="folder-list">
-    <li
-      className={activeFolder === "inbox" ? "active" : ""}
-      onClick={() => {
-        setActiveFolder("inbox");
-        navigate("/Maindashboard/Email");
-      }}
-    >
-      <FiInbox /> Inbox
-    </li>
-    <li
-      className={activeFolder === "starred" ? "active" : ""}
-      onClick={() => {
-        setActiveFolder("starred");
-        navigate("/Maindashboard/Email/starred");
-      }}
-    >
-      <FiStar /> Starred
-    </li>
-    <li
-      className={activeFolder === "sent" ? "active" : ""}
-      onClick={() => {
-        setActiveFolder("sent");
-        navigate("/Maindashboard/Email/sent");
-      }}
-    >
-      <FiSend /> Sent
-    </li>
-    <li
-      className={activeFolder === "drafts" ? "active" : ""}
-      onClick={() => {
-        setActiveFolder("drafts");
-        navigate("/Maindashboard/Email/drafts");
-      }}
-    >
-      <FiFileText /> Drafts
-    </li>
-    <li
-      className={activeFolder === "trash" ? "active" : ""}
-      onClick={() => {
-        setActiveFolder("trash");
-        navigate("/Maindashboard/Email/trash");
-      }}
-    >
-      <FiTrash2 /> Trash
-    </li>
-  </ul>
-</div>
+        <ul className="folder-list">
+          <li
+            className={activeFolder === "inbox" ? "active" : ""}
+            onClick={() => {
+              setActiveFolder("inbox");
+              navigate("/Maindashboard/Email");
+            }}
+          >
+            <FiInbox /> Inbox
+          </li>
+          <li
+            className={activeFolder === "starred" ? "active" : ""}
+            onClick={() => {
+              setActiveFolder("starred");
+              navigate("/Maindashboard/Email/starred");
+            }}
+          >
+            <FiStar /> Starred
+          </li>
+          <li
+            className={activeFolder === "sent" ? "active" : ""}
+            onClick={() => {
+              setActiveFolder("sent");
+              navigate("/Maindashboard/Email/sent");
+            }}
+          >
+            <FiSend /> Sent
+          </li>
+          <li
+            className={activeFolder === "drafts" ? "active" : ""}
+            onClick={() => {
+              setActiveFolder("drafts");
+              navigate("/Maindashboard/Email/drafts");
+            }}
+          >
+            <FiFileText /> Drafts
+          </li>
+          <li
+            className={activeFolder === "trash" ? "active" : ""}
+            onClick={() => {
+              setActiveFolder("trash");
+              navigate("/Maindashboard/Email/trash");
+            }}
+          >
+            <FiTrash2 /> Trash
+          </li>
+        </ul>
+      </div>
 
       {/* Main content area */}
       <div
@@ -92,7 +92,6 @@ const Emaildashboard = ({ sidebarOpen, darkMode }) => {
           overflowY: "auto",
         }}
       >
-        {" "}
         <Outlet />
       </div>
     </div>

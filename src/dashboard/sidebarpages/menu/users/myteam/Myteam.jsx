@@ -20,7 +20,7 @@ import "./Myteam.css";
 import { baseUrl, decryptText, encryptText } from "../../../../../encryptDecrypt";
 import { toast } from "react-toastify";
 
-const Myteam = () => {
+const Myteam = ({darkMode}) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
   const [newMember, setNewMember] = useState({ name: "", email: "", mobile: "", role: "" });
@@ -60,6 +60,8 @@ const Myteam = () => {
       toast.error("Failed to fetch roles");
     }
   }, [token]);
+  console.log("Roles:", roles);
+
 
   // Fetch and transform team members from API
   const fetchTeamMembers = useCallback(async () => {
@@ -303,17 +305,16 @@ const Myteam = () => {
     }
   };
 
-  if (loading) return <div className="kyc-team-container">Loading team members...</div>;
+  if (loading) return <div className={`loading-spinner ${darkMode ? 'dark' : ''}`}>Loading team members...</div>;
 
 
   return (
-    <div className="kyc-team-container">
-      {/* Add Team Member Modal */}
+<div className={`kyc-team-container ${darkMode ? 'dark-mode' : ''}`}> 
       {showAddModal && (
         <div className="kyc-modal-overlay">
           <div className="kyc-modal">
             <div className="kyc-modal-header">
-              <h3>Add New Team Member</h3>
+              <h3 className='kyc-modal-header-h3'>Add New Team Member</h3>
               <button
                 className="kyc-modal-close"
                 onClick={() => setShowAddModal(false)}
@@ -389,15 +390,15 @@ const Myteam = () => {
 
       {/* Header Section */}
       <div className="kyc-page-header">
-        <div className="kyc-header-left">
+        {/* <div className="kyc-header-left">
           <h1 className="kyc-page-title">Team KYC Management</h1>
           <p className="kyc-page-description">
             Manage and verify your team members' KYC status with ease
           </p>
-        </div>
-        <div className="kyc-header-right">
-          <div className="kyc-search-container">
-            <FiSearch className="kyc-search-icon" />
+        </div> */}
+        <div className="team-kyc-header-right">
+          <div className="team-kyc-search-container">
+            <FiSearch className="team-kyc-search-icon" />
             <input
               type="text"
               placeholder="Search by name, email or phone..."

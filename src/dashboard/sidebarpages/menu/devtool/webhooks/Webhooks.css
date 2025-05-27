@@ -4,7 +4,7 @@
     padding: 20px;
   }
   
-  .webhook-title {
+  /* .webhook-title {
     font-size: 28px;
     font-weight: bold;
     margin-bottom: 5px;
@@ -14,7 +14,7 @@
     font-size: 16px;
     color: #666;
     margin-bottom: 20px;
-  }
+  } */
   
   .webhook-top-bar {
     display: flex;
@@ -40,7 +40,7 @@
   .webhook-search-icon {
     position: absolute;
     left: 8px;
-    top: 50%;
+    top: 38%;
     transform: translateY(-50%);
     font-size: 16px;
     color: #888;
@@ -327,9 +327,9 @@
     .webhook-table-container {
       display: none;
     }
-    .webhook-title {
+    /* .webhook-title {
       text-align: center;
-    }
+    } */
     .webhook-subtitle {
       text-align: center;
     }
@@ -374,10 +374,10 @@
     .webhook-card {
       padding: 10px;
     }
-    .webhook-title {
+    /* .webhook-title {
       text-align: center;
       font-size: 25px;
-    }
+    } */
     .webhook-subtitle{
       text-align: center;
       font-size: 14px;

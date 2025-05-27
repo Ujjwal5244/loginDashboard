@@ -52,7 +52,6 @@ const Agreement = () => {
 
   const handleAcceptTerms = () => {
     if (acceptedTerms) {
-      setShowTerms(false);
       navigate("/Maindashboard/pdf-sign");
     } else {
       alert("Please accept the terms and conditions to proceed.");
