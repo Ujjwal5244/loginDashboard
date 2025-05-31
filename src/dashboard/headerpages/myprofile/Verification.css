@@ -81,12 +81,11 @@
 }
 
 /* Form Content Styles */
-.verification-content {
-  padding: 0 1rem;
-}
+
 
 .verification-section {
   animation: fadeIn 0.5s ease;
+  padding: 10px;
 }
 
 @keyframes fadeIn {
@@ -165,6 +164,130 @@ input:focus {
   background-color: #bdc3c7;
   cursor: not-allowed;
   transform: none;
+}
+
+/* Verification.css - Dark Mode Styles */
+.verification-container.dark-mode {
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+.dark-mode .verification-header h2 {
+  color: #bb86fc; /* Purple accent color */
+}
+
+.dark-mode .verification-header p {
+  color: #b0b0b0;
+}
+
+/* Stepper Dark Mode */
+.dark-mode .verification-stepper {
+  background-color: #1e1e1e;
+}
+
+.dark-mode .stepper-step {
+  background-color: #2d2d2d;
+  color: #e0e0e0;
+  border: 2px solid #3a3a3a;
+}
+
+.dark-mode .stepper-step.active {
+  background-color: #bb86fc;
+  color: #121212;
+  border-color: #bb86fc;
+}
+
+.dark-mode .stepper-step.completed {
+  background-color: #03dac6; /* Teal for completed steps */
+  color: #121212;
+  border-color: #03dac6;
+}
+
+.dark-mode .stepper-line {
+  background-color: #3a3a3a;
+}
+
+.dark-mode .stepper-line.active {
+  background-color: #bb86fc;
+}
+
+/* Form Content Dark Mode */
+.dark-mode .verification-content {
+  background-color: #1e1e1e;
+  border: 1px solid #333;
+}
+
+.dark-mode .verification-section {
+  background-color: #2d2d2d;
+  border: 1px solid #3a3a3a;
+}
+
+.dark-mode .verification-section h3 {
+  color: #bb86fc;
+}
+
+.dark-mode .instruction-text {
+  color: #b0b0b0;
+}
+
+.dark-mode input {
+  background-color: #333;
+  color: #ffffff;
+  border: 1px solid #444;
+}
+
+.dark-mode input:focus {
+  border-color: #bb86fc;
+  box-shadow: 0 0 0 2px rgba(187, 134, 252, 0.3);
+}
+
+.dark-mode input::placeholder {
+  color: #888;
+}
+
+.dark-mode .transaction-info {
+  color: #b0b0b0;
+  border-top: 1px solid #3a3a3a;
+}
+
+/* Buttons Dark Mode */
+.dark-mode .primary-btn {
+  background-color: #bb86fc;
+  color: #121212;
+}
+
+.dark-mode .primary-btn:hover {
+  background-color: #a370e0;
+}
+
+.dark-mode .primary-btn:disabled {
+  background-color: #3a3a3a;
+  color: #666;
+}
+
+/* Toast Notifications */
+.dark-mode .Toastify__toast {
+  background-color: #2d2d2d;
+  color: #e0e0e0;
+}
+
+.dark-mode .Toastify__toast-body {
+  color: #e0e0e0;
+}
+
+.dark-mode .Toastify__progress-bar {
+  background: #bb86fc;
+}
+
+/* Responsive adjustments for dark mode */
+@media (max-width: 768px) {
+  .dark-mode .verification-container {
+    background-color: #121212;
+  }
+  
+  .dark-mode .verification-content {
+    border: none;
+  }
 }
 
 /* Responsive Styles */

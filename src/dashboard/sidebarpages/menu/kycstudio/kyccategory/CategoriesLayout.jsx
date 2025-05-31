@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import Marquee from "react-fast-marquee";
 import { categories } from "./categories";
 import PersonalVerification from "./persnlverif/PersonalVerification";
-import Education from "./education/Education";
 import Vahan from "./vahan/Vahan";
 import CorporateVerification from "./corporateverif/CorporateVerification";
 import Operator from "./operator/Operator";

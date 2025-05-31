@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { baseUrl, decryptText, encryptText } from "../../../encryptDecrypt";
 import "./Myprofile.css";
 
-const Myprofile = () => {
+const Myprofile = ({ darkMode }) => {
   const token = localStorage.getItem("userToken");
   const [image, setImage] = useState(null);
   const [profileData, setProfileData] = useState(null);
@@ -35,7 +35,6 @@ const Myprofile = () => {
   });
   const navigate = useNavigate();
 
-  // Image Upload
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -43,7 +42,6 @@ const Myprofile = () => {
     }
   };
 
-  // ____________________Fetch Profile Data_______________________
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -56,7 +54,6 @@ const Myprofile = () => {
 
         if (data.status === "success") {
           setProfileData(data.data);
-          // Initialize form data with profile data
           const nameParts = data.data.name?.split(" ") || ["", ""];
           setFormData({
             name: {
@@ -146,7 +143,6 @@ const Myprofile = () => {
     }
 
     try {
-      // Prepare the data for API
       const fullName =
         `${formData.name.first} ${formData.name.middle ? formData.name.middle + " " : ""}${formData.name.last}`.trim();
 
@@ -161,7 +157,6 @@ const Myprofile = () => {
         gstNo: formData.gstNo,
       };
 
-      // Encrypt the data before sending
       const encryptedData = await encryptText(updateData);
 
       const res = await axios.put(
@@ -172,26 +167,17 @@ const Myprofile = () => {
 
       const decryptedResponse = await decryptText(res.data.body);
       const responseData = JSON.parse(decryptedResponse);
-      console.log(responseData, "responseData");
       toast.success(responseData.message);
       navigate("/Maindashboard/verification");
-
-      // if (responseData.status === "success") {
-      //   toast.success("Profile updated successfully");
-      //   navigate("/Maindashboard/verification");
-      // } else {
-      //   throw new Error(responseData.message || "Failed to update profile");
-      // }
     } catch (err) {
       const decryptedResponse = await decryptText(err?.res?.data?.body);
       const responseData = JSON.parse(decryptedResponse);
-      console.log(responseData, "responseData");
       toast.error(responseData.message);
     }
   };
 
   return (
-    <div className="kyc-container">
+    <div className={`kyc-container ${darkMode ? 'dark-mode' : ''}`}>
       <div className="stepper">
         <div className="step active">1</div>
         <div className="line"></div>
@@ -200,171 +186,173 @@ const Myprofile = () => {
         <div className="step">3</div>
       </div>
 
-      <div className="form-section">
-        <h2>Personal Information</h2>
-        <div className="profile-img-upload">
-          {image ? (
-            <img src={image} alt="Profile" className="uploaded-img" />
-          ) : (
-            <div className="image-placeholder">NO IMAGE AVAILABLE</div>
-          )}
-          <label className="upload-icon">
-            📷
+      <div className="form-content">
+        <div className="form-section">
+          <h2>Personal Information</h2>
+          <div className="profile-img-upload">
+            {image ? (
+              <img src={image} alt="Profile" className="uploaded-img" />
+            ) : (
+              <div className="image-placeholder">NO IMAGE</div>
+            )}
+            <label className="upload-icon">
+              📷
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                style={{ display: "none" }}
+              />
+            </label>
+          </div>
+          <div className="form-row">
             <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageUpload}
-              style={{ display: "none" }}
+              type="text"
+              placeholder="First Name *"
+              value={formData.name.first}
+              onChange={(e) => handleNameChange(e, "first")}
             />
-          </label>
+            <input
+              type="text"
+              placeholder="Middle Name"
+              value={formData.name.middle}
+              onChange={(e) => handleNameChange(e, "middle")}
+            />
+            <input
+              type="text"
+              placeholder="Last Name *"
+              value={formData.name.last}
+              onChange={(e) => handleNameChange(e, "last")}
+            />
+          </div>
+          <div className="form-row">
+            <input
+              type="tel"
+              placeholder="Mobile Number *"
+              value={formData.mobile}
+              onChange={(e) => handleInputChange(e, null, "mobile")}
+            />
+            <input
+              type="email"
+              placeholder="Email *"
+              value={formData.email}
+              onChange={(e) => handleInputChange(e, null, "email")}
+            />
+          </div>
         </div>
-        <div className="form-row">
-          <input
-            type="text"
-            placeholder="First Name *"
-            value={formData.name.first}
-            onChange={(e) => handleNameChange(e, "first")}
-          />
-          <input
-            type="text"
-            placeholder="Middle Name"
-            value={formData.name.middle}
-            onChange={(e) => handleNameChange(e, "middle")}
-          />
-          <input
-            type="text"
-            placeholder="Last Name *"
-            value={formData.name.last}
-            onChange={(e) => handleNameChange(e, "last")}
-          />
-        </div>
-        <div className="form-row">
-          <input
-            type="tel"
-            placeholder="Mobile Number *"
-            value={formData.mobile}
-            onChange={(e) => handleInputChange(e, null, "mobile")}
-          />
-          <input
-            type="email"
-            placeholder="Email *"
-            value={formData.email}
-            onChange={(e) => handleInputChange(e, null, "email")}
-          />
-        </div>
-      </div>
 
-      <div className="form-section">
-        <h2>Company Information</h2>
-        <div className="form-row">
-          <input
-            type="text"
-            placeholder="Company Name *"
-            value={formData.companyName}
-            onChange={(e) => handleInputChange(e, null, "companyName")}
-          />
+        <div className="form-section">
+          <h2>Company Information</h2>
+          <div className="form-row">
+            <input
+              type="text"
+              placeholder="Company Name *"
+              value={formData.companyName}
+              onChange={(e) => handleInputChange(e, null, "companyName")}
+            />
+          </div>
+          <div className="form-row">
+            <input
+              type="text"
+              placeholder="Address Line 1 *"
+              value={formData.companyAddress.line1}
+              onChange={(e) => handleInputChange(e, "companyAddress", "line1")}
+            />
+            <input
+              type="text"
+              placeholder="Address Line 2"
+              value={formData.companyAddress.line2}
+              onChange={(e) => handleInputChange(e, "companyAddress", "line2")}
+            />
+          </div>
+          <div className="form-row">
+            <input
+              type="text"
+              placeholder="Pincode *"
+              value={formData.companyAddress.pincode}
+              onChange={(e) => handleInputChange(e, "companyAddress", "pincode")}
+            />
+            <input
+              type="text"
+              placeholder="State *"
+              value={formData.companyAddress.state}
+              onChange={(e) => handleInputChange(e, "companyAddress", "state")}
+            />
+          </div>
+          <div className="form-row">
+            <input
+              type="text"
+              placeholder="City *"
+              value={formData.companyAddress.city}
+              onChange={(e) => handleInputChange(e, "companyAddress", "city")}
+            />
+            <input
+              type="text"
+              placeholder="Country *"
+              value={formData.companyAddress.country}
+              onChange={(e) => handleInputChange(e, "companyAddress", "country")}
+            />
+          </div>
         </div>
-        <div className="form-row">
-          <input
-            type="text"
-            placeholder="Address Line 1 *"
-            value={formData.companyAddress.line1}
-            onChange={(e) => handleInputChange(e, "companyAddress", "line1")}
-          />
-          <input
-            type="text"
-            placeholder="Address Line 2"
-            value={formData.companyAddress.line2}
-            onChange={(e) => handleInputChange(e, "companyAddress", "line2")}
-          />
-        </div>
-        <div className="form-row">
-          <input
-            type="text"
-            placeholder="Pincode *"
-            value={formData.companyAddress.pincode}
-            onChange={(e) => handleInputChange(e, "companyAddress", "pincode")}
-          />
-          <input
-            type="text"
-            placeholder="State *"
-            value={formData.companyAddress.state}
-            onChange={(e) => handleInputChange(e, "companyAddress", "state")}
-          />
-        </div>
-        <div className="form-row">
-          <input
-            type="text"
-            placeholder="City *"
-            value={formData.companyAddress.city}
-            onChange={(e) => handleInputChange(e, "companyAddress", "city")}
-          />
-          <input
-            type="text"
-            placeholder="Country *"
-            value={formData.companyAddress.country}
-            onChange={(e) => handleInputChange(e, "companyAddress", "country")}
-          />
-        </div>
-      </div>
 
-      <div className="form-section">
-        <h2>Billing Information</h2>
-        <div className="form-row">
-          <input
-            type="text"
-            placeholder="Certificate No"
-            value={formData.certificateNo}
-            onChange={(e) => handleInputChange(e, null, "certificateNo")}
-          />
-          <input
-            type="text"
-            placeholder="GST No"
-            value={formData.gstNo}
-            onChange={(e) => handleInputChange(e, null, "gstNo")}
-          />
-        </div>
-        <div className="form-row">
-          <input
-            type="text"
-            placeholder="Address Line 1 *"
-            value={formData.billingAddress.line1}
-            onChange={(e) => handleInputChange(e, "billingAddress", "line1")}
-          />
-          <input
-            type="text"
-            placeholder="Address Line 2"
-            value={formData.billingAddress.line2}
-            onChange={(e) => handleInputChange(e, "billingAddress", "line2")}
-          />
-        </div>
-        <div className="form-row">
-          <input
-            type="text"
-            placeholder="Pincode *"
-            value={formData.billingAddress.pincode}
-            onChange={(e) => handleInputChange(e, "billingAddress", "pincode")}
-          />
-          <input
-            type="text"
-            placeholder="State *"
-            value={formData.billingAddress.state}
-            onChange={(e) => handleInputChange(e, "billingAddress", "state")}
-          />
-        </div>
-        <div className="form-row">
-          <input
-            type="text"
-            placeholder="City *"
-            value={formData.billingAddress.city}
-            onChange={(e) => handleInputChange(e, "billingAddress", "city")}
-          />
-          <input
-            type="text"
-            placeholder="Country *"
-            value={formData.billingAddress.country}
-            onChange={(e) => handleInputChange(e, "billingAddress", "country")}
-          />
+        <div className="form-section">
+          <h2>Billing Information</h2>
+          <div className="form-row">
+            <input
+              type="text"
+              placeholder="Certificate No"
+              value={formData.certificateNo}
+              onChange={(e) => handleInputChange(e, null, "certificateNo")}
+            />
+            <input
+              type="text"
+              placeholder="GST No"
+              value={formData.gstNo}
+              onChange={(e) => handleInputChange(e, null, "gstNo")}
+            />
+          </div>
+          <div className="form-row">
+            <input
+              type="text"
+              placeholder="Address Line 1 *"
+              value={formData.billingAddress.line1}
+              onChange={(e) => handleInputChange(e, "billingAddress", "line1")}
+            />
+            <input
+              type="text"
+              placeholder="Address Line 2"
+              value={formData.billingAddress.line2}
+              onChange={(e) => handleInputChange(e, "billingAddress", "line2")}
+            />
+          </div>
+          <div className="form-row">
+            <input
+              type="text"
+              placeholder="Pincode *"
+              value={formData.billingAddress.pincode}
+              onChange={(e) => handleInputChange(e, "billingAddress", "pincode")}
+            />
+            <input
+              type="text"
+              placeholder="State *"
+              value={formData.billingAddress.state}
+              onChange={(e) => handleInputChange(e, "billingAddress", "state")}
+            />
+          </div>
+          <div className="form-row">
+            <input
+              type="text"
+              placeholder="City *"
+              value={formData.billingAddress.city}
+              onChange={(e) => handleInputChange(e, "billingAddress", "city")}
+            />
+            <input
+              type="text"
+              placeholder="Country *"
+              value={formData.billingAddress.country}
+              onChange={(e) => handleInputChange(e, "billingAddress", "country")}
+            />
+          </div>
         </div>
       </div>
 

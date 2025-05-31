@@ -10,7 +10,7 @@ import {
 } from "../../../../../encryptDecrypt";
 import { jsPDF } from "jspdf";
 
-const Apicredential = () => {
+const Apicredential = ({darkMode}) => {
   const token = localStorage.getItem("userToken");
   const [showForm, setShowForm] = useState(false);
   const [credentials, setCredentials] = useState([]);
@@ -155,7 +155,7 @@ const Apicredential = () => {
   };
 
   return (
-    <section className="apicredential">
+<section className={`apicredential ${darkMode ? "dark-mode" : ""}`}>
       <div className="top-apicredential-container">
         <div className="top-apicredential-header">
           <h1 className="apicredential-title">API Credential</h1>
@@ -243,19 +243,19 @@ const Apicredential = () => {
           {credentials.map((cred) => (
             <div key={cred.apiKey} className="apicredential-card">
               <h3>{cred.description}</h3>
-              <p>
+              <p className='apicredential-para-card-layout'>
                 <strong>SR.NO:</strong> {cred.id}
               </p>
-              <p>
+              <p  className='apicredential-para-card-layout'>
                 <strong>Created At:</strong> {cred.createdAt}
               </p>
-              <p>
+              <p  className='apicredential-para-card-layout'>
                 <strong>API Key:</strong> {cred.apiKey}
               </p>
-              <p>
+              <p  className='apicredential-para-card-layout'>
                 <strong>IV:</strong> {cred.iv}
               </p>
-              <p>
+              <p  className='apicredential-para-card-layout'> 
                 <strong>Encryption Key:</strong> {cred.encryptionKey}
               </p>
             </div>

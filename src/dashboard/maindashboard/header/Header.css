@@ -83,9 +83,23 @@
   transition: var(--transition);
 }
 
+.profile-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.8rem;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.profile-of-header {
+  position: relative;
+}
+
 /* Theme Toggle Button */
 .theme-toggle-wrapper .theme-toggle {
-  --toggle-size: 34px;
+  --toggle-size: 23px;
   width: var(--toggle-size);
   height: var(--toggle-size);
   border-radius: 50%;
@@ -107,11 +121,7 @@
 }
 
 /* Adjust icon size inside toggle */
-.theme-toggle-wrapper .theme-toggle svg {
-  width: calc(var(--toggle-size) - 8px);
-  height: calc(var(--toggle-size) - 8px);
-  color: white;
-}
+
 
 /* Hover effects */
 .theme-toggle-wrapper .theme-toggle:hover {
@@ -153,8 +163,28 @@
 
 /* Profile dropdown */
 .profile-dropdown {
+   display: flex;
+  align-items: center;
+  gap: 5px;
   position: relative;
-  display: inline-block;
+  padding-right: 10px;
+  border-radius: 40px;
+  border: gray 1px solid;
+}
+
+/* .header-notification-icon-wrapper {
+  margin-right: 10px;
+} */
+
+.header-notification-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 5px;
+  display: flex;
+  align-items: center;
 }
 
 .dropdown-content {
@@ -168,6 +198,31 @@
   border-radius: 4px;
   overflow: hidden;
   margin-top: 5px;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  text-decoration: none;
+  color: #333;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+}
+
+.dropdown-item:hover {
+  background-color: #f5f5f5;
+}
+
+.dropdown-icon {
+  margin-right: 10px;
+  width: 16px;
+  text-align: center;
 }
 
 .My-profile-dropdown-header {
@@ -204,6 +259,24 @@
 
 .app.dark-mode .My-profile-dropdown-header:hover {
   background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* css of notification sidebar open Header */
+
+/* Animation for notification sidebar */
+.notification-sidebar-enter {
+  transform: translateX(100%);
+}
+.notification-sidebar-enter-active {
+  transform: translateX(0);
+  transition: transform 300ms ease-in-out;
+}
+.notification-sidebar-exit {
+  transform: translateX(0);
+}
+.notification-sidebar-exit-active {
+  transform: translateX(100%);
+  transition: transform 300ms ease-in-out;
 }
 
 /* ____________Responsive adjustments_________________ */
@@ -462,3 +535,4 @@
   transition: var(--transition);
 }
 }
+

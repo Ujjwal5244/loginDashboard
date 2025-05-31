@@ -390,12 +390,6 @@ const Myteam = ({darkMode}) => {
 
       {/* Header Section */}
       <div className="kyc-page-header">
-        {/* <div className="kyc-header-left">
-          <h1 className="kyc-page-title">Team KYC Management</h1>
-          <p className="kyc-page-description">
-            Manage and verify your team members' KYC status with ease
-          </p>
-        </div> */}
         <div className="team-kyc-header-right">
           <div className="team-kyc-search-container">
             <FiSearch className="team-kyc-search-icon" />
@@ -450,6 +444,7 @@ const Myteam = ({darkMode}) => {
       {/* Table Section */}
       <div className="kyc-table-wrapper">
         {/* Desktop Table */}
+          <div className="kyc-table-scroll-container">
         <table className="kyc-data-table">
       <thead>
         <tr>
@@ -638,6 +633,8 @@ const Myteam = ({darkMode}) => {
         )}
       </tbody>
     </table>
+      </div>
+
 
         {/* Mobile Cards - Hidden on desktop */}
         <div className="kyc-mobile-cards">

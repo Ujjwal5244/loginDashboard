@@ -6,40 +6,61 @@
     -apple-system,
     BlinkMacSystemFont,
     sans-serif;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 100px);
+  overflow: hidden;
+  /* background-color: #175ba5; */
   padding: 1rem;
-  /* background-color: #3470b2; */
 }
 
-/* Default styles for 800px and above (row layout) */
+/* Table container with fixed height and scroll */
+.rolemanagement-container2 {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid gray;
+}
+
+.role-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.role-table thead {
+  position: sticky;
+  top: 0;
+  background-color: #3470b2;
+  z-index: 10;
+  color: white;
+}
+
+.role-table tbody {
+  display: block;
+  overflow-y: auto;
+  max-height: calc(100vh - 350px);
+}
+
+.role-table tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+/* Header Section */
 .rolemanagement-container1 {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  background: white;
+  /* background: white; */
   border-radius: 12px;
-  margin-bottom: 1.5rem;
-  /* padding: 1rem; */
+  /* margin-bottom: 1.5rem; */
   gap: 1rem;
 }
-
-/* .rolemanagement-container1-left h1 {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #111827;
-  margin-bottom: 0.5rem;
-  font-family: "Plus Jakarta Sans", sans-serif;
-  letter-spacing: -0.025em;
-}
-
-.rolemanagement-container1-left p {
-  font-size: 0.875rem;
-  color: #6b7280;
-  margin: 0;
-  font-weight: 400;
-  letter-spacing: 0.01em;
-  line-height: 1.5;
-} */
 
 .rolemanagement-container1-right {
   display: flex;
@@ -64,6 +85,7 @@
   height: 18px;
   margin-top: -15px;
 }
+
 .rolemanagement-container1-right-search-input {
   padding: 0.75rem 1.5rem 0.75rem 2.5rem;
   border: 1px solid #e5e7eb;
@@ -91,7 +113,8 @@
 }
 
 .rolemanagement-right-add-button {
-  display: flex;}
+  display: flex;
+}
 
 .rolemanagement-container1-right-add-button {
   background-color: #3470b2;
@@ -121,41 +144,25 @@
   transform: scale(0.98);
 }
 
-/* .rolemanagement-container2 {
-  background: white;
-  border-radius: 12px;
-  border: 1px solid #e5e7eb;
-  min-height: 400px;
-  padding: 1.25rem;
-} */
-
-/* Table Styles */
-.role-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.9rem;
-  margin-bottom: 1rem;
+/* Table Cells */
+.role-table th,
+.role-table td {
+  padding: 0.75rem;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .role-table th {
   text-align: left;
-  padding: 1rem;
   font-weight: 600;
-  color: #374151;
-  background-color: #f9fafb;
-  border-bottom: 1px solid #e5e7eb;
+  color: white;
 }
 
 .role-table td {
-  padding: 1rem;
-  border-bottom: 1px solid #e5e7eb;
   color: #4b5563;
 }
-
-.role-table tr:hover {
-  background-color: #f9fafb;
-}
-
 .sort-icon {
   margin-left: 0.25rem;
   font-size: 0.75rem;
@@ -251,12 +258,14 @@ input:checked + .slider:before {
 
 /* Table Footer */
 .Rolemanagement-table-footer-pagination-container {
+  position: sticky;
+  bottom: 0;
+  background-color: white;
+  padding: 1rem;
+  border-top: 1px solid #e5e7eb;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 0;
-  font-size: 0.875rem;
-  color: #6b7280;
   flex-wrap: wrap;
   gap: 1rem;
 }
@@ -267,7 +276,7 @@ input:checked + .slider:before {
   gap: 0.5rem;
 }
 
-.rows-per-page select {
+.Rolemanagement-pagination-rows-per-page-select {
   padding: 0.375rem 0.75rem;
   border: 1px solid #e5e7eb;
   border-radius: 4px;
@@ -279,6 +288,7 @@ input:checked + .slider:before {
 .Rolemanagement-pagination-rows-per-page-select:hover {
   border-color: #9ca3af;
 }
+
 .Rolemanagemen-table-footer-pagination-showing-entries {
   margin: 0 1rem;
 }
@@ -466,21 +476,20 @@ input:checked + .slider:before {
   background: #2563eb;
 }
 
-/* ____________________________dark mode css________________________________  */
-
-/* Dark Mode Styles */
+/* __________________________Dark Mode Styles__________________________ */
 .main-rolemanagement.dark-mode {
-  /* background-color: #1a202c; */
   color: #e2e8f0;
 }
 
-/* Header */
 .rolemanagement-container1.dark {
   background-color: #111827;
   color: #e2e8f0;
 }
 
-/* Table */
+.dark-mode .rolemanagement-container2 {
+  background-color: #111827;
+}
+
 .dark-mode .role-table {
   color: #e2e8f0;
 }
@@ -500,7 +509,6 @@ input:checked + .slider:before {
   background-color: #2d3748;
 }
 
-/* Search Input */
 .dark-mode .rolemanagement-container1-right-search input {
   background-color: #2d3748;
   border-color: #4a5568;
@@ -517,7 +525,6 @@ input:checked + .slider:before {
   color: #a0aec0;
 }
 
-/* Buttons */
 .dark-mode .rolemanagement-container1-right-add-button {
   background-color: #4299e1;
 }
@@ -526,7 +533,11 @@ input:checked + .slider:before {
   background-color: #3182ce;
 }
 
-/* Pagination */
+.dark-mode .Rolemanagement-table-footer-pagination-container {
+  background-color: #111827;
+  border-top-color: #4a5568;
+}
+
 .dark-mode .Rolemanagement-table-footer-pagination-button {
   background-color: #2d3748;
   border-color: #4a5568;
@@ -551,7 +562,6 @@ input:checked + .slider:before {
   color: #e2e8f0;
 }
 
-/* Modal */
 .dark-mode .add-role-modal {
   background-color: #2d3748;
   color: #e2e8f0;
@@ -584,90 +594,35 @@ input:checked + .slider:before {
   background-color: #4a5568;
 }
 
-/* Switch */
 .dark-mode .slider {
   background-color: #4a5568;
 }
 
-/* Responsive table cards */
 .dark-mode .role-table tr {
   background-color: #2d3748;
   border-color: #4a5568;
-}
-
-.dark-mode .role-table td {
-  border-bottom-color: #4a5568;
 }
 
 .dark-mode .role-table td::before {
   color: #e2e8f0;
 }
 
-/* No results */
 .dark-mode .no-results td {
   color: #a0aec0;
 }
-/* ____________________________end of dark mode css________________________________  */
 
-
-/* Styles for screens less than 800px (column layout) */
-@media (max-width: 768px) {
-  .rolemanagement-container1 {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 1.5rem;
-    width: full;
-  }
-  /* .rolemanagement-container1-left {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    text-align: center;
-    width: 100%;
-  }
-
-  .rolemanagement-container1-left h1 {
-    font-size: 1.75rem;
-    text-align: center;
-  } */
-
-  .rolemanagement-container1-right {
-    flex-direction: column;
-    width: 100%;
-    gap: 1rem;
-  }
-
-  .rolemanagement-container1-right-search {
-    width: 100%;
-  }
-
-  .rolemanagement-container1-right-search input {
-    width: 100% !important;
-  }
-
-  .rolemanagement-container1-right-search input:focus {
-    width: 100% !important;
-  }
-
-  .rolemanagement-right-add-button {
-    width: 100%;
-  }
-
-  .rolemanagement-container1-right-add-button {
-    width: 100% !important;
-  }
-}
-
-/* --------this  styles only for tables, remain the same until the media queries----------- */
-
+/* _____________________________Responsive Styles_______________________ */
 /* Responsive Table Styles */
 @media (max-width: 768px) {
+  .rolemanagement-container2 {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+      border: none;
+
+  }
+
   .role-table {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
+    display: block;
     width: 100%;
   }
 
@@ -676,89 +631,18 @@ input:checked + .slider:before {
   }
 
   .role-table tbody {
-    display: contents;
+    display: block;
+    max-height: none;
   }
 
   .role-table tr {
-    display: flex;
-    flex-direction: column;
+    display: block;
+    width: 100%;
+    margin-bottom: 1rem;
     background: white;
     border: 1px solid #e5e7eb;
-    border-radius: 12px;
-    padding: 1rem;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-    transition:
-      transform 0.2s ease,
-      box-shadow 0.2s ease;
-  }
-
-  .role-table tr:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
-  }
-
-  .role-table td {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.5rem 0;
-    border-bottom: 1px solid #f3f4f6;
-  }
-
-  .role-table td:last-child {
-    border-bottom: none;
-  }
-
-  .role-table td::before {
-    content: attr(data-label);
-    font-weight: 600;
-    color: #374151;
-    text-align: left;
-    flex: 1;
-  }
-
-  /* Add labels manually for accessibility */
-  .role-table td:nth-child(1)::before {
-    content: "SR.NO.";
-  }
-  .role-table td:nth-child(2)::before {
-    content: "ROLENAME";
-  }
-  .role-table td:nth-child(3)::before {
-    content: "ROLEDESCRIPTION";
-  }
-  .role-table td:nth-child(4)::before {
-    content: "ROLESTATUS";
-  }
-  .role-table td:nth-child(5)::before {
-    content: "ACTIONS";
-  }
-}
-
-@media (max-width: 500px) {
-  /* Small screens - transform table into card layout */
-  .role-table {
-    width: 100%;
-    min-width: 0;
-    display: block;
-  }
-
-  .role-table thead {
-    display: none;
-  }
-
-  .role-table tbody {
-    display: block;
-    width: 100%;
-  }
-
-  .role-table tr {
-    display: block;
-    margin-bottom: 1rem;
-    padding: 1rem;
-    border: 1px solid #e5e7eb;
     border-radius: 8px;
-    background-color: white;
+    padding: 1rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
 
@@ -768,8 +652,9 @@ input:checked + .slider:before {
     align-items: center;
     padding: 0.5rem 0;
     border-bottom: 1px solid #f3f4f6;
-    color: #4b5563;
     text-align: right;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .role-table td:last-child {
@@ -790,26 +675,54 @@ input:checked + .slider:before {
     content: "SR.NO.";
   }
   .role-table td:nth-child(2)::before {
-    content: "ROLENAME";
+    content: "Role Name";
   }
   .role-table td:nth-child(3)::before {
-    content: "ROLEDESCRIPTION";
+    content: "Description";
   }
   .role-table td:nth-child(4)::before {
-    content: "ROLESTATUS";
+    content: "Status";
   }
   .role-table td:nth-child(5)::before {
-    content: "ACTIONS";
+    content: "Actions";
   }
 
   /* Special styling for the switch */
   .role-table td:nth-child(4) {
-    justify-content: flex-end;
+    justify-content: space-between;
   }
 
   /* Adjust actions */
   .actions {
     justify-content: flex-end;
+  }
+}
+
+@media (max-width: 500px) {
+  .rolemanagement-container1 {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .rolemanagement-container1-right {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .rolemanagement-container1-right-search {
+    width: 100%;
+  }
+
+  .rolemanagement-container1-right-search-input {
+    width: 100% !important;
+  }
+
+  .rolemanagement-right-add-button {
+    width: 100%;
+  }
+
+  .rolemanagement-container1-right-add-button {
+    width: 100% !important;
   }
 
   /* Footer adjustments */
@@ -826,34 +739,6 @@ input:checked + .slider:before {
 
   .Rolemanagement-table-footer-pagination {
     justify-content: center;
-  }
-
-  /* Modal adjustments */
-  .add-role-modal {
-    margin: 0 1rem;
-  }
-
-  /* Header adjustments */
-  .rolemanagement-container1 {
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .rolemanagement-container1-right {
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .rolemanagement-container1-right-search {
-    width: 100%;
-  }
-
-  .rolemanagement-right-add-button {
-    width: 100%;
-  }
-
-  .rolemanagement-container1-right-add-button {
-    width: 100%;
   }
 }
 

@@ -36,6 +36,8 @@ import Agreement from "./dashboard/headerpages/myprofile/Agreement";
 import KycStudio from "./dashboard/sidebarpages/menu/kycstudio/KycStudio";
 import Createfile from "./dashboard/headerpages/createdocumentpage/Createfile";
 import Requestfile from "./dashboard/headerpages/createdocumentpage/request/Requestfile";
+import Approve from "./dashboard/headerpages/createdocumentpage/aprove/Approve";
+import Allinvites from "./dashboard/headerpages/createdocumentpage/allinvities/Allinvities";
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -77,20 +79,34 @@ function App() {
               element={<Rolemanagement darkMode={darkMode} />}
             />
             <Route path="my-team" element={<Myteam darkMode={darkMode} />} />
-            <Route path="ip-whitelist" element={<Ipwhitelist />} />
-            <Route path="webhooks" element={<Webhooks />} />
-            <Route path="logs" element={<Logs />} />
-            <Route path="api-credential" element={<Apicredential />} />
+            <Route
+              path="ip-whitelist"
+              element={<Ipwhitelist darkMode={darkMode} />}
+            />
+            <Route path="webhooks" element={<Webhooks darkMode={darkMode} />} />
+            <Route path="logs" element={<Logs darkMode={darkMode} />} />
+            <Route
+              path="api-credential"
+              element={<Apicredential darkMode={darkMode} />}
+            />
             <Route
               path="kycstudio"
               element={<KycStudio darkMode={darkMode} />}
             />
 
-            <Route path="transactionhistory" element={<Transactionhistory />} />
+            <Route
+              path="transactionhistory"
+              element={<Transactionhistory darkMode={darkMode} />}
+            />
             <Route path="signed-agreement" element={<SignedAgreement />} />
             <Route path="yourkyc" element={<Yourkyc />} />
             {/* ---------------------all email pagese routes--------------------------- */}
             <Route
+              path="email"
+              element={<Emaildashboard darkMode={darkMode} />}
+            />
+
+            {/* <Route
               path="Email"
               element={
                 <Emaildashboard sidebarOpen={sidebarOpen} darkMode={darkMode} />
@@ -103,20 +119,28 @@ function App() {
               <Route path="starred" element={<Starred />} />
               <Route path="drafts" element={<Drafts />} />
               <Route path="compose" element={<Compose />} />
-            </Route>
+            </Route> */}
             {/* ---------------------end email pagese routes--------------------------- */}
             <Route path="completed" element={<Completed />} />
             <Route path="setting" element={<Setting />} />
 
-            <Route path="myprofile" element={<Myprofile />} />
-            <Route path="verification" element={<Verification />} />
+            <Route
+              path="myprofile"
+              element={<Myprofile darkMode={darkMode} />}
+            />
+            <Route
+              path="verification"
+              element={<Verification darkMode={darkMode} />}
+            />
             <Route path="sign-agreement" element={<Agreement />} />
-            <Route path="pdf-sign" element={<PdfSign />} />
+            <Route path="pdf-sign" element={<PdfSign darkMode={darkMode} />} />
             <Route path="kycstatus" element={<Kycstatus />} />
             <Route path="mobilemenu" element={<MobileMenu />} />
             {/* ---------------------create header pagese routes--------------------------- */}
             <Route path="createfile" element={<Createfile />} />
             <Route path="requestfile" element={<Requestfile />} />
+            <Route path="approve" element={<Approve />} />
+            <Route path="allinvities" element={<Allinvites />} />
           </Route>
         </Routes>
       </div>

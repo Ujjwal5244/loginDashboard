@@ -5,21 +5,6 @@
   margin: 0 auto;
 }
 
-/* .title {
-  font-size: 28px;
-  font-weight: 600;
-  margin-bottom: 5px;
-}
-body.darkMode .title {
-  color: white;
-}
-
-.subtitle {
-  color: #7f8c8d;
-  margin-bottom: 25px;
-  font-size: 14px;
-} */
-
 .top-bar {
   display: flex;
   justify-content: space-between;
@@ -82,7 +67,7 @@ body.darkMode .title {
   border: 1px solid #eee;
 }
 
-.add-ip-form h3 {
+.add-ip-form-h3{
   margin-top: 0;
   color: #2c3e50;
   font-size: 18px;
@@ -93,11 +78,11 @@ body.darkMode .title {
   margin-bottom: 15px;
 }
 
-.form-group label {
+.ipwhitelist-form-group-label{
   display: block;
   margin-bottom: 5px;
   font-weight: 500;
-  color: #555;
+  color: #222121;
 }
 
 .form-group input {
@@ -138,6 +123,14 @@ body.darkMode .title {
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 210px);
+}
+
+.ip-table-wrapper {
+  overflow-y: auto;
+  flex-grow: 1;
 }
 
 .ip-table {
@@ -146,8 +139,11 @@ body.darkMode .title {
 }
 
 .ip-table thead {
+  position: sticky;
+  top: 0;
   background-color: #3470b2;
   color: white;
+  z-index: 10;
 }
 
 .ip-table th {
@@ -357,6 +353,143 @@ body.darkMode .title {
   color: #64748b;
 }
 
+/* ___________________________________Dark Mode Styles________________________________ */
+.ip-management-container.dark {
+  background-color: #111827;
+  color: #e0e0e0;
+}
+
+.ip-management-container.dark .title,
+.ip-management-container.dark .subtitle {
+  color: #ffffff;
+}
+
+/* Search and Add Button */
+.ip-management-container.dark .ip-search-input {
+  background-color: #2E3440;
+  color: white;
+  border-color: #444;
+}
+
+.ip-search-icon.dark {
+  color: white;
+}
+
+.ip-management-container.dark .add-ip-btn {
+  background-color: orange;
+  color: white;
+  border-color: #444;
+}
+
+
+/* Add IP Form */
+.ip-management-container.dark .add-ip-form {
+  background-color: #2d3748;
+  border-color: #444;
+}
+
+.ip-management-container.dark .add-ip-form-h3{
+  color: #e421ca;
+}
+
+.ip-management-container.dark .form-group input {
+  background-color: #3a3a3a;
+  color: #e0e0e0;
+  border-color: #444;
+}
+.dark .form-group label {
+color: white;
+}
+
+.ip-management-container.dark .cancel-btn {
+  background-color: #4a4a4a;
+  color: #e0e0e0;
+}
+
+.ip-management-container.dark .submit-btn {
+  background-color: #1e88e5;
+  color: white;
+}
+
+/* Table Styles */
+.ip-management-container.dark .ip-table {
+  background-color: #2d3748;
+  color: white;
+}
+
+.ip-management-container.dark .ip-table th {
+  background-color: #2a2634;
+  color: white;
+  border-color: #444;
+}
+
+.ip-management-container.dark .ip-table td {
+  background-color: #2d3748;
+  color: white;
+}
+
+.ip-management-container.dark .ip-table tr:nth-child(even) {
+  background-color: #333333;
+}
+
+.ip-management-container.dark .ip-table tr:hover {
+  background-color: #3a3a3a;
+}
+
+/* Edit Inputs */
+.ip-management-container.dark .edit-input {
+  background-color: #3a3a3a;
+  color: #e0e0e0;
+  border-color: #555;
+}
+
+/* Buttons */
+.ip-management-container.dark .edit-btn,
+.ip-management-container.dark .delete-btn,
+.ip-management-container.dark .save-btn,
+.ip-management-container.dark .cancel-edit-btn {
+  background-color: transparent;
+  color: #e0e0e0;
+}
+
+/* Pagination */
+.dark .ip-whitelist-entries-info{
+  color: #ff9800;
+}
+.dark .ip-whitelist-items-per-page{
+  color: #ff9800;
+}
+.dark .ip-whitelist-page-navigation-span{
+  color: #ff9800;
+}
+
+/* Mobile Cards */
+.ip-management-container.dark .ip-card {
+  background-color: #2d2d2d;
+  border-color: #444;
+}
+
+.ip-management-container.dark .ip-card-title {
+  color: #ffffff;
+}
+
+.ip-management-container.dark .ip-card-label {
+  color: #bbbbbb;
+}
+
+.ip-management-container.dark .ip-card-value {
+  color: #e0e0e0;
+}
+
+/* Loading Indicator */
+.ip-management-container.dark .loading-indicator {
+  color: #bbbbbb;
+}
+.dark .ip-whitelist-table-footer {
+background-color: #2a2634;
+}
+
+
 /* Responsive adjustments */
 @media (min-width: 768px) {
   .ip-whitelist-table-footer {
@@ -503,12 +636,4 @@ body.darkMode .title {
   .ip-card-value {
     color: #333;
   }
-}
-
-@media (max-width: 768px) {
-
-  /* .title {
-    text-align: center;
-    font-size: 20px;
-  } */
 }

@@ -4,6 +4,8 @@ import "./Header.css";
 import { FaBars, FaUserCircle } from "react-icons/fa";
 import ThemeToggle from "../ThemToggle";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { IoIosNotifications } from "react-icons/io";
+
 import {
   faUser,
   faCheckCircle,
@@ -11,9 +13,11 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { baseUrl } from "../../../encryptDecrypt";
+import NotificationSidebar from "../../headerpages/notification/NotificationSidebar";
 
 const Header = ({ toggleSidebar, darkMode, toggleDarkMode, sidebarOpen }) => {
   const [active, setActive] = useState("Home");
+  const [notificationOpen, setNotificationOpen] = useState(false);
   const pathMap = {
     home: "Home",
     analytics: "Analytics",
@@ -38,7 +42,7 @@ const Header = ({ toggleSidebar, darkMode, toggleDarkMode, sidebarOpen }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const handleClick = () => {
-    navigate('createfile'); 
+    navigate("createfile");
   };
 
   // logout api
@@ -78,85 +82,104 @@ const Header = ({ toggleSidebar, darkMode, toggleDarkMode, sidebarOpen }) => {
     });
   }, [location]);
   return (
-    <header className="header">
-      <div className="header-left">
-        <button className="toggle-btn custom-toggle" onClick={toggleSidebar}>
-          <FaBars size="20" color="white" />
-        </button>
-        <div className="nifi-logo-name">
-          <span className="logo-text">Nifi</span>
-          <span className="logo-text">Payments</span>
-        </div>
-        {/* this is mobile header toggle button when the screen size is less than 700px then show this */}
-        <button className="mobile-header-toggle-btn" onClick={handleMobileMenu}>
-          <FaBars size="22px" />
-        </button>
-        <div className="mobile-header-nifi-logo-name">
-          <span className="mobile-header-logo-text">Nifi</span>
-          <span className="mobile-header-logo-text">Payments</span>
-        </div>
-        {/* end of this is mobile header toggle button when the screen size is less than 700px then show this */}
-      </div>
-      <div className="header-center">{active}</div>
-
-      {/* _______________________header right_____________________________ */}
-      <div className="header-right">
-       <div className='create-button-of-header'>
-      <button 
-        className='create-button-of-header-button' 
-        onClick={handleClick}
-      >
-        + Create
-      </button>
-    </div>
-        <div className="theme-toggle-wrapper">
-          <ThemeToggle darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
-        </div>
-        <div className="profile-dropdown">
-          <button className="profile-btn" onClick={toggleDropdown}>
-            <FaUserCircle color="white" />
+    <>
+      <header className="header">
+        <div className="header-left">
+          <button className="toggle-btn custom-toggle" onClick={toggleSidebar}>
+            <FaBars size="20" color="white" />
           </button>
-          {dropdownOpen && (
-            <div className="dropdown-content" onMouseLeave={closeDropdown}>
-              <Link
-                to="/Maindashboard/myprofile"
-                className="My-profile-dropdown-header"
-                onClick={closeDropdown}
-              >
-                <FontAwesomeIcon
-                  icon={faUser}
-                  className="dropdown-icon-right"
-                />
-                My Profile
-              </Link>
-              <Link
-                to="/Maindashboard/kycstatus"
-                className="My-profile-dropdown-header"
-                onClick={closeDropdown}
-              >
-                <FontAwesomeIcon
-                  icon={faCheckCircle}
-                  className="dropdown-icon-right"
-                  color="green"
-                />
-                KYC Status
-              </Link>
+          <div className="nifi-logo-name">
+            <span className="logo-text">Nifi</span>
+            <span className="logo-text">Payments</span>
+          </div>
+          {/* this is mobile header toggle button when the screen size is less than 700px then show this */}
+          <button
+            className="mobile-header-toggle-btn"
+            onClick={handleMobileMenu}
+          >
+            <FaBars size="22px" />
+          </button>
+          <div className="mobile-header-nifi-logo-name">
+            <span className="mobile-header-logo-text">Nifi</span>
+            <span className="mobile-header-logo-text">Payments</span>
+          </div>
+          {/* end of this is mobile header toggle button when the screen size is less than 700px then show this */}
+        </div>
+        <div className="header-center">{active}</div>
+
+        {/* _______________________header right_____________________________ */}
+        <div className="header-right">
+          <div className="create-button-of-header">
+            <button
+              className="create-button-of-header-button"
+              onClick={handleClick}
+            >
+              + Create
+            </button>
+          </div>
+          <div className="theme-toggle-wrapper">
+            <ThemeToggle
+              darkMode={darkMode}
+              toggleDarkMode={toggleDarkMode}
+            />
+          </div>
+          {/* ________profile header___________ */}
+          <div className="profile-dropdown">
+            <div className="header-notification-icon-wrapper">
               <button
-                onClick={handleLogout}
-                className="My-profile-dropdown-header"
+                className="header-notification-btn"
+                onClick={() => setNotificationOpen(true)}
               >
-                <FontAwesomeIcon
-                  icon={faSignOutAlt}
-                  className="dropdown-icon-right"
-                  color="red"
-                />
-                Logout
+                <IoIosNotifications />
               </button>
             </div>
-          )}
+            <div className="profile-of-header">
+              <button className="profile-btn" onClick={toggleDropdown}>
+                <FaUserCircle
+                  color="white"
+                  style={{ width: "26px", height: "26px" }}
+                />
+              </button>
+              {dropdownOpen && (
+                <div className="dropdown-content" onMouseLeave={closeDropdown}>
+                  <Link
+                    to="/Maindashboard/myprofile"
+                    className="dropdown-item"
+                    onClick={closeDropdown}
+                  >
+                    <FontAwesomeIcon icon={faUser} className="dropdown-icon" />
+                    <span>My Profile</span>
+                  </Link>
+                  <Link
+                    to="/Maindashboard/kycstatus"
+                    className="dropdown-item"
+                    onClick={closeDropdown}
+                  >
+                    <FontAwesomeIcon
+                      icon={faCheckCircle}
+                      className="dropdown-icon"
+                      style={{ color: "green" }}
+                    />
+                    <span>KYC Status</span>
+                  </Link>
+                  <button onClick={handleLogout} className="dropdown-item">
+                    <FontAwesomeIcon
+                      icon={faSignOutAlt}
+                      className="dropdown-icon"
+                      style={{ color: "red" }}
+                    />
+                    <span>Logout</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
-      </div>
-    </header>
+      </header>
+      {notificationOpen && (
+        <NotificationSidebar onClose={() => setNotificationOpen(false)} />
+      )}
+    </>
   );
 };
 

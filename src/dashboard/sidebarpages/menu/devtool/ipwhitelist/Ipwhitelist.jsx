@@ -18,7 +18,7 @@ const Ipwhitelist = ({ darkMode }) => {
   const [editingId, setEditingId] = useState(null);
   const [editData, setEditData] = useState({ ip: "", description: "" });
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10); // Default items per page
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   // Fetch IPs from API
   const fetchIps = useCallback(async () => {
@@ -224,9 +224,9 @@ const Ipwhitelist = ({ darkMode }) => {
 
       {showAddForm && (
         <div className="add-ip-form">
-          <h3>Add New IP Address</h3>
+          <h3 className="add-ip-form-h3">Add New IP Address</h3>
           <div className="form-group">
-            <label>IP Address:</label>
+            <label className='ipwhitelist-form-group-label'>IP Address:</label>
             <input
               type="text"
               placeholder="e.g., 192.168.1.1"
@@ -236,7 +236,7 @@ const Ipwhitelist = ({ darkMode }) => {
             />
           </div>
           <div className="form-group">
-            <label>Description:</label>
+            <label className='ipwhitelist-form-group-label'>Description:</label>
             <input
               type="text"
               placeholder="e.g., Office network"
@@ -272,97 +272,99 @@ const Ipwhitelist = ({ darkMode }) => {
           <div className="loading-indicator">Loading IP addresses...</div>
         ) : (
           <>
-            <table className="ip-table">
-              <thead>
-                <tr>
-                  <th>SR.NO.</th>
-                  <th>IP ADDRESS</th>
-                  <th>DESCRIPTION</th>
-                  <th>ACTIONS</th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentItems.map((item, index) => (
-                  <tr key={item.id}>
-                    <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
-                    <td>
-                      {editingId === item.id ? (
-                        <input
-                          type="text"
-                          value={editData.ip}
-                          onChange={(e) =>
-                            setEditData({ ...editData, ip: e.target.value })
-                          }
-                          className="edit-input"
-                          disabled={loading}
-                        />
-                      ) : (
-                        item.ip
-                      )}
-                    </td>
-                    <td>
-                      {editingId === item.id ? (
-                        <input
-                          type="text"
-                          value={editData.description}
-                          onChange={(e) =>
-                            setEditData({
-                              ...editData,
-                              description: e.target.value,
-                            })
-                          }
-                          className="edit-input"
-                          disabled={loading}
-                        />
-                      ) : (
-                        item.description
-                      )}
-                    </td>
-                    <td>
-                      {editingId === item.id ? (
-                        <>
-                          <button
-                            className="save-btn"
-                            onClick={() => saveEdit(item.id)}
-                            title="Save"
-                            disabled={loading}
-                          >
-                            {loading ? "..." : "✔️"}
-                          </button>
-                          <button
-                            className="cancel-edit-btn"
-                            onClick={cancelEditing}
-                            title="Cancel"
-                            disabled={loading}
-                          >
-                            ✖️
-                          </button>
-                        </>
-                      ) : (
-                        <>
-                          <button
-                            className="edit-btn"
-                            onClick={() => startEditing(item)}
-                            title="Edit"
-                            disabled={loading}
-                          >
-                            ✏️
-                          </button>
-                          <button
-                            className="delete-btn"
-                            onClick={() => handleDeleteIp(item.id)}
-                            title="Delete"
-                            disabled={loading}
-                          >
-                            {loading && editingId === item.id ? "..." : "🗑️"}
-                          </button>
-                        </>
-                      )}
-                    </td>
+            <div className="ip-table-wrapper">
+              <table className="ip-table">
+                <thead>
+                  <tr>
+                    <th>SR.NO.</th>
+                    <th>IP ADDRESS</th>
+                    <th>DESCRIPTION</th>
+                    <th>ACTIONS</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {currentItems.map((item, index) => (
+                    <tr key={item.id}>
+                      <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
+                      <td>
+                        {editingId === item.id ? (
+                          <input
+                            type="text"
+                            value={editData.ip}
+                            onChange={(e) =>
+                              setEditData({ ...editData, ip: e.target.value })
+                            }
+                            className="edit-input"
+                            disabled={loading}
+                          />
+                        ) : (
+                          item.ip
+                        )}
+                      </td>
+                      <td>
+                        {editingId === item.id ? (
+                          <input
+                            type="text"
+                            value={editData.description}
+                            onChange={(e) =>
+                              setEditData({
+                                ...editData,
+                                description: e.target.value,
+                              })
+                            }
+                            className="edit-input"
+                            disabled={loading}
+                          />
+                        ) : (
+                          item.description
+                        )}
+                      </td>
+                      <td>
+                        {editingId === item.id ? (
+                          <>
+                            <button
+                              className="save-btn"
+                              onClick={() => saveEdit(item.id)}
+                              title="Save"
+                              disabled={loading}
+                            >
+                              {loading ? "..." : "✔️"}
+                            </button>
+                            <button
+                              className="cancel-edit-btn"
+                              onClick={cancelEditing}
+                              title="Cancel"
+                              disabled={loading}
+                            >
+                              ✖️
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <button
+                              className="edit-btn"
+                              onClick={() => startEditing(item)}
+                              title="Edit"
+                              disabled={loading}
+                            >
+                              ✏️
+                            </button>
+                            <button
+                              className="delete-btn"
+                              onClick={() => handleDeleteIp(item.id)}
+                              title="Delete"
+                              disabled={loading}
+                            >
+                              {loading && editingId === item.id ? "..." : "🗑️"}
+                            </button>
+                          </>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
             {/* TABLE FOOTER */}
             <div className="ip-whitelist-table-footer">
@@ -379,7 +381,7 @@ const Ipwhitelist = ({ darkMode }) => {
                     value={itemsPerPage}
                     onChange={(e) => {
                       setItemsPerPage(Number(e.target.value));
-                      setCurrentPage(1); // Reset to first page when changing items per page
+                      setCurrentPage(1);
                     }}
                   >
                     <option value="5">5</option>
@@ -401,7 +403,7 @@ const Ipwhitelist = ({ darkMode }) => {
                     Previous
                   </button>
 
-                  <span>
+                  <span className="ip-whitelist-page-navigation-span">
                     Page {currentPage} of {totalPages}
                   </span>
 
@@ -410,7 +412,7 @@ const Ipwhitelist = ({ darkMode }) => {
                       setCurrentPage((prev) => Math.min(prev + 1, totalPages))
                     }
                     disabled={currentPage === totalPages || totalPages === 0}
-                     className="ip-whitelist-page-navigation-button-next"
+                    className="ip-whitelist-page-navigation-button-next"
                   >
                     Next
                   </button>

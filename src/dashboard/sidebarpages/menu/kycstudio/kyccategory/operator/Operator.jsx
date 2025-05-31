@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { OperatorForms } from './operatorform';
 
-const Operator = () => {
+const Operator = ({ darkMode }) => {
   const [selectedService, setSelectedService] = useState('');
 
   const handleServiceChange = (e) => {
@@ -9,22 +9,22 @@ const Operator = () => {
   };
 
   return (
-    <section className="max-w-6xl md:flex-col mx-auto xs:px-1 px-4 md:flex-cols">
+    <section className={`max-w-6xl md:flex-col mx-auto xs:px-1 px-4 md:flex-cols ${darkMode ? 'dark' : ''}`}>
       <div className="grid md:grid-cols-2 gap-8">
         {/* Left Column - Service Selection */}
-        <div className="bg-white rounded-xl overflow-hidden">
-          <div className="xs:p-2 md:p-6 space-y-6">
+        <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-xl overflow-hidden`}>
+          <div className="xs:p-2 space-y-6">
             <div className="space-y-4">
               <select
                 onChange={handleServiceChange}
-                className="border-2 border-gray-200 rounded-lg px-4 py-3 w-full focus:ring-2 focus:ring-gray-200 focus:border-transparent transition-all duration-200"
+                className={`border-2 ${darkMode ? 'border-gray-600 bg-gray-700 text-white' : 'border-gray-200'} rounded-lg px-4 py-3 w-full focus:ring-2 focus:ring-gray-200 focus:border-transparent transition-all duration-200`}
                 defaultValue=""
               >
-                <option value="" disabled className="text-gray-400">
+                <option value="" disabled className={`${darkMode ? 'text-gray-400' : 'text-gray-400'}`}>
                   -- Select a service --
                 </option>
                 {Object.keys(OperatorForms).map((key) => (
-                  <option key={key} value={key} className="text-gray-700">
+                  <option key={key} value={key} className={`${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>
                     {OperatorForms[key].title}
                   </option>
                 ))}
@@ -32,10 +32,10 @@ const Operator = () => {
             </div>
 
             {/* Benefits Section */}
-            <div className="bg-purple-50 xs:p-3 md:p-6 flex rounded-lg border border-purple-100">
+            <div className={`${darkMode ? 'bg-gray-700 border-gray-600' : 'bg-purple-50 border-purple-100'} p-6 flex rounded-lg border`}>
               <div className="space-x-4">
                 <div className="flex flex-row xs:w-[240px] md:w-[400px] xs:justify-center xs:text-center xs:items-center md:justify-start gap-3">
-                  <div className="bg-purple-100 xs:p-1 md:p-2 rounded-full flex-shrink-0">
+                  <div className={`${darkMode ? 'bg-gray-600' : 'bg-purple-100'} xs:p-1 md:p-2 rounded-full flex-shrink-0`}>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="xs:h-4 xs:w-4 md:h-6 md:w-6 text-[#3470b2]"
@@ -52,7 +52,7 @@ const Operator = () => {
                     </svg>
                   </div>
                   <div>
-                    <h2 className="xs:text-[15px] md:text-xl font-bold text-gray-800">
+                    <h2 className={`xs:text-[15px] md:text-xl font-bold ${darkMode ? 'text-gray-200' : 'text-gray-800'}`}>
                       Why Personal Verification?
                     </h2>
                   </div>
@@ -77,7 +77,7 @@ const Operator = () => {
                           clipRule="evenodd"
                         />
                       </svg>
-                      <span className="text-gray-700">{benefit}</span>
+                      <span className={darkMode ? 'text-gray-300' : 'text-gray-700'}>{benefit}</span>
                     </div>
                   ))}
                 </div>
@@ -89,10 +89,10 @@ const Operator = () => {
         {/* Right Column - Dynamic Forms */}
         <div className="space-y-6">
           {OperatorForms[selectedService] && (
-            <div className="bg-white rounded-xl overflow-hidden">
+            <div className={`${darkMode ? 'bg-gray-800 border-gray-600' : 'bg-white border-gray-200'} rounded-xl border overflow-hidden`}>
               <div className="p-6">
-                <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center">
-                  <span className="bg-purple-100 text-[#3470b2] p-2 rounded-full mr-3">
+                <h3 className={`text-xl font-bold ${darkMode ? 'text-gray-200' : 'text-gray-800'} mb-6 flex items-center`}>
+                  <span className={`${darkMode ? 'bg-gray-600' : 'bg-purple-100'} text-[#3470b2] p-2 rounded-full mr-3`}>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="h-5 w-5"
@@ -113,11 +113,11 @@ const Operator = () => {
                 <div className="space-y-4">
                   {OperatorForms[selectedService].fields.map((field, index) => (
                     <div key={index}>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-1`}>
                         {field.label}
                       </label>
                       {field.type === 'select' ? (
-                        <select className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-transparent transition">
+                        <select className={`w-full px-4 py-3 border ${darkMode ? 'border-gray-600 bg-gray-700 text-white' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-transparent transition`}>
                           <option value="">Select your option</option>
                           {field.options?.map((opt, idx) => (
                             <option key={idx} value={opt}>
@@ -128,7 +128,7 @@ const Operator = () => {
                       ) : (
                         <input
                           type={field.type}
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-transparent transition"
+                          className={`w-full px-4 py-3 border ${darkMode ? 'border-gray-600 bg-gray-700 text-white' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-transparent transition`}
                           placeholder={field.placeholder || ''}
                         />
                       )}

@@ -266,10 +266,6 @@ const Rolemanagement = ({darkMode}) => {
     <div className={`main-rolemanagement ${darkMode ? "dark-mode" : ""}`}>
       {/* Header Section */}
       <div className={`rolemanagement-container1 p-2 ${darkMode ? "dark" : ""}`}>
-        {/* <div className="rolemanagement-container1-left">
-          <h1>Role Management</h1>
-          <p>Manage and organize user roles and permissions</p>
-        </div> */}
         <div className="rolemanagement-container1-right">
           <form
             className="rolemanagement-container1-right-search"
@@ -297,6 +293,7 @@ const Rolemanagement = ({darkMode}) => {
 
       {/* Table Section */}
       <div className="rolemanagement-container2">
+          <div className="table-scroll-container">
         <table className="role-table">
           <thead>
             <tr>
@@ -405,6 +402,8 @@ const Rolemanagement = ({darkMode}) => {
             )}
           </tbody>
         </table>
+          </div>
+
 
         <div className="Rolemanagement-table-footer-pagination-container">
           <div className="Rolemanagement-table-footer-pagination-rows-per-page">

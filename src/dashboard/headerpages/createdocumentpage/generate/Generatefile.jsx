@@ -22,8 +22,8 @@ const Generatefile = () => {
   const tomorrowDate = getTomorrowDate();
 
   return (
-    <div className="font-sans min-h-screen py-8">
-      <div className="max-w-4xl  mx-auto">
+    <div className="font-sans min-h-screen  py-8">
+      <div className="max-w-5xl mx-auto">
         {/* Progress Bar */}
         <div className="bg-gradient-to-r from-[#2c5fa5] to-[#3470b2] text-white py-3 px-6 flex items-center gap-4 shadow-md rounded-3xl justify-center mb-8">
           <div className="flex items-center gap-1">

@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { vahanForms } from './Vahanform';
 
-
-const CorporateVerification = () => {
+const CorporateVerification = ({ darkMode }) => {
   const [selectedService, setSelectedService] = useState('');
 
   const handleServiceChange = (e) => {
@@ -10,23 +9,26 @@ const CorporateVerification = () => {
   };
 
   return (
-    <section className="max-w-6xl md:flex-col mx-auto xs:px-1 px-4 md:flex-cols">
+    <section className={`max-w-6xl md:flex-col mx-auto xs:px-1 px-4 md:flex-cols ${darkMode ? 'dark' : ''}`}>
       <div className="grid gap-8 lg:grid-cols-2">
         {/* Left Column - Service Selection */}
-        <div className="bg-white rounded-xl  overflow-hidden">
-          <div className="xs:p-2 md:p-6 space-y-6">
-
+        <div className={`rounded-xl overflow-hidden ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
+          <div className="xs:p-2  space-y-6">
             <div className="space-y-4">
               <select
                 onChange={handleServiceChange}
-                className="border-2 border-gray-200 rounded-lg px-4 py-3 w-full focus:ring-2 focus:ring-gray-200 focus:border-transparent transition-all duration-200"
+                className={`border-2 rounded-lg px-4 py-3 w-full focus:ring-2 focus:border-transparent transition-all duration-200 ${
+                  darkMode 
+                    ? 'border-gray-700 bg-gray-700 text-white focus:ring-gray-500' 
+                    : 'border-gray-200 focus:ring-gray-200 text-gray-700'
+                }`}
                 defaultValue=""
               >
-                <option value="" disabled className="text-gray-400">
+                <option value="" disabled className={darkMode ? 'text-gray-400' : 'text-gray-400'}>
                   -- Select a service --
                 </option>
                 {Object.keys(vahanForms).map((key) => (
-                  <option key={key} value={key} className="text-gray-700">
+                  <option key={key} value={key} className={darkMode ? 'text-gray-200' : 'text-gray-700'}>
                     {vahanForms[key].title}
                   </option>
                 ))}
@@ -34,10 +36,16 @@ const CorporateVerification = () => {
             </div>
 
             {/* Benefits Section */}
-            <div className="bg-purple-50 xs:p-3 md:p-6 flex rounded-lg border border-purple-100">
+            <div className={`flex rounded-lg border ${
+              darkMode 
+                ? 'bg-gray-700 border-gray-600' 
+                : 'bg-purple-50 border-purple-100'
+            } xs:p-3 md:p-6`}>
               <div className="space-x-4">
                 <div className="flex flex-row xs:w-[240px] md:w-[400px] xs:justify-center xs:text-center xs:items-center md:justify-start gap-3">
-                  <div className="bg-purple-100 xs:p-1 md:p-2 rounded-full flex-shrink-0">
+                  <div className={`rounded-full flex-shrink-0 xs:p-1 md:p-2 ${
+                    darkMode ? 'bg-gray-600' : 'bg-purple-100'
+                  }`}>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="xs:h-4 xs:w-4 md:h-6 md:w-6 text-[#3470b2]"
@@ -54,7 +62,9 @@ const CorporateVerification = () => {
                     </svg>
                   </div>
                   <div>
-                    <h2 className="xs:text-[15px] md:text-xl font-bold text-gray-800">
+                    <h2 className={`xs:text-[15px] md:text-xl font-bold ${
+                      darkMode ? 'text-gray-200' : 'text-gray-800'
+                    }`}>
                       Why vahan Verification?
                     </h2>
                   </div>
@@ -79,7 +89,9 @@ const CorporateVerification = () => {
                           clipRule="evenodd"
                         />
                       </svg>
-                      <span className="text-gray-700">{benefit}</span>
+                      <span className={darkMode ? 'text-gray-300' : 'text-gray-700'}>
+                        {benefit}
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -91,10 +103,16 @@ const CorporateVerification = () => {
         {/* Right Column - Dynamic Forms */}
         <div className="space-y-6">
           {vahanForms[selectedService] && (
-            <div className="bg-white rounded-xl  overflow-hidden">
+            <div className={`rounded-xl border border-gray-400 overflow-hidden ${
+              darkMode ? 'bg-gray-800' : 'bg-white'
+            }`}>
               <div className="p-6">
-                <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center">
-                  <span className="bg-purple-100 text-[#3470b2] p-2 rounded-full mr-3">
+                <h3 className={`text-xl font-bold mb-6 flex items-center ${
+                  darkMode ? 'text-gray-200' : 'text-gray-800'
+                }`}>
+                  <span className={`p-2 rounded-full mr-3 ${
+                    darkMode ? 'bg-gray-700 text-[#3470b2]' : 'bg-purple-100 text-[#3470b2]'
+                  }`}>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="h-5 w-5"
@@ -115,11 +133,17 @@ const CorporateVerification = () => {
                 <div className="space-y-4">
                   {vahanForms[selectedService].fields.map((field, index) => (
                     <div key={index}>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className={`block text-sm font-medium mb-1 ${
+                        darkMode ? 'text-gray-300' : 'text-gray-700'
+                      }`}>
                         {field.label}
                       </label>
                       {field.type === 'select' ? (
-                        <select className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-transparent transition">
+                        <select className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:border-transparent transition ${
+                          darkMode 
+                            ? 'bg-gray-700 border-gray-600 text-white focus:ring-gray-500' 
+                            : 'border-gray-300 focus:ring-gray-400'
+                        }`}>
                           <option value="">Select your option</option>
                           {field.options.map((opt, idx) => (
                             <option key={idx} value={opt}>
@@ -130,7 +154,11 @@ const CorporateVerification = () => {
                       ) : (
                         <input
                           type={field.type}
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-transparent transition"
+                          className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:border-transparent transition ${
+                            darkMode 
+                              ? 'bg-gray-700 border-gray-600 text-white focus:ring-gray-500' 
+                              : 'border-gray-300 focus:ring-gray-400'
+                          }`}
                           placeholder={field.placeholder || ''}
                         />
                       )}

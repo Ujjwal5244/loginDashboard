@@ -8,7 +8,7 @@ import {
 } from "../../../../../encryptDecrypt";
 import { toast } from "react-toastify";
 
-const Webhooks = () => {
+const Webhooks = ({darkMode}) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [showAddForm, setShowAddForm] = useState(false);
   const [webhooks, setWebhooks] = useState([]);
@@ -270,12 +270,7 @@ const Webhooks = () => {
     setCurrentPage(1); // Reset to first page when changing items per page
   };
   return (
-    <div className="webhook-management-container">
-      {/* <h1 className="webhook-title">Webhook Management</h1>
-      <p className="webhook-subtitle">
-        Configure and manage your webhook integrations
-      </p> */}
-
+<div className={`webhook-management-container ${darkMode ? 'dark-mode' : ''}`}>
       <div className="webhook-top-bar">
         <div className="webhook-search-container">
           <input

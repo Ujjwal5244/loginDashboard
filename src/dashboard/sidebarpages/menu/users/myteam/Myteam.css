@@ -117,21 +117,6 @@
   gap: 16px;
 }
 
-/* .kyc-header-left .kyc-page-title {
-  font-size: 28px;
-  font-weight: 700;
-  margin: 0;
-  color: #1e293b;
-  line-height: 1.2;
-}
-
-.kyc-header-left .kyc-page-description {
-  font-size: 14px;
-  color: #64748b;
-  margin: 8px 0 0;
-  font-weight: 400;
-} */
-
 .team-kyc-header-right {
   display: flex;
   align-items: center;
@@ -256,7 +241,25 @@
 }
 
 /* Table Styles */
+.kyc-table-scroll-container {
+  max-height: calc(100vh - 400px); /* Adjust based on your header/footer height */
+  overflow-y: auto;
+  position: relative;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+}
+
+.kyc-data-table thead th {
+  position: sticky;
+  top: 0;
+  background-color: #f8fafc;
+  z-index: 10;
+}
+
 .kyc-table-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: auto;
   background: white;
   border-radius: 12px;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
@@ -559,6 +562,10 @@
   border-top: 1px solid #e2e8f0;
   flex-wrap: wrap;
   gap: 16px;
+  position: sticky;
+  bottom: 0;
+  background-color: #f8fafc;
+  z-index: 10;
 }
 
 .kyc-rows-per-page {
@@ -596,7 +603,7 @@
 .kyc-dropdown {
   position: relative;
   display: inline-block;
-  z-index: 1; /* Add this to ensure dropdown appears above other elements */
+  z-index: 1;
 }
 
 .kyc-dropdown-menu {
@@ -771,6 +778,18 @@
   border-bottom-color: #444;
 }
 
+.dark-mode .kyc-table-scroll-container {
+  border-color: #444;
+}
+
+.dark-mode .kyc-data-table thead th {
+  background-color: #333;
+}
+
+.dark-mode .kyc-table-footer {
+  background-color: #333;
+}
+
 .dark-mode .kyc-data-table td {
   color: #e0e0e0;
   border-bottom-color: #444;
@@ -916,7 +935,7 @@
   /* Show mobile cards */
   .kyc-mobile-cards {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(1, 1fr);
     gap: 16px;
     padding: 16px;
   }

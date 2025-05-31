@@ -240,22 +240,40 @@
   color: #1a237e;
 }
 
-.tm-card p {
-  font-size: 0.9rem;
-  color: #666;
-  margin: 0;
+/* Select wrapper for custom arrow */
+.tm-select-wrapper {
+  position: relative;
+  display: inline-block;
 }
 
-.tm-card h2 {
-  font-size: 1.5rem;
-  color: #333;
-  margin: 0.25rem 0 0;
+.tm-select-wrapper::after {
+  content: "▼";
+  font-size: 0.8rem;
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+.tm-select-wrapper::after {
+  color: #4b5563;
+}
+/* Select styling to accommodate arrow */
+.tm-items-per-page select {
+  padding-right: 30px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 }
 
+/* Disabled state */
+.tm-items-per-page select:disabled {
+  opacity: 0.7;
+}
 /* Table Section */
 .tm-table-container {
   background: white;
-  border-radius: 12px;
+  border-radius: 18px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
   padding: 1.5rem;
 }
@@ -267,8 +285,7 @@
   margin-bottom: 1.5rem;
 }
 
-.tm-table-header h3 {
-  margin: 0;
+.tm-table-header-h3 {
   font-size: 1.25rem;
   color: #1a237e;
 }
@@ -348,7 +365,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  font-family: "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
 }
 
 .tm-items-per-page label {
@@ -393,29 +410,103 @@
   cursor: not-allowed;
 }
 
-/* Dark mode styles */
-.dark .tm-items-per-page label {
-  color: #d1d5db;
+/* ________________________________Dark Mode Styles________________________________________ */
+
+.dark-mode .tm-card {
+  background-color: #2d3748;
 }
 
-.dark .tm-items-per-page select {
-  background-color: #1f2937;
-  border-color: #4b5563;
-  color: #f9fafb;
+.dark-mode .tm-table-container {
+  background-color: #2d3748;
 }
 
-.dark .tm-items-per-page select:hover {
-  border-color: #6b7280;
+.dark-mode .tm-table-header-h3 {
+  font-size: 1.5rem;
+  color: rgb(227, 92, 92);
+  /* margin-top: -20px; */
 }
 
-.dark .tm-items-per-page select:focus {
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+.dark-mode .tm-table-summary {
+  color: #ff9800;
+  font-size: 0.9rem;
+}
+.dark-mode .tm-select-wrapper::after,
+.dark-mode-select + .tm-select-wrapper::after {
+  color: #e5e7eb;
 }
 
-.dark .tm-items-per-page select:disabled {
-  background-color: #374151;
-  color: #6b7280;
+/* Dark Mode Table Styles */
+.dark-mode .tm-table-wrapper {
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+}
+
+.dark-mode .tm-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.dark-mode .tm-table th {
+  background: linear-gradient(135deg, #ff9800, #f57c00);
+  color: #ffffff;
+  transition: background-color 0.3s;
+}
+
+.dark-mode .tm-table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #3d3d3d;
+}
+.dark-mode .tm-table tr:hover td {
+  background-color: rgba(255, 255, 255, 0.05); /* Subtle light overlay */
+  cursor: pointer;
+}
+
+.dark-mode .tm-table tr:not(:last-child) {
+  border-bottom: 1px solid #3d3d3d;
+}
+
+.dark-mode .tm-table tr:hover {
+  background-color: #2a2a2a;
+}
+
+/* Status colors for dark mode */
+.dark-mode .tm-status.success {
+  color: #81c784;
+  background-color: rgba(129, 199, 132, 0.1);
+}
+
+.dark-mode .tm-status.failed {
+  color: #e57373;
+  background-color: rgba(229, 115, 115, 0.1);
+}
+
+.dark-mode .tm-status.pending {
+  color: #ffb74d;
+  background-color: rgba(255, 183, 77, 0.1);
+}
+
+.dark-mode .tm-status.processing {
+  color: #64b5f6;
+  background-color: rgba(100, 181, 246, 0.1);
+}
+
+.dark-mode .tm-balance {
+  color: #b0bec5;
+}
+
+.dark-mode .no-data {
+  color: #9e9e9e;
+  text-align: center;
+  padding: 20px;
+}
+
+/* Keep your existing amount colors as they work well in dark mode */
+.dark-mode .tm-table td[style*="color: #2e7d32"] {
+  color: #81c784 !important;
+}
+
+.dark-mode .tm-table td[style*="color: #c62828"] {
+  color: #e57373 !important;
 }
 
 @media (min-width: 769px) {
@@ -457,10 +548,6 @@
 
   .tm-table {
     display: none;
-  }
-
-  .tm-table-container {
-    padding: 1rem;
   }
 
   .tm-transaction-cards {
@@ -527,7 +614,6 @@
     align-items: center;
     margin-bottom: 1.5rem;
   }
-  
 
   .tm-title {
     align-items: center;
@@ -586,7 +672,7 @@
     flex-wrap: wrap;
   }
 
-  .tm-filter-btn{
+  .tm-filter-btn {
     flex: 1;
     min-width: 120px;
     text-align: center;
@@ -629,6 +715,3 @@
     justify-content: center;
   }
 }
-
-
-

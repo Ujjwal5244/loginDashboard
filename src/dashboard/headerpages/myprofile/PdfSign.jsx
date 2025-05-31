@@ -4,7 +4,7 @@ import { AiFillSignature } from "react-icons/ai";
 import { baseUrl, encryptText } from "../../../encryptDecrypt";
 import { useNavigate } from "react-router-dom";
 
-const PdfSign = () => {
+const PdfSign = ({darkMode}) => {
   const token = localStorage.getItem("userToken");
   const [signatureMethod, setSignatureMethod] = useState("");
   const [signatureData, setSignatureData] = useState(null);
@@ -265,52 +265,51 @@ const verifyOtp = async () => {
   };
 
   return (
-     <section className="pdf-sign">
-      <div className="digital-signature-header">
-        <h2>
-          <AiFillSignature style={{ color: "#2c3e50" }} />
+    <section className={`pdf-sign ${darkMode ? "dark-mode" : ""}`}>
+      <div className={`digital-signature-header ${darkMode ? "dark-header" : ""}`}>
+        <h2 className='h2-of-digital-sign'>
+          <AiFillSignature style={{ color: darkMode ? "#6c5ce7" : "#2c3e50" }} />
           Digital PDF Signature
         </h2>
       </div>
       {!signatureMethod ? (
-        <div className="signature-methods">
-          <h3>Select Signature Method</h3>
+        <div className={`signature-methods ${darkMode ? "dark-methods" : ""}`}>
+          <h3 className='h3-of-digital-sign'>Select Signature Method</h3>
           <button
-            className="pdf-sign-button"
+            className={`pdf-sign-button ${darkMode ? "dark-button" : ""}`}
             onClick={() => handleMethodSelect("aadhaar")}
           >
             Aadhaar e-Sign
           </button>
           <button
-            className="pdf-sign-button"
+            className={`pdf-sign-button ${darkMode ? "dark-button" : ""}`}
             onClick={() => handleMethodSelect("canvas")}
           >
             Draw Signature
           </button>
           <button
-            className="pdf-sign-button"
+            className={`pdf-sign-button ${darkMode ? "dark-button" : ""}`}
             onClick={() => handleMethodSelect("otp")}
           >
             Mobile OTP Verification
           </button>
         </div>
       ) : (
-        <div className="signature-container">
+        <div className={`signature-container ${darkMode ? "dark-container" : ""}`}>
           <button
-            className="pdf-sign-button pdf-sign-back-button"
+            className={`pdf-sign-button pdf-sign-back-button ${darkMode ? "dark-back-button" : ""}`}
             onClick={() => setSignatureMethod("")}
           >
             ← Back to methods
           </button>
 
           {signatureMethod === "aadhaar" && (
-            <div className="aadhaar-signature">
-              <h3>Aadhaar e-Sign</h3>
-              <div className="aadhaar-input-section">
+            <div className={`aadhaar-signature ${darkMode ? "dark-aadhaar" : ""}`}>
+              <h3 className='aadharr-signature-h3-digital-sign'>Aadhaar e-Sign</h3>
+              <div className={`aadhaar-input-section ${darkMode ? "dark-input-section" : ""}`}>
                 {!aadhaarOtpSent ? (
                   <>
-                    <div className="aadhaar-input-group">
-                      <label htmlFor="aadhaar-number">Aadhaar Number</label>
+                    <div className={`aadhaar-input-group ${darkMode ? "dark-input-group" : ""}`}>
                       <input
                         id="aadhaar-number"
                         type="tel"
@@ -323,11 +322,12 @@ const verifyOtp = async () => {
                           }
                         }}
                         maxLength={12}
+                        className={darkMode ? "dark-input" : ""}
                       />
                       <small>We'll send OTP to your registered mobile number</small>
                     </div>
                     <button
-                      className="pdf-sign-button pdf-sign-proceed-button"
+                      className={`pdf-sign-button pdf-sign-proceed-button ${darkMode ? "dark-primary-button" : ""}`}
                       onClick={sendAadhaarOtp}
                       disabled={aadhaarNumber.length !== 12}
                     >
@@ -336,7 +336,7 @@ const verifyOtp = async () => {
                   </>
                 ) : (
                   <>
-                    <div className="aadhaar-otp-group">
+                    <div className={`aadhaar-otp-group ${darkMode ? "dark-input-group" : ""}`}>
                       <label htmlFor="aadhaar-otp">Enter OTP</label>
                       <input
                         id="aadhaar-otp"
@@ -350,18 +350,19 @@ const verifyOtp = async () => {
                           }
                         }}
                         maxLength={6}
+                        className={darkMode ? "dark-input" : ""}
                       />
                       <small>OTP sent to mobile linked with Aadhaar</small>
                     </div>
                     <div className="aadhaar-verify-buttons">
                       <button
-                        className="pdf-sign-button pdf-sign-resend-button"
+                        className={`pdf-sign-button pdf-sign-resend-button ${darkMode ? "dark-secondary-button" : ""}`}
                         onClick={sendAadhaarOtp}
                       >
                         Resend OTP
                       </button>
                       <button
-                        className="pdf-sign-button pdf-sign-verify-button"
+                        className={`pdf-sign-button pdf-sign-verify-button ${darkMode ? "dark-primary-button" : ""}`}
                         onClick={verifyAadhaarOtp}
                         disabled={otp.length !== 6}
                       >
@@ -373,7 +374,7 @@ const verifyOtp = async () => {
               </div>
 
               {signatureData && (
-                <div className="signature-success aadhaar-success">
+                <div className={`signature-success aadhaar-success ${darkMode ? "dark-success" : ""}`}>
                   <p>Aadhaar verification successful!</p>
                   <p>Document will be signed with your Aadhaar</p>
                 </div>
@@ -382,13 +383,16 @@ const verifyOtp = async () => {
           )}
 
           {signatureMethod === "canvas" && (
-            <div className="canvas-signature">
-              <h3>Draw Your Signature</h3>
+            <div className={`canvas-signature ${darkMode ? "dark-canvas" : ""}`}>
+              <h3 className="canvas-signature-h3-digital-sign">Draw Your Signature</h3>
               <canvas
                 ref={canvasRef}
                 width={400}
                 height={200}
-                style={{ border: "1px solid #000" }}
+                style={{ 
+                  border: darkMode ? "1px solid #6c5ce7" : "1px solid #000",
+                  backgroundColor: darkMode ? "" : "#fff"
+                }}
                 onMouseDown={startDrawing}
                 onMouseMove={draw}
                 onMouseUp={endDrawing}
@@ -396,19 +400,19 @@ const verifyOtp = async () => {
               />
               <div className="canvas-controls">
                 <button
-                  className="pdf-sign-button pdf-sign-clear-button"
+                  className={`pdf-sign-button pdf-sign-clear-button ${darkMode ? "dark-secondary-button" : ""}`}
                   onClick={clearCanvas}
                 >
                   Clear
                 </button>
               </div>
               {signatureData && (
-                <div className="signature-preview">
-                  <p>Signature preview:</p>
+                <div className={`signature-preview ${darkMode ? "dark-preview" : ""}`}>
+                  <p className='signature-preview-of-para-digital'>Signature preview:</p>
                   <img
                     src={signatureData.data}
                     alt="Your signature"
-                    style={{ maxWidth: "200px" }}
+                    style={{ maxWidth: "200px", border: darkMode ? "1px solid #6c5ce7" : "1px solid #000" }}
                   />
                 </div>
               )}
@@ -416,18 +420,19 @@ const verifyOtp = async () => {
           )}
 
           {signatureMethod === "otp" && (
-            <div className="otp-verification">
-              <h3>Mobile OTP Verification</h3>
-              <div className="mobile-input">
+            <div className={`otp-verification ${darkMode ? "dark-otp" : ""}`}>
+              <h3 className='otp-verification-h3-digital-sign'>Mobile OTP Verification</h3>
+              <div className={`mobile-input ${darkMode ? "dark-input-group" : ""}`}>
                 <input
                   type="tel"
                   placeholder="Enter mobile number"
                   value={mobileNumber}
                   onChange={(e) => setMobileNumber(e.target.value)}
                   disabled={otpSent}
+                  className={darkMode ? "dark-input" : ""}
                 />
                 <button
-                  className="pdf-sign-button pdf-sign-otp-button"
+                  className={`pdf-sign-button pdf-sign-otp-button ${darkMode ? "dark-primary-button" : ""}`}
                   onClick={sendOtp}
                   disabled={!mobileNumber || otpSent}
                 >
@@ -437,15 +442,16 @@ const verifyOtp = async () => {
 
               {otpSent && (
                 <>
-                  <div className="pdf-sign-otp-input">
+                  <div className={`pdf-sign-otp-input ${darkMode ? "dark-input-group" : ""}`}>
                     <input
                       type="text"
                       placeholder="Enter OTP"
                       value={otp}
                       onChange={(e) => setOtp(e.target.value)}
+                      className={darkMode ? "dark-input" : ""}
                     />
                     <button
-                      className="pdf-sign-button pdf-sign-verify-button"
+                      className={`pdf-sign-button pdf-sign-verify-button ${darkMode ? "dark-primary-button" : ""}`}
                       onClick={verifyOtp}
                     >
                       Verify OTP
@@ -455,7 +461,7 @@ const verifyOtp = async () => {
               )}
 
               {signatureData && (
-                <div className="verification-success">
+                <div className={`verification-success ${darkMode ? "dark-success" : ""}`}>
                   <p>
                     Mobile number {signatureData.mobile} verified successfully!
                   </p>
@@ -465,9 +471,9 @@ const verifyOtp = async () => {
           )}
 
           {signatureData && (
-            <div className="submit-section">
+            <div className={`submit-section ${darkMode ? "dark-submit" : ""}`}>
               <button
-                className="pdf-sign-button pdf-sign-submit-button"
+                className={`pdf-sign-button pdf-sign-submit-button ${darkMode ? "dark-submit-button" : ""}`}
                 onClick={handleSubmit}
               >
                 Sign Document
