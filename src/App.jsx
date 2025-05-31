@@ -10,7 +10,9 @@ import Rolemanagement from "./dashboard/sidebarpages/menu/users/rolemanagement/R
 import Myteam from "./dashboard/sidebarpages/menu/users/myteam/Myteam";
 import Ipwhitelist from "./dashboard/sidebarpages/menu/devtool/ipwhitelist/Ipwhitelist";
 import Webhooks from "./dashboard/sidebarpages/menu/devtool/webhooks/Webhooks";
-import Logs from "./dashboard/sidebarpages/menu/devtool/logs/Logs";
+
+import Logs from "@/dashboard/sidebarpages/menu/devtool/logs/Logs";
+
 import Yourkyc from "./dashboard/sidebarpages/document/yourkyc/Yourkyc";
 import Completed from "./dashboard/sidebarpages/document/completed/Completed";
 import Setting from "./dashboard/sidebarpages/setting/Setting";
