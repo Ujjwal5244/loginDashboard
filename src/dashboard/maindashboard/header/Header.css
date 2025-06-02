@@ -446,6 +446,19 @@
     --toggle-size: 30px;
   }
 }
+/* ______do-not-disturb_____this is use for hide the CREATE button in header beacause of the CREATE button
+ is not use in header we want to make this in us in MOBILE MENUE */
+
+ .create-button-of-header {
+  display: block;
+}
+
+@media (max-width: 700px) {
+  .create-button-of-header {
+    display: none;
+  }
+}
+
 
 /* ______do-not-disturb_____this is use for hide the toggle button in header beacause of the toggle button
  is not use in header we want to make this in us in footer */

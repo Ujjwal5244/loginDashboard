@@ -1,12 +1,75 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { serviceForms } from "./PersonalVerif";
+import {
+  baseUrl,
+  decryptText,
+} from "../../../../../../encryptDecrypt";
+import { toast } from "react-toastify";
+import axios from "axios";
+import DynamicForm from "./DynamicForm";
 
-export default function PersonalVerification({ darkMode }) {
+export default function PersonalVerification({ darkMode,id }) {
   const [selectedService, setSelectedService] = useState("");
 
+  const [selectedServiceKey, setSelectedServiceKey] = useState(""); // Renamed for clarity
+  // const [initialServiceData, setInitialServiceData] = useState(null); // If getService loads config
+
   const handleServiceChange = (e) => {
-    setSelectedService(e.target.value);
+    setSelectedServiceKey(e.target.value);
   };
+
+  // This function seems to fetch some data related to 'id'.
+  // If this data is supposed to BE the serviceForms configuration or modify it,
+  // you'll need to adjust how serviceForms is sourced.
+  // For now, I'm assuming 'serviceForms' imported above is the source of truth for form structure.
+  const getServiceDataById = async () => {
+    if (!id) return; // Don't run if id is not available
+    try {
+      const response = await axios(`${baseUrl}/api/services/getjson/${id}`);
+      if (response.data && response.data.body) {
+        const dec = await decryptText(response.data.body);
+        const data = JSON.parse(dec);
+        console.log("Fetched service data by ID:", data);
+        // setInitialServiceData(data); // Store it if needed for other purposes
+        // If 'data' IS the form configuration, you'd do something like:
+        // setFetchedServiceForms(data); // And then use this state instead of the imported 'serviceForms'
+      } else {
+        console.warn("No data body in response from getjson");
+      }
+    } catch (error) {
+      console.error("Error fetching service data by ID:", error);
+      // toast.error("Failed to load initial service configuration.");
+    }
+  };
+
+  useEffect(() => {
+    getServiceDataById();
+  }, [id]); // Rerun if id changes
+
+  const handleVerificationSubmit = async (formTitle, formData, backendResponse) => {
+    // This function is called by DynamicForm upon successful submission
+    console.log("Verification Submitted from DynamicForm in PersonalVerification:", {
+      formTitle,
+      formData,
+      backendResponse,
+    });
+    toast.success(
+      `${formTitle} verification: ${backendResponse.message || "Processed successfully!"}`
+    );
+    // You can add further logic here, e.g., update UI, redirect, etc.
+
+    // IMPORTANT: Encryption
+    // The DynamicForm currently sends plain JSON. If your backend endpoint (defined in
+    // serviceForms[selectedServiceKey].apiEndpoint) expects encrypted data,
+    // you have a few options:
+    // 1. Modify DynamicForm's handleSubmit to use `encryptText` before `fetch`.
+    //    This would mean passing `encryptText` (or a wrapper) as a prop to DynamicForm.
+    // 2. If the `id` is needed as part of the payload for every verification,
+    //    DynamicForm's handleSubmit could be modified to accept and merge additional static data.
+    // 3. The backend handles encryption/decryption internally based on the endpoint hit.
+  };
+
+  const currentFormConfig = selectedServiceKey ? serviceForms[selectedServiceKey] : null;
 
   return (
     <section className={`max-w-6xl md:flex-col mx-auto xs:px-1 px-4 md:flex-cols ${darkMode ? "" : ""}`}>
@@ -63,7 +126,7 @@ export default function PersonalVerification({ darkMode }) {
                 <option value="DeathCertificate" className={darkMode ? "text-gray-300" : "text-gray-700"}>
                   Death Certificate
                 </option>
-              </select>
+              </select> 
             </div>
           </div>
 
@@ -136,75 +199,35 @@ export default function PersonalVerification({ darkMode }) {
         </div>
 
         {/* Right Column - Forms of selected service - Dynamic Forms */}
-        {selectedService && serviceForms[selectedService] && (
-          <div className={`rounded-xl border border-gray-200 overflow-hidden ${
+          {/* Right Column - Dynamic Form */}
+          {currentFormConfig ? (
+          <div className={`rounded-xl border overflow-hidden ${
             darkMode ? "bg-gray-800 border-gray-500" : "bg-white"
           }`}>
-            <div className="p-6">
-              <h3 className={`text-xl font-bold mb-6 flex items-center ${
-                darkMode ? "text-gray-200" : "text-gray-800"
-              }`}>
-                <span className={`p-2 rounded-full mr-3 ${
-                  darkMode ? "bg-gray-700 text-[#3470b2]" : "bg-purple-100 text-[#3470b2]"
-                }`}>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1z" />
-                    <path
-                      fillRule="evenodd"
-                      d="M10 6a4 4 0 100 8 4 4 0 000-8zm0 10a8 8 0 100-16 8 8 0 000 16z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </span>
-                {serviceForms[selectedService].title}
-              </h3>
-
-              <div className="space-y-4">
-                {serviceForms[selectedService].fields.map((field, index) => (
-                  <div key={index}>
-                    <label className={`block text-sm font-medium mb-1 ${
-                      darkMode ? "text-gray-300" : "text-gray-700"
-                    }`}>
-                      {field.label}
-                    </label>
-                    {field.type === "select" ? (
-                      <select className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:border-transparent transition ${
-                        darkMode 
-                          ? "border-gray-700 focus:ring-gray-600 bg-gray-700 text-white" 
-                          : "border-gray-300 focus:ring-gray-400"
-                      }`}>
-                        <option value="">Select your option</option>
-                        {field.options.map((opt, idx) => (
-                          <option key={idx} value={opt}>
-                            {opt}
-                          </option>
-                        ))}
-                      </select>
-                    ) : (
-                      <input
-                        type={field.type}
-                        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:border-transparent transition ${
-                          darkMode 
-                            ? "border-gray-700 focus:ring-gray-600 bg-gray-700 text-white" 
-                            : "border-gray-300 focus:ring-gray-400"
-                        }`}
-                        placeholder={field.placeholder || ""}
-                      />
-                    )}
-                  </div>
-                ))}
-                <button className="w-full bg-[#3470b2] text-white font-medium py-3 px-4 rounded-lg transition duration-200 transform hover:scale-[1.01]">
-                  {serviceForms[selectedService].buttonText}
-                </button>
-              </div>
-            </div> 
+            {/* DynamicForm will render its own title from formConfig.title */}
+            {/* You might want to adjust DynamicForm's internal styling or pass Tailwind classes if needed */}
+            <DynamicForm
+              key={selectedServiceKey} // IMPORTANT: Ensures form re-initializes when service changes
+              formConfig={currentFormConfig}
+              onFormSubmit={handleVerificationSubmit}
+              // If DynamicForm needs to know about darkMode for its *internal* styles:
+              // darkMode={darkMode} // You'd then need to modify DynamicForm to use this prop
+            />
           </div>
+        ) : (
+          selectedServiceKey && ( // Show a message if a key is selected but no config found
+            <div className={`p-6 rounded-xl border ${darkMode ? "bg-gray-800 border-gray-500 text-gray-300" : "bg-white text-gray-700"}`}>
+                <p>Configuration for selected service "{serviceForms[selectedServiceKey]?.title || selectedServiceKey}" not found or is invalid.</p>
+            </div>
+          )
         )}
+        {/* Show a placeholder if no service is selected yet */}
+        {!selectedServiceKey && (
+            <div className={`p-6 rounded-xl border flex items-center justify-center ${darkMode ? "bg-gray-800 border-gray-500 text-gray-300" : "bg-white text-gray-400"}`}>
+                <p className="text-lg">Please select a service to view the verification form.</p>
+            </div>
+        )}
+     
       </div>
     </section>
   );

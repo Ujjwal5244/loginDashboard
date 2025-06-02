@@ -118,31 +118,35 @@ const Requestfile = () => {
   };
 
   return (
-    <div className="font-sans min-h-screen py-6">
-      <div className="max-w-5xl mx-auto px-4">
-        {/* Header */}
-        <div className="bg-gradient-to-r from-[#2c5fa5] to-[#3470b2] text-white py-2 px-4 flex items-center gap-3 shadow-md rounded-2xl mb-6 justify-center">
-          <div className="flex items-center gap-1">
-            <span className="bg-white text-[#3470b2] rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
-              1
-            </span>
-            <span className="font-medium text-xs">Generate</span>
-            <span className="text-white text-xs">›</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <span className="bg-white text-[#3470b2] rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
-              2
-            </span>
-            <span className="font-medium text-xs">Request</span>
-            <span className="text-white text-xs">›</span>
-          </div>
-          <div className="flex items-center gap-1 text-gray-200">
-            <span className="border border-gray-200 rounded-full w-5 h-5 flex items-center justify-center text-xs">
-              3
-            </span>
-            <span className="text-xs">Approve</span>
-          </div>
-        </div>
+    <div className="font-sans py-4">
+  <div className="max-w-5xl mx-auto">
+    {/* Simplified Progress Bar */}
+    <div className="flex items-center justify-center gap-2 mb-8">
+      <div className="flex items-center gap-1">
+        <span className="border border-gray-400 rounded-full w-6 h-6 flex items-center justify-center text-xs">
+          1
+        </span>
+        <span className="text-sm text-gray-500">Generate</span>
+      </div>
+      
+      <div className="w-8 h-px bg-gray-300"></div>
+      
+      <div className="flex items-center gap-1">
+        <span className="bg-[#2c5fa5] text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">
+          2
+        </span>
+        <span className=" font-medium text-sm text-[#2c5fa5]">Request</span>
+      </div>
+      
+      <div className="w-8 h-px bg-gray-300"></div>
+      
+      <div className="flex items-center gap-1">
+        <span className="border border-gray-400 rounded-full w-6 h-6 flex items-center justify-center text-xs">
+          3
+        </span>
+        <span className="text-sm text-gray-500">Approve</span>
+      </div>
+    </div>
         
         {/* Content */}
         <div className="shadow-md border border-gray-200 rounded-xl p-6">

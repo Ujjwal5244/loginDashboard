@@ -98,3 +98,5 @@ export const decryptText = async (data) => {
   // console.log(decryptedData,"inside decryption")
   return decryptedData;
 };
+
+export const token = localStorage.getItem("userToken");

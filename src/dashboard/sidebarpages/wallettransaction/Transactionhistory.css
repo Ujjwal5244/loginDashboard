@@ -294,9 +294,26 @@
   color: #666;
   font-size: 0.9rem;
 }
-
+/* Table Scroll Container */
 .tm-table-wrapper {
-  overflow-x: auto;
+   display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.tm-table-scroll-container {
+  max-height: 400px; /* Adjust this value based on your needs */
+  overflow-y: auto;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+
+/* Table Sticky Header */
+.tm-table-scroll-container table thead tr {
+  position: sticky;
+  top: 0;
+  background-color: #f9fafb;
+  z-index: 10;
 }
 
 .tm-table {

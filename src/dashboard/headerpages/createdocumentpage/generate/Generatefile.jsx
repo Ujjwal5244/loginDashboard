@@ -22,31 +22,35 @@ const Generatefile = () => {
   const tomorrowDate = getTomorrowDate();
 
   return (
-    <div className="font-sans min-h-screen  py-8">
-      <div className="max-w-5xl mx-auto">
-        {/* Progress Bar */}
-        <div className="bg-gradient-to-r from-[#2c5fa5] to-[#3470b2] text-white py-3 px-6 flex items-center gap-4 shadow-md rounded-3xl justify-center mb-8">
-          <div className="flex items-center gap-1">
-            <span className="bg-white text-[#3470b2] rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
-              1
-            </span>
-            <span className="font-medium text-sm">Generate</span>
-            <span className="text-white text-sm">›</span>
-          </div>
-          <div className="flex items-center gap-1 text-gray-200">
-            <span className="border border-gray-200 rounded-full w-5 h-5 flex items-center justify-center text-xs">
-              2
-            </span>
-            <span className="text-sm">Request</span>
-            <span className="text-sm">›</span>
-          </div>
-          <div className="flex items-center gap-1 text-gray-200">
-            <span className="border border-gray-200 rounded-full w-5 h-5 flex items-center justify-center text-xs">
-              3
-            </span>
-            <span className="text-sm">Approve</span>
-          </div>
-        </div>
+<div className="font-sans py-4">
+  <div className="max-w-5xl mx-auto">
+    {/* Simplified Progress Bar */}
+    <div className="flex items-center justify-center gap-2 mb-8">
+      <div className="flex items-center gap-1">
+        <span className="bg-[#2c5fa5] text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">
+          1
+        </span>
+        <span className="font-medium text-sm text-[#2c5fa5]">Generate</span>
+      </div>
+      
+      <div className="w-8 h-px bg-gray-300"></div>
+      
+      <div className="flex items-center gap-1">
+        <span className="border border-gray-400 rounded-full w-6 h-6 flex items-center justify-center text-xs">
+          2
+        </span>
+        <span className="text-sm text-gray-500">Request</span>
+      </div>
+      
+      <div className="w-8 h-px bg-gray-300"></div>
+      
+      <div className="flex items-center gap-1">
+        <span className="border border-gray-400 rounded-full w-6 h-6 flex items-center justify-center text-xs">
+          3
+        </span>
+        <span className="text-sm text-gray-500">Approve</span>
+      </div>
+    </div>
 
         {/* Compact Form Section */}
         <div className="bg-gray-50 rounded-xl shadow-lg border border-gray-200 p-6 space-y-6">

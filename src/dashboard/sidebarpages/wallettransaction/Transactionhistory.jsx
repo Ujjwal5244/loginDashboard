@@ -107,14 +107,14 @@ const Transactionhistory = ({ darkMode }) => {
 
   const handleDateApply = () => {
     setShowDatePicker(false);
-    setCurrentPage(1); // Reset to first page when date filter changes
+    setCurrentPage(1);
   };
 
   const handleDateClear = () => {
     setStartDate("");
     setEndDate("");
     setShowDatePicker(false);
-    setCurrentPage(1); // Reset to first page when date filter is cleared
+    setCurrentPage(1);
   };
 
   const exportToCSV = async () => {
@@ -122,10 +122,9 @@ const Transactionhistory = ({ darkMode }) => {
     try {
       const response = await axios.get(`${baseUrl}/api/transactions/export`, {
         headers: { authorization: token },
-        responseType: "blob", // Important for file downloads
+        responseType: "blob",
       });
 
-      // Create a download link and trigger it
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
       link.href = url;
@@ -156,7 +155,7 @@ const Transactionhistory = ({ darkMode }) => {
 
   const handleItemsPerPageChange = (e) => {
     setItemsPerPage(Number(e.target.value));
-    setCurrentPage(1); // Reset to first page when items per page changes
+    setCurrentPage(1);
   };
 
   return (
@@ -187,7 +186,7 @@ const Transactionhistory = ({ darkMode }) => {
             value={searchQuery}
             onChange={(e) => {
               setSearchQuery(e.target.value);
-              setCurrentPage(1); // Reset to first page when search changes
+              setCurrentPage(1);
             }}
             className="tm-search"
             disabled={loading}
@@ -199,7 +198,7 @@ const Transactionhistory = ({ darkMode }) => {
             className={`tm-filter-btn ${activeFilter === "all" ? "active" : ""}`}
             onClick={() => {
               setActiveFilter("all");
-              setCurrentPage(1); // Reset to first page when filter changes
+              setCurrentPage(1);
             }}
             disabled={loading}
           >
@@ -209,7 +208,7 @@ const Transactionhistory = ({ darkMode }) => {
             className={`tm-filter-btn ${activeFilter === "credit" ? "active" : ""}`}
             onClick={() => {
               setActiveFilter("credit");
-              setCurrentPage(1); // Reset to first page when filter changes
+              setCurrentPage(1);
             }}
             disabled={loading}
           >
@@ -219,7 +218,7 @@ const Transactionhistory = ({ darkMode }) => {
             className={`tm-filter-btn ${activeFilter === "debit" ? "active" : ""}`}
             onClick={() => {
               setActiveFilter("debit");
-              setCurrentPage(1); // Reset to first page when filter changes
+              setCurrentPage(1);
             }}
             disabled={loading}
           >
@@ -404,64 +403,66 @@ const Transactionhistory = ({ darkMode }) => {
             </div>
 
             <div className="tm-table-wrapper">
-              <table className="tm-table">
-                <thead >
-                  <tr>
-                    <th>SR.NO.</th>
-                    <th>DATE & TIME</th>
-                    <th>SERVICE ID</th>
-                    <th>REFERENCE NO</th>
-                    <th>REMARK</th>
-                    <th>AMOUNT</th>
-                    <th>STATUS</th>
-                    <th>BALANCE</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {currentTransactions.length > 0 ? (
-                    currentTransactions.map((tx, index) => (
-                      <tr key={tx._id}>
-                        <td>{indexOfFirstItem + index + 1}</td>
-                        <td>{tx.date}</td>
-                        <td>{tx.serviceId}</td>
-                        <td>{tx.referenceNo}</td>
-                        <td>{tx.remark}</td>
-                        <td
-                          style={{
-                            color: tx.amount >= 0 ? "#2e7d32" : "#c62828",
-                            fontWeight: 500,
-                          }}
-                        >
-                          {tx.amount >= 0
-                            ? `+₹${tx.amount.toFixed(2)}`
-                            : `-₹${Math.abs(tx.amount).toFixed(2)}`}
-                        </td>
-                        <td>
-                          <span
-                            className={`tm-status ${tx.status.toLowerCase()}`}
+              <div className="tm-table-scroll-container">
+                <table className="tm-table">
+                  <thead>
+                    <tr>
+                      <th>SR.NO.</th>
+                      <th>DATE & TIME</th>
+                      <th>SERVICE ID</th>
+                      <th>REFERENCE NO</th>
+                      <th>REMARK</th>
+                      <th>AMOUNT</th>
+                      <th>STATUS</th>
+                      <th>BALANCE</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {currentTransactions.length > 0 ? (
+                      currentTransactions.map((tx, index) => (
+                        <tr key={tx._id}>
+                          <td>{indexOfFirstItem + index + 1}</td>
+                          <td>{tx.date}</td>
+                          <td>{tx.serviceId}</td>
+                          <td>{tx.referenceNo}</td>
+                          <td>{tx.remark}</td>
+                          <td
+                            style={{
+                              color: tx.amount >= 0 ? "#2e7d32" : "#c62828",
+                              fontWeight: 500,
+                            }}
                           >
-                            {tx.status}
-                          </span>
-                        </td>
-                        <td>
-                          <div className="tm-balance">
-                            <div>Open: ₹{tx.openingBalance.toFixed(2)}</div>
-                            <div>Close: ₹{tx.closingBalance.toFixed(2)}</div>
-                          </div>
+                            {tx.amount >= 0
+                              ? `+₹${tx.amount.toFixed(2)}`
+                              : `-₹${Math.abs(tx.amount).toFixed(2)}`}
+                          </td>
+                          <td>
+                            <span
+                              className={`tm-status ${tx.status.toLowerCase()}`}
+                            >
+                              {tx.status}
+                            </span>
+                          </td>
+                          <td>
+                            <div className="tm-balance">
+                              <div>Open: ₹{tx.openingBalance.toFixed(2)}</div>
+                              <div>Close: ₹{tx.closingBalance.toFixed(2)}</div>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="8" className="no-data">
+                          {transactions.length === 0
+                            ? "No transactions available"
+                            : "No transactions found matching your criteria"}
                         </td>
                       </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="8" className="no-data">
-                        {transactions.length === 0
-                          ? "No transactions available"
-                          : "No transactions found matching your criteria"}
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
+                    )}
+                  </tbody>
+                </table>
+              </div>
 
               {/* Pagination Controls */}
               {totalPages > 1 && (
@@ -508,91 +509,6 @@ const Transactionhistory = ({ darkMode }) => {
                   >
                     <FaAngleDoubleRight />
                   </button>
-                </div>
-              )}
-
-              {currentTransactions.length > 0 && (
-                <div className="tm-transaction-cards">
-                  {currentTransactions.map((tx, index) => (
-                    <div
-                      className="tm-transaction-card"
-                      key={`card-${tx._id || tx.id}`}
-                    >
-                      <div className="tm-transaction-card-row">
-                        <span className="tm-transaction-card-label">
-                          Date & Time
-                        </span>
-                        <span className="tm-transaction-card-value">
-                          {tx.date}
-                        </span>
-                      </div>
-                      <div className="tm-transaction-card-row">
-                        <span className="tm-transaction-card-label">
-                          Service ID
-                        </span>
-                        <span className="tm-transaction-card-value">
-                          {tx.serviceId}
-                        </span>
-                      </div>
-                      <div className="tm-transaction-card-row">
-                        <span className="tm-transaction-card-label">
-                          Reference No
-                        </span>
-                        <span className="tm-transaction-card-value">
-                          {tx.referenceNo}
-                        </span>
-                      </div>
-                      <div className="tm-transaction-card-row">
-                        <span className="tm-transaction-card-label">
-                          Remark
-                        </span>
-                        <span className="tm-transaction-card-value">
-                          {tx.remark}
-                        </span>
-                      </div>
-                      <div className="tm-transaction-card-row">
-                        <span className="tm-transaction-card-label">
-                          Amount
-                        </span>
-                        <span
-                          className="tm-transaction-card-value tm-transaction-card-amount"
-                          style={{
-                            color: tx.amount >= 0 ? "#2e7d32" : "#c62828",
-                          }}
-                        >
-                          {tx.amount >= 0
-                            ? `+₹${tx.amount.toFixed(2)}`
-                            : `-₹${Math.abs(tx.amount).toFixed(2)}`}
-                        </span>
-                      </div>
-                      <div className="tm-transaction-card-row">
-                        <span className="tm-transaction-card-label">
-                          Status
-                        </span>
-                        <span
-                          className={`tm-transaction-card-value tm-transaction-card-status ${tx.status.toLowerCase()}`}
-                        >
-                          {tx.status}
-                        </span>
-                      </div>
-                      <div className="tm-transaction-card-row">
-                        <span className="tm-transaction-card-label">
-                          Opening Balance
-                        </span>
-                        <span className="tm-transaction-card-value">
-                          ₹{tx.openingBalance.toFixed(2)}
-                        </span>
-                      </div>
-                      <div className="tm-transaction-card-row">
-                        <span className="tm-transaction-card-label">
-                          Closing Balance
-                        </span>
-                        <span className="tm-transaction-card-value">
-                          ₹{tx.closingBalance.toFixed(2)}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
                 </div>
               )}
             </div>

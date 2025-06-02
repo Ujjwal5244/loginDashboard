@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { Document, Page, pdfjs } from 'react-pdf';
-import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
-import { useNavigate } from 'react-router-dom';
-
+import React, { useEffect, useState } from "react";
+import { Document, Page, pdfjs } from "react-pdf";
+import "react-pdf/dist/esm/Page/AnnotationLayer.css";
+import { useNavigate } from "react-router-dom";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
@@ -11,7 +10,7 @@ const Approve = () => {
 
   useEffect(() => {
     const fetchPdf = async () => {
-      const response = await fetch('/sample.pdf'); // File must be in public/
+      const response = await fetch("/sample.pdf"); // File must be in public/
       const blob = await response.blob();
       const url = URL.createObjectURL(blob);
       setPdfUrl(url);
@@ -20,39 +19,44 @@ const Approve = () => {
     fetchPdf();
   }, []);
 
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const handleViewInvitees = () => {
     // You can navigate to another page or open a modal
   };
 
   const handleSendToSign = () => {
-navigate('/maindashboard/allinvities');  };
+    navigate("/maindashboard/allinvities");
+  };
 
   return (
-    <div className="font-sans min-h-screen py-8">
+    <div className="font-sans py-4">
       <div className="max-w-5xl mx-auto">
-        {/* Progress Bar - Added from Generatefile component */}
-        <div className="bg-gradient-to-r from-[#2c5fa5] to-[#3470b2] text-white py-3 px-6 flex items-center gap-4 shadow-md rounded-3xl justify-center mb-8">
-          <div className="flex items-center gap-1 text-gray-200">
-            <span className="border border-gray-200 rounded-full w-5 h-5 flex items-center justify-center text-xs">
+        {/* Progress Bar - Step 3 Active */}
+        <div className="flex items-center justify-center gap-2 mb-8">
+          <div className="flex items-center gap-1">
+            <span className="border border-gray-400 rounded-full w-6 h-6 flex items-center justify-center text-xs">
               1
             </span>
-            <span className="text-sm">Generate</span>
-            <span className="text-sm">›</span>
+            <span className="text-sm text-gray-500">Generate</span>
           </div>
-          <div className="flex items-center gap-1 text-gray-200">
-            <span className="border border-gray-200 rounded-full w-5 h-5 flex items-center justify-center text-xs">
+
+          <div className="w-8 h-px bg-gray-300"></div>
+
+          <div className="flex items-center gap-1">
+            <span className="border border-gray-400 rounded-full w-6 h-6 flex items-center justify-center text-xs">
               2
             </span>
-            <span className="text-sm">Request</span>
-            <span className="text-sm">›</span>
+            <span className="text-sm text-gray-500">Request</span>
           </div>
+
+          <div className="w-8 h-px bg-gray-300"></div>
+
           <div className="flex items-center gap-1">
-            <span className="bg-white text-[#3470b2] rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
+            <span className="bg-[#2c5fa5] text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">
               3
             </span>
-            <span className="font-medium text-sm">Approve</span>
+            <span className="font-medium text-sm text-[#2c5fa5]">Approve</span>
           </div>
         </div>
 

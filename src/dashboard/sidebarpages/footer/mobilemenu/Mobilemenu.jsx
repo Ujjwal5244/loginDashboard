@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./MobileMenu.css";
 import {
@@ -22,11 +22,39 @@ import {
 import { FcApproval } from "react-icons/fc";
 import { SiMonkeytie } from "react-icons/si";
 import { MdDrafts } from "react-icons/md";
+import { VscGitPullRequestCreate } from "react-icons/vsc";
+import axios from "axios";
+import { encryptText, decryptText, baseUrl } from "../../../../encryptDecrypt";
 
 const MobileMenu = ({ isOpen, onClose, darkMode }) => {
+  const token = localStorage.getItem("userToken");
   const navigate = useNavigate();
   const location = useLocation();
   const [openDropdown, setOpenDropdown] = useState(null);
+  const [userProfile, setUserProfile] = useState(null);
+
+  const fetchUserProfile = useCallback(async () => {
+    try {
+      const res = await axios.get(`${baseUrl}/api/user/profile`, {
+        headers: { authorization: token },
+      });
+      const decrypted = await decryptText(res.data.body);
+      const parsed = JSON.parse(decrypted);
+      if (parsed.status === "success") {
+        setUserProfile({
+          name: parsed.data.name,
+          email: parsed.data.email,
+          profile: parsed.data.profile,
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching user profile:", error);
+    }
+  }, [token]);
+
+  useEffect(() => {
+    fetchUserProfile();
+  }, [fetchUserProfile]);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -143,8 +171,12 @@ const MobileMenu = ({ isOpen, onClose, darkMode }) => {
             />
           </div>
           <div className="profile-info">
-            <h3 className="mobile-app-profile-name">Person Name</h3>
-            <p className="mobile-app-profile-email">person@example.com</p>
+            <h3 className="mobile-app-profile-name">
+              {userProfile?.name || "Person Name"}
+            </h3>
+            <p className="mobile-app-profile-email">
+              {userProfile?.email || "person@example.com"}
+            </p>
             <button
               className={`mobile-app-profile-view-btn ${darkMode ? "dark-mode" : ""}`}
               onClick={() => handleNavigation("/Maindashboard/myprofile")}
@@ -174,6 +206,14 @@ const MobileMenu = ({ isOpen, onClose, darkMode }) => {
               label="Analytics"
               path="/Maindashboard/analytics"
               active={isActive("/Maindashboard/analytics")}
+              onClick={handleNavigation}
+            />
+
+            <MenuItem
+              icon={<VscGitPullRequestCreate />}
+              label="Create"
+              path="/maindashboard/createfile"
+              active={isActive("/maindashboard/createfile")}
               onClick={handleNavigation}
             />
 

@@ -11,7 +11,7 @@ import {
   FaChevronDown,
 } from "react-icons/fa";
 import axios from "axios";
-import { encryptText, decryptText, baseUrl } from "../../../../encryptDecrypt";
+import {decryptText, baseUrl } from "../../../../encryptDecrypt";
 import { toast } from "react-toastify";
 
 const EmailDashboard = ({ darkMode }) => {
