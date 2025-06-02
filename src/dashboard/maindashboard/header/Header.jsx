@@ -70,7 +70,7 @@ const Header = ({ toggleSidebar, darkMode, toggleDarkMode, sidebarOpen }) => {
 
   const handleMobileMenu = () => {
     navigate("/Maindashboard/mobilemenu");
-    onMenuToggle();
+    // onMenuToggle();
   };
 
   useEffect(() => {
