@@ -268,9 +268,9 @@ const MobileMenu = ({ isOpen, onClose, darkMode }) => {
               <MenuItem
                 icon={<FiList />}
                 label="Logs"
-                path="/Maindashboard/logs"
+                path="/Maindashboard/logss"
                 indent
-                active={isActive("/Maindashboard/logs")}
+                active={isActive("/Maindashboard/logss")}
                 onClick={handleNavigation}
               />
               <MenuItem

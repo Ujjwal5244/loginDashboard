@@ -1,0 +1,375 @@
+/* Logs container */
+.logs-ip-management-container {
+    padding: 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 100px); /* Adjust based on your header height */
+  min-height: 500px;
+  }
+  .logs-search-container {
+    display: flex;
+    justify-content: right;
+  }
+  
+  .search-input {
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    width: 200px;
+    height: 50px;
+  }
+  
+  .search-input:focus {
+    outline: none;
+    border-color: #3470b2;
+  }
+  
+  .logs-top-bar {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .items-per-page-selector{
+    margin-bottom: 20px;
+  }
+  
+  /* Table layout */
+  .logs-table-container {
+   overflow-x: auto;
+  overflow-y: auto;
+  max-height: calc(100% - 150px); /* Adjust based on your header/footer heights */
+  flex-grow: 1;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  }
+  
+  .logs-ip-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .logs-ip-table th,
+  .logs-ip-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border: 1px solid #ddd;
+  }
+  
+  .logs-ip-table th {
+    background-color: #3470b2;
+    color: white;
+  }
+  
+  .logs-ip-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .logs-ip-table tr:hover {
+    background-color: #f1f1f1;
+  }
+  
+  /* Buttons for edit, delete, etc */
+  .logs-edit-btn, .logs-delete-btn {
+    background-color: #3470b2;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .logs-edit-btn:hover, .logs-delete-btn:hover {
+    background-color: #286b8b;
+  }
+  
+  /* Card Layout (Mobile) */
+  .logs-mobile-cards-container {
+    display: none; /* Default to hidden on larger screens */
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+  
+  .logs-ip-card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 48%; /* Default: 2 cards per row on larger screens */
+    padding: 15px;
+  }
+  
+  .logs-ip-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .logs-ip-card-title {
+    font-size: 1.1rem;
+    color: #3470b2;
+  }
+  
+  .logs-ip-card-body {
+    margin-top: 10px;
+  }
+  
+  .logs-ip-card-row {
+    margin-bottom: 10px;
+  }
+  
+  .logs-ip-card-label {
+    font-weight: bold;
+    color: #555;
+  }
+  
+  .logs-ip-card-value {
+    color: #666;
+  }
+
+  /* Pagination Styles */
+/* Wrapper */
+.logs-pagination-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+/* Common Button Styles */
+.logs-button {
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
+  color: #333;
+  border-radius: 6px;
+  transition: background-color 0.3s, color 0.3s;
+  cursor: pointer;
+}
+
+.logs-button:hover:not(:disabled) {
+  background-color: #e0e0e0;
+}
+
+.logs-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Active Page */
+.logs-active {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+/* Page Info */
+.logs-page-info {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 14px;
+  color: #555;
+}
+
+/* Dark Mode Overrides */
+/* Dark mode styles for Logs component with custom colors */
+.logs-ip-management-container.dark {
+  background-color: #111827;
+  color: #e5e7eb;
+}
+
+.logs-ip-management-container.dark .logs-title,
+.logs-ip-management-container.dark .logs-subtitle {
+  color: #ffffff;
+}
+
+.logs-ip-management-container.dark .search-input {
+  background-color: #1f2937;
+  color: #f3f4f6;
+  border-color: #374151;
+}
+
+.logs-ip-management-container.dark .search-input::placeholder {
+  color: #9ca3af;
+}
+
+.logs-ip-management-container.dark .logs-ip-table {
+  background-color: #1f2937;
+  color: #f3f4f6;
+  border-color: #374151;
+}
+
+.logs-ip-management-container.dark .logs-ip-table th {
+  background-color: #111827;
+  color: #ff9800; /* Accent color for headers */
+  border-color: #374151;
+}
+
+.logs-ip-management-container.dark .logs-ip-table td {
+  border-color: #374151;
+}
+
+.logs-ip-management-container.dark .logs-ip-table tr:nth-child(even) {
+  background-color: #1a202c;
+}
+
+.logs-ip-management-container.dark .logs-ip-table tr:hover {
+  background-color: #2d3748;
+}
+
+.logs-ip-management-container.dark .logs-ip-card {
+  background-color: #1f2937;
+  border-color: #374151;
+  color: #f3f4f6;
+}
+
+.logs-ip-management-container.dark .logs-ip-card-header {
+  border-bottom-color: #374151;
+  background-color: #111827;
+}
+
+.logs-ip-management-container.dark .logs-ip-card-label {
+  color: #9ca3af;
+}
+
+.logs-ip-management-container.dark .logs-ip-card-value {
+  color: #ff9800; /* Accent color for values */
+}
+
+.logs-ip-management-container.dark select {
+  background-color: #1f2937;
+  color: #f3f4f6;
+  border-color: #374151;
+}
+
+.logs-ip-management-container.dark .logs-pagination-controls {
+  color: #e5e7eb;
+}
+
+.logs-ip-management-container.dark .logs-button {
+  background-color: #111827;
+  color: #e5e7eb;
+  border-color: #374151;
+}
+
+.logs-ip-management-container.dark .logs-button:disabled {
+  background-color: #1a202c;
+  color: #6b7280;
+}
+
+.logs-ip-management-container.dark .logs-button.logs-active {
+  background-color: #ff9800; /* Accent color for active page */
+  color: #111827;
+  font-weight: bold;
+}
+
+.logs-ip-management-container.dark .logs-button:hover:not(:disabled) {
+  background-color: #2d3748;
+  color: #ff9800;
+}
+
+.logs-ip-management-container.dark .logs-page-info {
+  color: #ff9800;
+}
+
+/* Special accent highlights */
+.logs-ip-management-container.dark .logs-ip-card-title {
+  color: #ff9800;
+}
+
+.logs-ip-management-container.dark .logs-button.logs-first:hover:not(:disabled),
+.logs-ip-management-container.dark .logs-button.logs-last:hover:not(:disabled) {
+  background-color: #ff9800;
+  color: #111827;
+}
+
+/* Responsive Layout */
+@media (max-width: 500px) {
+  .logs-pagination-wrapper {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .logs-button {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+  
+  /* Media Queries */
+  @media (max-width: 768px) {
+    .logs-ip-management-container {
+      padding: 10px;
+    }
+    .logs-top-bar {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .logs-ip-table {
+      display: none; /* Hide table on smaller screens */
+    }
+  
+    .logs-mobile-cards-container {
+      display: flex; /* Show cards */
+    }
+  
+    .logs-ip-card {
+      width: 48%; /* 2 cards per row */
+    }
+  }
+  
+  @media (max-width: 425px) {
+    .logs-ip-card-title {
+      font-size: 1.2rem;
+    }
+  
+    .logs-search-container {
+      justify-content: flex-start;
+      width: 100%;
+    }
+  
+    .search-input {
+      width: 100%;
+      font-size: 0.9rem;
+    }
+  
+    /* 1 card per row on smaller screens */
+    .logs-ip-card {
+      width: 100%; 
+    }
+  }
+  
+  @media (max-width: 375px) {
+    .logs-ip-card {
+      padding: 12px;
+    }
+  
+    .logs-search-container {
+      width: 100%;
+    }
+  
+    .search-input {
+      font-size: 0.8rem;
+    }
+  }
+  
+  @media (max-width: 320px) {
+    .logs-ip-card-title {
+      font-size: 1rem;
+    }
+  
+    .logs-ip-card {
+      padding: 10px;
+    }
+  }
