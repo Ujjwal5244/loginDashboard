@@ -23,10 +23,21 @@ const Transactionhistory = ({ darkMode }) => {
   const [endDate, setEndDate] = useState("");
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [activeFilter, setActiveFilter] = useState("all");
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+
+  // Handle window resize
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Fetch transactions from API
   const fetchTransactions = useCallback(async () => {
@@ -157,6 +168,52 @@ const Transactionhistory = ({ darkMode }) => {
     setItemsPerPage(Number(e.target.value));
     setCurrentPage(1);
   };
+
+  // Mobile Transaction Card Component
+  const MobileTransactionCard = ({ tx, index }) => (
+    <div className={`tm-mobile-card ${darkMode ? "dark-mode" : ""}`}>
+      <div className="tm-mobile-card-header">
+        <span className="tm-mobile-card-srno">{indexOfFirstItem + index + 1}</span>
+        <span className={`tm-status ${tx.status.toLowerCase()}`}>
+          {tx.status}
+        </span>
+      </div>
+      <div className="tm-mobile-card-body">
+        <div className="tm-mobile-card-row">
+          <span className='text-gray-500'>Date & Time:</span>
+          <span>{tx.date}</span>
+        </div>
+        <div className="tm-mobile-card-row flex flex-wrap">
+  <span className="font-medium flex-shrink-0 text-gray-500">Service ID:</span>
+  <span className="font-medium break-all">{tx.serviceId}</span>
+</div>
+
+        <div className="tm-mobile-card-row">
+          <span  className="font-medium flex-shrink-0 text-gray-500">Reference No:</span>
+          <span>{tx.referenceNo}</span>
+        </div>
+        <div className="tm-mobile-card-row">
+          <span  className="font-medium flex-shrink-0 text-gray-500">Remark:</span>
+          <span>{tx.remark}</span>
+        </div>
+        <div className="tm-mobile-card-row">
+          <span  className="font-medium flex-shrink-0 text-gray-500">Amount:</span>
+          <span style={{ color: tx.amount >= 0 ? "#2e7d32" : "#c62828" }}>
+            {tx.amount >= 0
+              ? `+₹${tx.amount.toFixed(2)}`
+              : `-₹${Math.abs(tx.amount).toFixed(2)}`}
+          </span>
+        </div>
+        <div className="tm-mobile-card-row">
+          <span  className="font-medium flex-shrink-0 text-gray-500">Balance:</span>
+          <div className="tm-mobile-balance">
+            <div>Open: ₹{tx.openingBalance.toFixed(2)}</div>
+            <div>Close: ₹{tx.closingBalance.toFixed(2)}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <div className={`transaction-management ${darkMode ? "dark-mode" : ""}`}>
@@ -367,7 +424,7 @@ const Transactionhistory = ({ darkMode }) => {
             </div>
           </div>
 
-          {/* Transactions Table */}
+          {/* Transactions Display */}
           <div className="tm-table-container">
             <div className="tm-table-header">
               <h3 className="tm-table-header-h3">Recent Transactions</h3>
@@ -402,116 +459,134 @@ const Transactionhistory = ({ darkMode }) => {
               </div>
             </div>
 
-            <div className="tm-table-wrapper">
-              <div className="tm-table-scroll-container">
-                <table className="tm-table">
-                  <thead>
-                    <tr>
-                      <th>SR.NO.</th>
-                      <th>DATE & TIME</th>
-                      <th>SERVICE ID</th>
-                      <th>REFERENCE NO</th>
-                      <th>REMARK</th>
-                      <th>AMOUNT</th>
-                      <th>STATUS</th>
-                      <th>BALANCE</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {currentTransactions.length > 0 ? (
-                      currentTransactions.map((tx, index) => (
-                        <tr key={tx._id}>
-                          <td>{indexOfFirstItem + index + 1}</td>
-                          <td>{tx.date}</td>
-                          <td>{tx.serviceId}</td>
-                          <td>{tx.referenceNo}</td>
-                          <td>{tx.remark}</td>
-                          <td
-                            style={{
-                              color: tx.amount >= 0 ? "#2e7d32" : "#c62828",
-                              fontWeight: 500,
-                            }}
-                          >
-                            {tx.amount >= 0
-                              ? `+₹${tx.amount.toFixed(2)}`
-                              : `-₹${Math.abs(tx.amount).toFixed(2)}`}
-                          </td>
-                          <td>
-                            <span
-                              className={`tm-status ${tx.status.toLowerCase()}`}
+            {isMobile ? (
+              // Mobile View - Cards
+              <div className="tm-mobile-transactions">
+                {currentTransactions.length > 0 ? (
+                  currentTransactions.map((tx, index) => (
+                    <MobileTransactionCard key={tx._id} tx={tx} index={index} />
+                  ))
+                ) : (
+                  <div className="no-data">
+                    {transactions.length === 0
+                      ? "No transactions available"
+                      : "No transactions found matching your criteria"}
+                  </div>
+                )}
+              </div>
+            ) : (
+              // Desktop View - Table
+              <div className="tm-table-wrapper">
+                <div className="tm-table-scroll-container">
+                  <table className="tm-table">
+                    <thead>
+                      <tr>
+                        <th>SR.NO.</th>
+                        <th>DATE & TIME</th>
+                        <th>SERVICE ID</th>
+                        <th>REFERENCE NO</th>
+                        <th>REMARK</th>
+                        <th>AMOUNT</th>
+                        <th>STATUS</th>
+                        <th>BALANCE</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {currentTransactions.length > 0 ? (
+                        currentTransactions.map((tx, index) => (
+                          <tr key={tx._id}>
+                            <td>{indexOfFirstItem + index + 1}</td>
+                            <td>{tx.date}</td>
+                            <td>{tx.serviceId}</td>
+                            <td>{tx.referenceNo}</td>
+                            <td>{tx.remark}</td>
+                            <td
+                              style={{
+                                color: tx.amount >= 0 ? "#2e7d32" : "#c62828",
+                                fontWeight: 500,
+                              }}
                             >
-                              {tx.status}
-                            </span>
-                          </td>
-                          <td>
-                            <div className="tm-balance">
-                              <div>Open: ₹{tx.openingBalance.toFixed(2)}</div>
-                              <div>Close: ₹{tx.closingBalance.toFixed(2)}</div>
-                            </div>
+                              {tx.amount >= 0
+                                ? `+₹${tx.amount.toFixed(2)}`
+                                : `-₹${Math.abs(tx.amount).toFixed(2)}`}
+                            </td>
+                            <td>
+                              <span
+                                className={`tm-status ${tx.status.toLowerCase()}`}
+                              >
+                                {tx.status}
+                              </span>
+                            </td>
+                            <td>
+                              <div className="tm-balance">
+                                <div>Open: ₹{tx.openingBalance.toFixed(2)}</div>
+                                <div>Close: ₹{tx.closingBalance.toFixed(2)}</div>
+                              </div>
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan="8" className="no-data">
+                            {transactions.length === 0
+                              ? "No transactions available"
+                              : "No transactions found matching your criteria"}
                           </td>
                         </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td colSpan="8" className="no-data">
-                          {transactions.length === 0
-                            ? "No transactions available"
-                            : "No transactions found matching your criteria"}
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-
-              {/* Pagination Controls */}
-              {totalPages > 1 && (
-                <div className="tm-pagination">
-                  <button
-                    onClick={() => goToPage(1)}
-                    disabled={currentPage === 1 || loading}
-                    className="tm-page-btn"
-                  >
-                    <FaAngleDoubleLeft />
-                  </button>
-                  <button
-                    onClick={() => goToPage(currentPage - 1)}
-                    disabled={currentPage === 1 || loading}
-                    className="tm-page-btn"
-                  >
-                    <FaAngleLeft />
-                  </button>
-
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                    (page) => (
-                      <button
-                        key={page}
-                        onClick={() => goToPage(page)}
-                        disabled={loading}
-                        className={`tm-page-btn ${currentPage === page ? "active" : ""}`}
-                      >
-                        {page}
-                      </button>
-                    )
-                  )}
-
-                  <button
-                    onClick={() => goToPage(currentPage + 1)}
-                    disabled={currentPage === totalPages || loading}
-                    className="tm-page-btn"
-                  >
-                    <FaAngleRight />
-                  </button>
-                  <button
-                    onClick={() => goToPage(totalPages)}
-                    disabled={currentPage === totalPages || loading}
-                    className="tm-page-btn"
-                  >
-                    <FaAngleDoubleRight />
-                  </button>
+                      )}
+                    </tbody>
+                  </table>
                 </div>
-              )}
-            </div>
+              </div>
+            )}
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="tm-pagination">
+                <button
+                  onClick={() => goToPage(1)}
+                  disabled={currentPage === 1 || loading}
+                  className="tm-page-btn"
+                >
+                  <FaAngleDoubleLeft />
+                </button>
+                <button
+                  onClick={() => goToPage(currentPage - 1)}
+                  disabled={currentPage === 1 || loading}
+                  className="tm-page-btn"
+                >
+                  <FaAngleLeft />
+                </button>
+
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                  (page) => (
+                    <button
+                      key={page}
+                      onClick={() => goToPage(page)}
+                      disabled={loading}
+                      className={`tm-page-btn ${currentPage === page ? "active" : ""}`}
+                    >
+                      {page}
+                    </button>
+                  )
+                )}
+
+                <button
+                  onClick={() => goToPage(currentPage + 1)}
+                  disabled={currentPage === totalPages || loading}
+                  className="tm-page-btn"
+                >
+                  <FaAngleRight />
+                </button>
+                <button
+                  onClick={() => goToPage(totalPages)}
+                  disabled={currentPage === totalPages || loading}
+                  className="tm-page-btn"
+                >
+                  <FaAngleDoubleRight />
+                </button>
+              </div>
+            )}
           </div>
         </>
       )}

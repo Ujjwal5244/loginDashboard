@@ -83,7 +83,7 @@ const Header = ({ toggleSidebar, darkMode, toggleDarkMode, sidebarOpen }) => {
   }, [location]);
   return (
     <>
-      <header className="header">
+    <header className={`header ${darkMode ? 'dark-mode' : ''}`}>
         <div className="header-left">
           <button className="toggle-btn custom-toggle" onClick={toggleSidebar}>
             <FaBars size="20" color="white" />

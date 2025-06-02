@@ -161,6 +161,54 @@
   background-color: rgba(255, 255, 255, 0.1);
 }
 
+/* Dark Mode Styles of profile and profile dropdown */
+.dark-mode .profile-dropdown {
+  color: #e0e0e0;
+}
+
+.dark-mode .header-notification-btn {
+  color: #e0e0e0;
+}
+
+.dark-mode .profile-btn {
+  background-color: transparent;
+}
+
+.dark-mode .dropdown-content {
+  background-color: #2d3748;
+  border: 1px solid #4a5568;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.dark-mode .dropdown-item {
+  color: #e0e0e0;
+}
+
+.dark-mode .dropdown-item:hover {
+  background-color: #3c4a5e;
+}
+
+.dark-mode .dropdown-icon {
+  color: #a0aec0;
+}
+
+.dark-mode .dropdown-item span {
+  color: #e0e0e0;
+}
+
+/* Specific icon colors in dark mode */
+.dark-mode .dropdown-item .faUser {
+  color: #63b3ed;
+}
+
+.dark-mode .dropdown-item .faCheckCircle {
+  color: #68d391;
+}
+
+.dark-mode .dropdown-item .faSignOutAlt {
+  color: #fc8181;
+}
+
 /* Profile dropdown */
 .profile-dropdown {
    display: flex;

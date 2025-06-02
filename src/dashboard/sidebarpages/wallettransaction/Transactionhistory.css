@@ -59,6 +59,7 @@
   position: relative;
   flex: 1;
   min-width: 250px;
+  margin-top: 15px;
 }
 
 .tm-search-icon {
@@ -427,6 +428,71 @@
   cursor: not-allowed;
 }
 
+/* ________________Mobile Transaction Cards___________________ */
+.tm-mobile-transactions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.tm-mobile-card {
+  background: white;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.tm-mobile-card.dark-mode {
+  background: #1f2937;
+  color: #e5e7eb;
+}
+
+.tm-mobile-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.tm-mobile-card.dark-mode .tm-mobile-card-header {
+  border-bottom-color: #374151;
+}
+
+.tm-mobile-card-srno {
+  font-weight: bold;
+}
+
+.tm-mobile-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.tm-mobile-card-row {
+  display: flex;
+  justify-content: space-between;
+    word-break: break-word;
+}
+
+.tm-mobile-card.dark-mode .tm-mobile-card-row span:first-child {
+  color: #9ca3af;
+}
+
+.tm-mobile-balance {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+@media (min-width: 769px) {
+  .tm-mobile-transactions {
+    display: none;
+  }
+}
+
 /* ________________________________Dark Mode Styles________________________________________ */
 
 .dark-mode .tm-card {
@@ -616,7 +682,7 @@
   }
 }
 
-/* 425px Breakpoint */
+/* 485px Breakpoint */
 @media (max-width: 485px) {
   .tm-header {
     flex-direction: column;
@@ -636,12 +702,11 @@
     align-items: center;
   }
 
-  .tm-cards {
-    grid-template-columns: 1fr 1fr;
-  }
-
+ .tm-cards,
   .tm-transaction-cards {
-    grid-template-columns: 1fr;
+    display: grid;
+    grid-template-columns: 1fr; /* One column = one card per row */
+    gap: 1rem; /* Optional spacing between cards */
   }
 
   .tm-card {
@@ -681,9 +746,7 @@
     text-align: center;
   }
 
-  .tm-cards {
-    grid-template-columns: 1fr;
-  }
+  
 
   .tm-filter-buttons {
     flex-wrap: wrap;
