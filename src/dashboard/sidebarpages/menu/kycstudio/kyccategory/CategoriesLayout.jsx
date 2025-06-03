@@ -145,9 +145,7 @@ const CategoriesLayout = ({ darkMode }) => {
                     }`}
                   >
                     <img
-                      height={"55px"}
-                      width={"65px"}
-                      style={{ borderRadius:"10px" }}
+                     className="h-[45px] w-[60px] rounded-[5px] object-cover"
                       src={cat.categoryImg}
                     />
                   </div>
