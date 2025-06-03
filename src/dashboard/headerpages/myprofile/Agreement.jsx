@@ -16,7 +16,7 @@ const Agreement = () => {
       setLoading(true);
 
       try {
-        const response = await fetch(`${baseUrl}/api/user/preview/kill`, {
+        const response = await fetch(`${baseUrl}/api/user/preview/nifi`, {
           headers: {
             authorization: token,
             "Content-Type": "application/json",
