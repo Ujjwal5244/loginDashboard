@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { GoogleOAuthProvider } from '@react-oauth/google'; // Add this import
 import "./App.css";
 import Login from "./login/Login";
 import Signup from "./signup/Signup";
@@ -53,6 +54,7 @@ function App() {
   };
 
   return (
+    <GoogleOAuthProvider clientId="587797030071-kt1lgl2gs8b712ar1ju8otgsroa3dltp.apps.googleusercontent.com">
     <Router>
       <ToastContainer />
       <div className={`app ${darkMode ? "dark-mode" : ""}`}>
@@ -145,6 +147,7 @@ function App() {
         </Routes>
       </div>
     </Router>
+    </GoogleOAuthProvider>
   );
 }
 
