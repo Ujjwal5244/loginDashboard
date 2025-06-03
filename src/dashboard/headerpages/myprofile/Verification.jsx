@@ -343,6 +343,7 @@ const Verification = ({ darkMode }) => {
             </button>
           </div>
         )}
+       
       </div>
     </div>
   );

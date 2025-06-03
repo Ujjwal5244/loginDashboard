@@ -1,8 +1,10 @@
 import React, { useState, useRef } from "react";
 import "./PdfSign.css";
 import { AiFillSignature } from "react-icons/ai";
-import { baseUrl, encryptText } from "../../../encryptDecrypt";
+import { baseUrl, encryptText,decryptText } from "../../../encryptDecrypt";
 import { useNavigate } from "react-router-dom";
+import PdfViewerAllPages from "./PdfViewer";
+import axios from "axios";
 
 const PdfSign = ({darkMode}) => {
   const token = localStorage.getItem("userToken");
@@ -16,6 +18,36 @@ const PdfSign = ({darkMode}) => {
   const canvasRef = useRef(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const navigate = useNavigate();
+
+  // after pdf signed
+  const [pdfUrl, setPdfUrl] = useState("");
+  const [kycStatus, setKycStatus] = useState("");
+  const [isAccepted, setIsAccepted] = useState(false);
+  const [hasSubmitted, setHasSubmitted] = useState(false);
+  const [isPdfSigned,setIsPdfSigned] = useState(false)
+
+  const fetchPdf = async () => {
+    // setLoading(true);
+    try {
+      const response = await fetch(`${baseUrl}/api/user/signed-pdf`, {
+        headers: {
+          authorization: token,
+          "Content-Type": "application/json",
+        },
+      });
+
+      const data = await response.json();
+      if (data.pdfUrl) {
+        setPdfUrl(data.pdfUrl);
+      } else {
+        throw new Error("No PDF URL found in response");
+      }
+    } catch (error) {
+      console.error("Error fetching PDF:", error);
+    } finally {
+      // setLoading(false);
+    }
+  };
 
   const handleMethodSelect = (method) => {
     setSignatureMethod(method);
@@ -251,7 +283,9 @@ const verifyOtp = async () => {
       console.log(response);
 
       if (response.status === 200 || response.status === 409) {
-        navigate("/maindashboard/signed-agreement");
+        // navigate("/maindashboard/signed-agreement");
+        await fetchPdf()
+        setIsPdfSigned(true)
       } else {
         alert(result.message || "Failed to sign the document.");
       }
@@ -259,12 +293,36 @@ const verifyOtp = async () => {
       console.log("Signature submitted:", signatureData);
       alert("Document signed successfully!");
     } catch (error) {
+      if(error.response && error.response.status === 409) {
+        alert("You have already signed this document.");
+        await fetchPdf();
+        setIsPdfSigned(true);
+      }
       console.error("Error submitting signature:", error);
       alert("Something went wrong while signing the document.");
     }
   };
 
-  return (
+  const handleSendMailSubmit = async () => {
+    try {
+      setHasSubmitted(true);
+      const res = await axios.get(`${baseUrl}/api/notifications/`, {
+        headers: { authorization: token },
+      });
+
+      const decrypted = await decryptText(res.data.body);
+      const parsed = JSON.parse(decrypted);
+      console.log("KYC Status:", parsed);
+      navigate("/maindashboard/signed-agreement");
+      // After submission, show the "under review" message
+      // setKycStatus("pending");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  return ( 
+    !isPdfSigned ?
     <section className={`pdf-sign ${darkMode ? "dark-mode" : ""}`}>
       <div className={`digital-signature-header ${darkMode ? "dark-header" : ""}`}>
         <h2 className='h2-of-digital-sign'>
@@ -482,7 +540,39 @@ const verifyOtp = async () => {
           )}
         </div>
       )}
-    </section>
+    </section> : <div className="verification-section">
+            <h3>SendMail Verification</h3>
+            <PdfViewerAllPages pdfUrl={pdfUrl}/>
+            <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
+            <div className="flex items-center mb-6">
+              <input
+                type="checkbox"
+                id="accept-checkbox"
+                onChange={() => setIsAccepted(!isAccepted)}
+                className="w-5 h-5 text-blue-600 rounded focus:ring-blue-500 focus:ring-offset-2 focus:ring-2"
+              />
+              <label
+                htmlFor="accept-checkbox"
+                className="ml-3 block text-gray-700 font-medium"
+              >
+                I accept the terms and conditions of this agreement
+              </label>
+            </div>
+  
+            <button
+              disabled={!isAccepted}
+              type="submit"
+              onClick={handleSendMailSubmit}
+              className={`w-full px-4 py-2 rounded-md font-medium text-white ${
+                isAccepted
+                  ? "bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+                  : "bg-gray-400 cursor-not-allowed"
+              }`}
+            >
+              Submit
+            </button>
+          </div>
+          </div>
   );
 };
 
