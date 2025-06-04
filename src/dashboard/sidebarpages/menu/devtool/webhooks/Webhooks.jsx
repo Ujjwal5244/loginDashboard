@@ -38,45 +38,57 @@ const Webhooks = ({darkMode}) => {
 
   // Fetch webhooks from API
   const fetchWebhooks = useCallback(async () => {
-    setLoading(true);
-    try {
-      const res = await axios.get(`${baseUrl}/api/webhook`, {
-        headers: { authorization: token },
-      });
+  setLoading(true);
+  try {
+    const res = await axios.get(`${baseUrl}/api/webhook`, {
+      headers: { authorization: token },
+    });
 
-      if (!res.data?.webhooks) {
-        throw new Error("No encrypted webhook data received");
-      }
-
-      const dec = await decryptText(res.data.webhooks);
-      const data = JSON.parse(dec);
-
-      const formattedWebhooks = Array.isArray(data)
-        ? data
-            .filter((webhook) => webhook.status !== "delete")
-            .map((webhook) => ({
-              _id: webhook._id,
-              eventName: webhook.event?.eventName || "Unknown",
-              callbackUrl: webhook.callbackURL,
-              status: webhook.status === "active" ? "Active" : "Inactive",
-              email: webhook.user?.email || "Unknown",
-              name: webhook.user?.name || "Unknown",
-            }))
-        : [];
-
-      setWebhooks(formattedWebhooks);
-      setCurrentPage(1); // Reset to first page when data changes
-    } catch (err) {
-      console.error("Webhook fetch error:", err);
-      toast.error("Failed to fetch webhooks");
-    } finally {
-      setLoading(false);
+    // Check if response exists and has data
+    if (!res || !res.data) {
+      throw new Error("No response data received from server");
     }
-  }, [token]);
 
-  useEffect(() => {
-    fetchWebhooks();
-  }, [fetchWebhooks]);
+    // If the endpoint might return a 200 with empty data
+    if (res.status === 200 && !res.data.webhooks) {
+      setWebhooks([]); // Set empty array if no webhooks
+      return;
+    }
+
+    // Only proceed with decryption if webhooks data exists
+    const dec = await decryptText(res.data.webhooks);
+    const data = JSON.parse(dec);
+
+    const formattedWebhooks = Array.isArray(data)
+      ? data
+          .filter((webhook) => webhook.status !== "delete")
+          .map((webhook) => ({
+            _id: webhook._id,
+            eventName: webhook.event?.eventName || "Unknown",
+            callbackUrl: webhook.callbackURL,
+            status: webhook.status === "active" ? "Active" : "Inactive",
+            email: webhook.user?.email || "Unknown",
+            name: webhook.user?.name || "Unknown",
+          }))
+      : [];
+
+    setWebhooks(formattedWebhooks);
+    setCurrentPage(1);
+  } catch (err) {
+    console.error("Webhook fetch error:", err);
+    // More specific error message
+    toast.error(
+      err.response?.status === 404
+        ? "Webhook endpoint not found"
+        : "Failed to fetch webhooks"
+    );
+    
+    // Set empty array if error occurs
+    setWebhooks([]);
+  } finally {
+    setLoading(false);
+  }
+}, [token]);
 
   // fetch events select list
   const fetchEvents = useCallback(async () => {
@@ -134,7 +146,7 @@ const Webhooks = ({darkMode}) => {
       if (response) {
         toast.success("Webhook created successfully");
         setShowAddForm(false);
-        setNewWebhook({ eventName: "", callbackUrl: "", status: "active" });
+        setNewWebhook({ eventId: "", eventName: "", callbackUrl: "", status: "active" });
         fetchWebhooks();
       } else {
         throw new Error(data.message || "Failed to create webhook");
@@ -152,7 +164,10 @@ const Webhooks = ({darkMode}) => {
 
   // Update existing webhook
   const saveEdit = async (id) => {
-    if (!editData.eventName || !editData.callbackUrl) return;
+    if (!editData.eventId || !editData.callbackUrl) { // Check eventId instead of eventName
+      toast.error("Event and Callback URL are required.");
+      return;
+    }
 
     setLoading(true);
     try {
@@ -230,8 +245,9 @@ const Webhooks = ({darkMode}) => {
 
   const startEditing = (webhook) => {
     setEditingId(webhook._id);
+    const eventInList = eventList.find(ev => ev.eventName === webhook.eventName);
     setEditData({
-      eventId: eventList.find(ev => ev.eventName === webhook.eventName)?._id || "",
+      eventId: eventInList?._id || "",
       eventName: webhook.eventName,
       callbackUrl: webhook.callbackUrl,
       status: webhook.status.toLowerCase(),
@@ -242,7 +258,7 @@ const Webhooks = ({darkMode}) => {
 
   const cancelEditing = () => {
     setEditingId(null);
-    setEditData({ eventName: "", callbackUrl: "", status: "active" });
+    setEditData({ eventId: "", eventName: "", callbackUrl: "", status: "active" });
   };
 
   // Filter webhooks based on search term
@@ -289,7 +305,8 @@ const Webhooks = ({darkMode}) => {
           className="webhook-add-btn"
           onClick={() => {
             setShowAddForm(!showAddForm);
-            cancelEditing();
+            cancelEditing(); // Also cancel any editing if add form is opened
+            setNewWebhook({ eventId: "", eventName: "", callbackUrl: "", status: "active" }); // Reset newWebhook form
           }}
           disabled={loading}
         >
@@ -339,7 +356,10 @@ const Webhooks = ({darkMode}) => {
           <div className="webhook-form-actions">
             <button
               className="webhook-cancel-btn"
-              onClick={() => setShowAddForm(false)}
+              onClick={() => {
+                setShowAddForm(false);
+                setNewWebhook({ eventId: "", eventName: "", callbackUrl: "", status: "active" }); // Reset form on cancel
+              }}
               disabled={loading}
             >
               Cancel
@@ -347,7 +367,7 @@ const Webhooks = ({darkMode}) => {
             <button
               className="webhook-submit-btn"
               onClick={handleAddWebhook}
-              disabled={loading}
+              disabled={loading || !newWebhook.eventId || !newWebhook.callbackUrl}
             >
               {loading ? "Adding..." : "Add Webhook"}
             </button>
@@ -355,7 +375,7 @@ const Webhooks = ({darkMode}) => {
         </div>
       )}
 
-      {loading && !showAddForm && (
+      {loading && !showAddForm && webhooks.length === 0 && ( // Show loading only if no webhooks yet and not adding
         <div className="loading-indicator">Loading...</div>
       )}
 
@@ -378,13 +398,13 @@ const Webhooks = ({darkMode}) => {
                   <td>
                     {editingId === item._id ? (
                       <select
-                        value={editData.eventName}
+                        value={editData.eventName} // Display eventName
                         onChange={(e) => {
                           const selectedEvent = eventList.find(ev => ev.eventName === e.target.value);
                           setEditData({
                             ...editData,
                             eventName: selectedEvent?.eventName || "",
-                            eventId: selectedEvent?._id || "",
+                            eventId: selectedEvent?._id || "", // Set eventId as well
                           });
                         }}
                         
@@ -393,7 +413,7 @@ const Webhooks = ({darkMode}) => {
                       >
                         <option value="">-- Select Event --</option>
                         {eventList.map((event) => (
-                          <option key={event._id} value={event.eventName}>
+                          <option key={event._id} value={event.eventName}> 
                             {event.eventName}
                           </option>
                         ))}
@@ -421,7 +441,8 @@ const Webhooks = ({darkMode}) => {
                     )}
                   </td>
                   <td>
-                    {item.status} {/* Status is now always displayed as text */}
+                    {/* Status is not directly editable in the row, it's managed by `editData.status` if needed elsewhere or preset */}
+                    {item.status} 
                   </td>
                   <td>
                     {editingId === item._id ? (
@@ -430,15 +451,15 @@ const Webhooks = ({darkMode}) => {
                           className="webhook-save-btn"
                           onClick={() => saveEdit(item._id)}
                           title="Save"
-                          disabled={loading}
+                          disabled={loading || !editData.eventId || !editData.callbackUrl}
                         >
-                          {loading ? "..." : "✔️"}
+                          {loading && editingId === item._id ? "..." : "✔️"}
                         </button>
                         <button
                           className="webhook-cancel-edit-btn"
                           onClick={cancelEditing}
                           title="Cancel"
-                          disabled={loading}
+                          disabled={loading && editingId === item._id}
                         >
                           ✖️
                         </button>
@@ -495,7 +516,7 @@ const Webhooks = ({darkMode}) => {
         </div>
 
         <div className="webhook-pagination-info">
-          Showing {indexOfFirstItem + 1}-
+          Showing {filteredWebhooks.length > 0 ? indexOfFirstItem + 1 : 0}-
           {Math.min(indexOfLastItem, filteredWebhooks.length)} of{" "}
           {filteredWebhooks.length} items
         </div>
@@ -511,28 +532,29 @@ const Webhooks = ({darkMode}) => {
             </button>
 
             {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-              // Show limited page numbers (max 5)
-              let pageNumber;
+              let pageNumberToShow;
               if (totalPages <= 5) {
-                pageNumber = i + 1;
+                pageNumberToShow = i + 1;
               } else if (currentPage <= 3) {
-                pageNumber = i + 1;
+                pageNumberToShow = i + 1;
               } else if (currentPage >= totalPages - 2) {
-                pageNumber = totalPages - 4 + i;
+                pageNumberToShow = totalPages - 4 + i;
               } else {
-                pageNumber = currentPage - 2 + i;
+                pageNumberToShow = currentPage - 2 + i;
               }
-
-              return (
-                <button
-                  key={pageNumber}
-                  onClick={() => paginate(pageNumber)}
-                  className={`webhook-pagination-button ${currentPage === pageNumber ? "active" : ""}`}
-                  disabled={loading}
-                >
-                  {pageNumber}
-                </button>
-              );
+              if (pageNumberToShow > 0 && pageNumberToShow <= totalPages) {
+                return (
+                  <button
+                    key={pageNumberToShow}
+                    onClick={() => paginate(pageNumberToShow)}
+                    className={`webhook-pagination-button ${currentPage === pageNumberToShow ? "active" : ""}`}
+                    disabled={loading}
+                  >
+                    {pageNumberToShow}
+                  </button>
+                );
+              }
+              return null;
             })}
 
             <button
@@ -561,15 +583,15 @@ const Webhooks = ({darkMode}) => {
                       className="webhook-save-btn"
                       onClick={() => saveEdit(item._id)}
                       title="Save"
-                      disabled={loading}
+                      disabled={loading || !editData.eventId || !editData.callbackUrl}
                     >
-                      {loading ? "..." : "✔️"}
+                      {loading && editingId === item._id ? "..." : "✔️"}
                     </button>
                     <button
                       className="webhook-cancel-edit-btn"
                       onClick={cancelEditing}
                       title="Cancel"
-                      disabled={loading}
+                      disabled={loading && editingId === item._id}
                     >
                       ✖️
                     </button>
@@ -602,10 +624,15 @@ const Webhooks = ({darkMode}) => {
                 <div className="webhook-card-value">
                   {editingId === item._id ? (
                     <select
-                      value={editData.eventName}
-                      onChange={(e) =>
-                        setEditData({ ...editData, eventName: e.target.value })
-                      }
+                      value={editData.eventName} // Display eventName
+                      onChange={(e) => { // <<< --- THIS IS THE FIX APPLIED
+                        const selectedEvent = eventList.find(ev => ev.eventName === e.target.value);
+                        setEditData({
+                          ...editData,
+                          eventName: selectedEvent?.eventName || "",
+                          eventId: selectedEvent?._id || "", // Set eventId as well
+                        });
+                      }}
                       className="webhook-edit-input"
                       disabled={loading}
                     >
@@ -645,12 +672,15 @@ const Webhooks = ({darkMode}) => {
               <div className="webhook-card-row">
                 <div className="webhook-card-label">Status:</div>
                 <div className="webhook-card-value">
-                  {item.status} {/* Status is now always displayed as text */}
+                  {item.status} 
                 </div>
               </div>
             </div>
           </div>
         ))}
+         {currentItems.length === 0 && !loading && (
+          <div className="webhook-no-data-mobile">No Webhooks Found</div>
+        )}
       </div>
     </div>
   );

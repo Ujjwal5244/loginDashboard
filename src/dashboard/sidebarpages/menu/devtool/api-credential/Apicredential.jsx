@@ -18,37 +18,46 @@ const Apicredential = ({darkMode}) => {
   const [loading, setLoading] = useState(false);
 
   // Fetch API Credentials
-  const fetchCredentials = useCallback(async () => {
-    setLoading(true);
-    try {
-      const res = await axios.get(`${baseUrl}/api/user-credentials/`, {
-        headers: { authorization: token },
-      });
+ const fetchCredentials = useCallback(async () => {
+  setLoading(true);
+  try {
+    const res = await axios.get(`${baseUrl}/api/user-credentials/`, {
+      headers: { 
+        authorization: token,
+        'Content-Type': 'application/json'
+      },
+    });
 
-      const decrypted = await decryptText(res.data.body);
-      const parsed = JSON.parse(decrypted);
-
-      const formattedCredentials = parsed.data.map((item, index) => ({
-        id: index + 1,
-        description: item.description || "N/A",
-        createdAt: new Date(item.createdAt).toISOString().split("T")[0],
-        apiKey: item.apiKey || "N/A",
-        iv: item.iv || "N/A",
-        encryptionKey: item.encKey || "N/A",
-      }));
-
-      setCredentials(formattedCredentials);
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to fetch API credentials");
-    } finally {
-      setLoading(false);
+    if (!res.data || !res.data.body) {
+      throw new Error('Invalid response structure');
     }
-  }, [token]);
 
-  useEffect(() => {
-    fetchCredentials();
-  }, [fetchCredentials]);
+    const decrypted = await decryptText(res.data.body);
+    const parsed = JSON.parse(decrypted);
+
+    if (!Array.isArray(parsed.data)) {
+      throw new Error('Invalid data format');
+    }
+
+    const formattedCredentials = parsed.data.map((item, index) => ({
+      id: index + 1,
+      description: item.description || "N/A",
+      createdAt: new Date(item.createdAt).toISOString().split("T")[0],
+      apiKey: item.apiKey || "N/A",
+      iv: item.iv || "N/A",
+      encryptionKey: item.encKey || "N/A",
+    }));
+
+    setCredentials(formattedCredentials);
+  } catch (err) {
+    console.error('Fetch error:', err);
+    toast.error(err.response?.data?.message || 
+               err.message || 
+               "Failed to fetch API credentials");
+  } finally {
+    setLoading(false);
+  }
+}, [token]);
 
   // Save new credential
   const handleSaveCredential = async () => {
