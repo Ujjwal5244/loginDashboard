@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 import axios from "axios";
 
 const CategoriesLayout = ({ darkMode }) => {
+  const token = localStorage.getItem("userToken");
   const [categories, setCategories] = useState([]);
   const [activeIndex, setActiveIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -17,7 +18,6 @@ const CategoriesLayout = ({ darkMode }) => {
     categoryName: categories?.[activeIndex]?.categoryName,
     id: categories?.[activeIndex]?._id,
   };
-  const token = localStorage.getItem("userToken");
   const getCategory = async () => {
     try {
       const response = await axios(`${baseUrl}/api/category/`, {
@@ -145,7 +145,7 @@ const CategoriesLayout = ({ darkMode }) => {
                     }`}
                   >
                     <img
-                     className="h-[45px] w-[60px] rounded-[5px] object-cover"
+                      className="h-[45px] w-[60px] rounded-[5px] object-cover"
                       src={cat.categoryImg}
                     />
                   </div>
