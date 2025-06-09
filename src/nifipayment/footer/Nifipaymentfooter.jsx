@@ -48,11 +48,11 @@ const Nifipaymentfooter = () => {
           <div>
             <h4 className="text-lg font-semibold mb-4 border-b border-gray-700 pb-2">Services</h4>
             <ul className="space-y-2">
-              <li><a href="#" className="text-gray-300 hover:text-white transition-colors">Online Payments</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-white transition-colors">Mobile Wallet</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-white transition-colors">Bill Payments</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-white transition-colors">Money Transfer</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-white transition-colors">Merchant Solutions</a></li>
+              <li><a href="#" className="text-gray-300 hover:text-white transition-colors">Adhar Verification</a></li>
+              <li><a href="#" className="text-gray-300 hover:text-white transition-colors">Pan Verification</a></li>
+              <li><a href="#" className="text-gray-300 hover:text-white transition-colors">virtual KYC Verification</a></li>
+              <li><a href="#" className="text-gray-300 hover:text-white transition-colors">DL Verification</a></li>
+              <li><a href="#" className="text-gray-300 hover:text-white transition-colors">Passport Verification</a></li>
             </ul>
           </div>
 

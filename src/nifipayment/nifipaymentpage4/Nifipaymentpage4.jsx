@@ -95,7 +95,7 @@ const Nifipaymentpage4 = () => {
         >
           <FaChevronLeft className="text-gray-700" />
         </button>
-        <button
+        <button 
           onClick={goToNext}
           className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-white/80 rounded-full p-2 shadow-md hover:bg-white transition-colors lg:right-4"
         >
