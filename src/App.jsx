@@ -39,6 +39,7 @@ import Createfile from "./dashboard/headerpages/createdocumentpage/Createfile";
 import Requestfile from "./dashboard/headerpages/createdocumentpage/request/Requestfile";
 import Approve from "./dashboard/headerpages/createdocumentpage/aprove/Approve";
 import Allinvites from "./dashboard/headerpages/createdocumentpage/allinvities/Allinvities";
+import Nifipaymentmain from "./nifipayment/Nifipaymentmain";
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -61,7 +62,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-
+          <Route path="/Nifipayment" element={<Nifipaymentmain />} />
           <Route
             path="/Maindashboard"
             element={

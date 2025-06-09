@@ -45,6 +45,10 @@ const Header = ({ toggleSidebar, darkMode, toggleDarkMode, sidebarOpen }) => {
     navigate("createfile");
   };
 
+  const nifiPaymentClick = () => {
+    navigate("/Nifipayment"); // Replace with your target path
+  };
+
   // logout api
   const handleLogout = async () => {
     const token = localStorage.getItem("userToken");
@@ -83,12 +87,15 @@ const Header = ({ toggleSidebar, darkMode, toggleDarkMode, sidebarOpen }) => {
   }, [location]);
   return (
     <>
-    <header className={`header ${darkMode ? 'dark-mode' : ''}`}>
+      <header className={`header ${darkMode ? "dark-mode" : ""}`}>
         <div className="header-left">
           <button className="toggle-btn custom-toggle" onClick={toggleSidebar}>
             <FaBars size="20" color="white" />
           </button>
-          <div className="nifi-logo-name">
+          <div
+  className="nifi-logo-name cursor-pointer transition duration-300 hover:bg-[rgba(100,149,237,0.3)] hover:backdrop-blur-sm rounded-[20px] p-2"
+            onClick={nifiPaymentClick}
+          >
             <span className="logo-text">Nifi</span>
             <span className="logo-text">Payments</span>
           </div>
@@ -99,7 +106,10 @@ const Header = ({ toggleSidebar, darkMode, toggleDarkMode, sidebarOpen }) => {
           >
             <FaBars size="22px" />
           </button>
-          <div className="mobile-header-nifi-logo-name">
+          <div
+            className="mobile-header-nifi-logo-name"
+            onClick={nifiPaymentClick}
+          >
             <span className="mobile-header-logo-text">Nifi</span>
             <span className="mobile-header-logo-text">Payments</span>
           </div>
@@ -118,10 +128,7 @@ const Header = ({ toggleSidebar, darkMode, toggleDarkMode, sidebarOpen }) => {
             </button>
           </div>
           <div className="theme-toggle-wrapper">
-            <ThemeToggle
-              darkMode={darkMode}
-              toggleDarkMode={toggleDarkMode}
-            />
+            <ThemeToggle darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
           </div>
           {/* ________profile header___________ */}
           <div className="profile-dropdown">

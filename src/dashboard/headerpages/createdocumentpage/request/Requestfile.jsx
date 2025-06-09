@@ -318,8 +318,8 @@ const Requestfile = () => {
                     <button
                       onClick={() => toggleOptions(invitee.id)}
                       data-toggles-options={String(invitee.id)} // Added data-attribute
-                      className="p-1 hover:bg-gray-100 rounded-full transition-colors"
-                    >
+                      className="p-2 hover:bg-gray-100 rounded-full flex items-center text-sm gap-1 transition-colors"
+                    >Signature Types
                       <HiDotsVertical className="text-gray-500 hover:text-gray-700 text-sm" />
                     </button>
 
