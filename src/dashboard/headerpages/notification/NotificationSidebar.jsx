@@ -3,19 +3,29 @@ import Notification from "./Notification";
 import { FaFacebookMessenger } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
-const NotificationSidebar = ({ onClose }) => {
+const NotificationSidebar = ({ onClose, darkMode }) => {
   const navigate = useNavigate();
 
   return (
     <>
       <div
-        className="fixed inset-0 bg-opacity-50 backdrop-blur-sm z-50"
+        className={`fixed inset-0 bg-opacity-50 backdrop-blur-sm z-50 ${
+          darkMode ? "bg-gray-900" : "bg-gray-600"
+        }`}
         onClick={onClose}
       />
 
-      <div className="fixed top-0 right-0 w-[350px] h-full bg-white shadow-xl z-[2000] transform transition-all duration-300 ease-in-out flex flex-col">
+      <div
+        className={`fixed top-0 right-0 w-[350px] h-full shadow-xl z-[2000] transform transition-all duration-300 ease-in-out flex flex-col ${
+          darkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800"
+        }`}
+      >
         {/* Fixed Header */}
-        <div className="p-4 bg-[#326bae] flex justify-between items-center border-b border-gray-200 h-[64px]">
+        <div
+          className={`p-4 flex justify-between items-center border-b h-[64px] ${
+            darkMode ? "bg-gray-900 border-gray-700" : "bg-[#326bae] border-gray-200"
+          }`}
+        >
           <h2 className="text-lg font-semibold text-white flex gap-2 items-center justify-center p-1">
             <FaFacebookMessenger />
             Notifications
@@ -43,15 +53,25 @@ const NotificationSidebar = ({ onClose }) => {
 
         {/* Scrollable Content */}
         <div className="flex-1 overflow-hidden">
-          <div className="h-full overflow-y-auto p-3 bg-gray-100">
-            <Notification />
+          <div
+            className={`h-full overflow-y-auto p-3 ${
+              darkMode ? "bg-gray-700" : "bg-gray-100"
+            }`}
+          >
+            <Notification darkMode={darkMode} />
           </div>
         </div>
 
         {/* Fixed Footer */}
-        <div className="p-5 bg-white text-center border-t border-gray-700 h-[80px] flex items-center justify-center">
+        <div
+          className={`p-5 text-center border-t h-[80px] flex items-center justify-center ${
+            darkMode ? "bg-gray-800 border-gray-700" : "bg-white border-gray-300"
+          }`}
+        >
           <button
-            className="p-3 bg-[#326bae] text-white rounded-md hover:bg-[#1b4b8e] transition-colors duration-300"
+            className={`p-3 rounded-md hover:bg-[#1b4b8e] transition-colors duration-300 ${
+              darkMode ? "bg-blue-700 text-white" : "bg-[#326bae] text-white"
+            }`}
             onClick={() => {
               navigate("/maindashboard/Email");
               onClose();

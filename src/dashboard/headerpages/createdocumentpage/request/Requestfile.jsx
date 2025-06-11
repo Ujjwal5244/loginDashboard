@@ -10,38 +10,59 @@ import {
   FaIdCard,
   FaSortNumericDown, // Icon for sorting/rank
 } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
+import { IoSettings } from "react-icons/io5";
 import { HiDotsVertical } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 
+const selfSignerInfo = {
+  id: 1,
+  name: "Ujjwal Yadav",
+  contact: "ujjwalyadav5244@gmail.com",
+  isSelf: true,
+};
+
 const Requestfile = () => {
-  const initialInvitees = [
-    { id: 1, name: "Ujjwal Yadav", contact: "ujjwalyadav5244@gmail.com", rank: 1 },
-  ];
-  const [invitees, setInvitees] = useState(initialInvitees);
-  const nextIdRef = useRef(Math.max(0, ...initialInvitees.map(i => i.id)) + 2);
+  const [invitees, setInvitees] = useState([{ ...selfSignerInfo, rank: 1 }]);
+
+  const nextIdRef = useRef(2);
 
   const [isFixedOrder, setIsFixedOrder] = useState(true);
-  const [iWillSign, setIWillSign] = useState(false);
+  const [iWillSign, setIWillSign] = useState(true);
   const navigate = useNavigate();
 
   const [showOptions, setShowOptions] = useState({});
   const [selectedMethods, setSelectedMethods] = useState([]);
   const dropdownRefs = useRef({});
 
-  // New state and ref for rank selector
   const [showRankSelector, setShowRankSelector] = useState({});
   const rankSelectorContainerRefs = useRef({});
 
   const methods = [
-    { id: "aadhaar", name: "Aadhaar OTP", icon: <FaMobileAlt className="text-blue-500" /> },
-    { id: "biometric", name: "Biometric", icon: <FaFingerprint className="text-green-500" /> },
-    { id: "esign", name: "Electronic Sign", icon: <FaSignature className="text-purple-500" /> },
-    { id: "digital", name: "Digital Signature", icon: <FaIdCard className="text-red-500" /> },
+    {
+      id: "aadhaar",
+      name: "Aadhaar OTP",
+      icon: <FaMobileAlt className="text-blue-500" />,
+    },
+    {
+      id: "biometric",
+      name: "Biometric",
+      icon: <FaFingerprint className="text-green-500" />,
+    },
+    {
+      id: "esign",
+      name: "Electronic Sign",
+      icon: <FaSignature className="text-purple-500" />,
+    },
+    {
+      id: "digital",
+      name: "Digital Signature",
+      icon: <FaIdCard className="text-red-500" />,
+    },
   ];
 
   const toggleOptions = (inviteeId) => {
     const key = String(inviteeId);
-    // Close other dropdowns (options and rank selectors)
     setShowRankSelector({});
     setShowOptions((prev) => ({
       ...Object.fromEntries(Object.entries(prev).map(([k, v]) => [k, false])),
@@ -50,19 +71,17 @@ const Requestfile = () => {
     setSelectedMethods([]);
   };
 
-  // New toggle function for rank selector
   const toggleRankSelector = (inviteeId) => {
-    if (invitees.length <= 1) return; // Prevent opening if only one/zero invitees
+    if (invitees.length <= 1) return;
 
     const key = String(inviteeId);
-    // Close other dropdowns (options and rank selectors)
     setShowOptions({});
     setShowRankSelector((prev) => {
       const isOpenCurrently = !!prev[key];
       const allClosed = Object.fromEntries(
         Object.keys(prev)
-          .map(k => [k, false])
-          .filter(entry => entry !== undefined)
+          .map((k) => [k, false])
+          .filter((entry) => entry !== undefined)
       );
       return {
         ...allClosed,
@@ -80,7 +99,7 @@ const Requestfile = () => {
   };
 
   const handleSubmit = (inviteeId) => {
-    const invitee = invitees.find(inv => inv.id === inviteeId);
+    const invitee = invitees.find((inv) => inv.id === inviteeId);
     if (!invitee) return;
 
     alert(
@@ -94,32 +113,38 @@ const Requestfile = () => {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      // Handle Options Dropdowns
-      Object.keys(showOptions).forEach(inviteeIdStr => {
+      Object.keys(showOptions).forEach((inviteeIdStr) => {
         if (showOptions[inviteeIdStr]) {
           const optionsDropdownRef = dropdownRefs.current[inviteeIdStr];
-          const optionsToggleButton = document.querySelector(`button[data-toggles-options='${inviteeIdStr}']`);
+          const optionsToggleButton = document.querySelector(
+            `button[data-toggles-options='${inviteeIdStr}']`
+          );
 
           if (
-            optionsDropdownRef && !optionsDropdownRef.contains(event.target) &&
-            (!optionsToggleButton || !optionsToggleButton.contains(event.target))
+            optionsDropdownRef &&
+            !optionsDropdownRef.contains(event.target) &&
+            (!optionsToggleButton ||
+              !optionsToggleButton.contains(event.target))
           ) {
-            setShowOptions(prev => ({ ...prev, [inviteeIdStr]: false }));
+            setShowOptions((prev) => ({ ...prev, [inviteeIdStr]: false }));
           }
         }
       });
 
-      // Handle Rank Selector Dropdowns
-      Object.keys(showRankSelector).forEach(inviteeIdStr => {
+      Object.keys(showRankSelector).forEach((inviteeIdStr) => {
         if (showRankSelector[inviteeIdStr]) {
-          const rankDropdownRef = rankSelectorContainerRefs.current[inviteeIdStr];
-          const rankToggleButton = document.querySelector(`button[data-toggles-rank-selector='${inviteeIdStr}']`);
-          
+          const rankDropdownRef =
+            rankSelectorContainerRefs.current[inviteeIdStr];
+          const rankToggleButton = document.querySelector(
+            `button[data-toggles-rank-selector='${inviteeIdStr}']`
+          );
+
           if (
-            rankDropdownRef && !rankDropdownRef.contains(event.target) &&
+            rankDropdownRef &&
+            !rankDropdownRef.contains(event.target) &&
             (!rankToggleButton || !rankToggleButton.contains(event.target))
           ) {
-            setShowRankSelector(prev => ({ ...prev, [inviteeIdStr]: false }));
+            setShowRankSelector((prev) => ({ ...prev, [inviteeIdStr]: false }));
           }
         }
       });
@@ -129,120 +154,211 @@ const Requestfile = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [showOptions, showRankSelector]);
 
-
   const handleFixedOrderToggle = () => {
-    setIsFixedOrder(prevIsFixed => {
+    setIsFixedOrder((prevIsFixed) => {
       const newIsFixed = !prevIsFixed;
-      setInvitees(currentInvitees => {
+      setInvitees((currentInvitees) => {
         if (newIsFixed) {
-          const ranksAreValid = currentInvitees.length > 0 && currentInvitees.every(
-            (inv, idx, arr) => arr.find(i => i.rank === idx + 1)
-          ) && new Set(currentInvitees.map(i => i.rank)).size === currentInvitees.length;
-
-          if (!ranksAreValid) {
-            return currentInvitees.map((invitee, index) => ({
-              ...invitee,
-              rank: index + 1,
-            }));
-          }
+          // Sort by previous order before assigning new ranks to maintain consistency
+          const sorted = [...currentInvitees].sort((a, b) => a.id - b.id);
+          return sorted.map((invitee, index) => ({
+            ...invitee,
+            rank: index + 1,
+          }));
         }
-        return currentInvitees;
+        return currentInvitees.map((invitee) => ({ ...invitee, rank: null }));
       });
       return newIsFixed;
     });
   };
 
   const handleIWillSignToggle = () => {
-    setIWillSign((prev) => !prev);
+    const newIWillSignState = !iWillSign;
+    setIWillSign(newIWillSignState);
+
+    if (newIWillSignState) {
+      setInvitees((prevInvitees) => {
+        // Add the self-signer to the start of the list
+        const updatedInvitees = [
+          { ...selfSignerInfo, rank: null },
+          ...prevInvitees,
+        ];
+        if (isFixedOrder) {
+          // Re-rank the entire list
+          return updatedInvitees.map((inv, index) => ({
+            ...inv,
+            rank: index + 1,
+          }));
+        }
+        return updatedInvitees;
+      });
+    } else {
+      setInvitees((prevInvitees) => {
+        // Remove the self-signer
+        const updatedInvitees = prevInvitees.filter((inv) => !inv.isSelf);
+        if (isFixedOrder) {
+          return updatedInvitees.map((inv, index) => ({
+            ...inv,
+            rank: index + 1,
+          }));
+        }
+        return updatedInvitees;
+      });
+    }
   };
 
   const addInvitee = () => {
     const newId = nextIdRef.current;
     nextIdRef.current += 1;
-    
-    setInvitees(prevInvitees => {
+
+    setInvitees((prevInvitees) => {
       const newRank = isFixedOrder ? prevInvitees.length + 1 : null;
       const newInviteesList = [
         ...prevInvitees,
         { id: newId, name: "", contact: "", rank: newRank },
       ];
-      if(isFixedOrder) {
-        return newInviteesList.map((inv, index) => ({...inv, rank: index + 1}));
-      }
+      // No need to re-rank if not fixed order
       return newInviteesList;
     });
   };
 
+  // A function to remove an invitee
+  const removeInvitee = (inviteeIdToRemove) => {
+    setInvitees((prevInvitees) => {
+      const inviteeToRemove = prevInvitees.find(
+        (inv) => inv.id === inviteeIdToRemove
+      );
+      if (inviteeToRemove && inviteeToRemove.isSelf) {
+        alert(
+          "To remove yourself, please turn off the 'I will sign this document' toggle."
+        );
+        return prevInvitees;
+      }
+
+      const updatedInvitees = prevInvitees.filter(
+        (inv) => inv.id !== inviteeIdToRemove
+      );
+
+      if (isFixedOrder) {
+        return updatedInvitees.map((inv, index) => ({
+          ...inv,
+          rank: index + 1,
+        }));
+      }
+
+      return updatedInvitees;
+    });
+  };
+
   const updateInvitee = (inviteeId, field, value) => {
-    setInvitees(prevInvitees =>
-      prevInvitees.map(inv =>
+    setInvitees((prevInvitees) =>
+      prevInvitees.map((inv) =>
         inv.id === inviteeId ? { ...inv, [field]: value } : inv
       )
     );
   };
-  
+
   const updateInviteeRank = (inviteeId, newSelectedRank) => {
-    setInvitees(prevInvitees => {
-      const currentInvitee = prevInvitees.find(inv => inv.id === inviteeId);
-      if (!currentInvitee || currentInvitee.rank === newSelectedRank) return prevInvitees;
+    setInvitees((prevInvitees) => {
+      const currentInvitee = prevInvitees.find((inv) => inv.id === inviteeId);
+      if (!currentInvitee || currentInvitee.rank === newSelectedRank)
+        return prevInvitees;
 
       const oldRank = currentInvitee.rank;
 
-      return prevInvitees.map(inv => {
-        if (inv.id === inviteeId) {
-          return { ...inv, rank: newSelectedRank };
-        }
-        if (inv.rank === newSelectedRank) {
-          return { ...inv, rank: oldRank };
-        }
-        return inv;
-      }).sort((a,b) => (a.rank || Infinity) - (b.rank || Infinity)); // Re-sort by rank to maintain visual order if ranks are adjusted
+      return prevInvitees
+        .map((inv) => {
+          if (inv.id === inviteeId) {
+            return { ...inv, rank: newSelectedRank };
+          }
+          if (inv.rank === newSelectedRank) {
+            return { ...inv, rank: oldRank };
+          }
+          return inv;
+        })
+        .sort((a, b) => (a.rank || Infinity) - (b.rank || Infinity));
     });
   };
 
   const inviteesToDisplay = useMemo(() => {
     if (isFixedOrder) {
       return [...invitees]
-        .filter(inv => inv.rank != null)
+        .filter((inv) => inv.rank != null)
         .sort((a, b) => a.rank - b.rank);
     }
     return invitees;
   }, [invitees, isFixedOrder]);
-
 
   return (
     <div className="font-sans py-4">
       <div className="max-w-5xl mx-auto">
         {/* Progress Bar */}
         <div className="flex items-center justify-center gap-2 mb-8">
-          <div className="flex items-center gap-1"><span className="border border-gray-400 rounded-full w-6 h-6 flex items-center justify-center text-xs">1</span><span className="text-sm text-gray-500">Generate</span></div>
+          <div className="flex items-center gap-1">
+            <span className="border border-gray-400 rounded-full w-6 h-6 flex items-center justify-center text-xs">
+              1
+            </span>
+            <span className="text-sm text-gray-500">Generate</span>
+          </div>
           <div className="w-8 h-px bg-gray-300"></div>
-          <div className="flex items-center gap-1"><span className="bg-[#2c5fa5] text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">2</span><span className=" font-medium text-sm text-[#2c5fa5]">Request</span></div>
+          <div className="flex items-center gap-1">
+            <span className="bg-[#2c5fa5] text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">
+              2
+            </span>
+            <span className=" font-medium text-sm text-[#2c5fa5]">Request</span>
+          </div>
           <div className="w-8 h-px bg-gray-300"></div>
-          <div className="flex items-center gap-1"><span className="border border-gray-400 rounded-full w-6 h-6 flex items-center justify-center text-xs">3</span><span className="text-sm text-gray-500">Approve</span></div>
+          <div className="flex items-center gap-1">
+            <span className="border border-gray-400 rounded-full w-6 h-6 flex items-center justify-center text-xs">
+              3
+            </span>
+            <span className="text-sm text-gray-500">Approve</span>
+          </div>
         </div>
-        
+
         <div className="shadow-md border border-gray-200 rounded-xl p-6">
           <div className="text-center mb-6">
-            <h1 className="text-2xl font-bold text-[#3470b2] mb-1">Document Signing Invitation</h1>
-            <p className="text-gray-500 text-sm">Add signers and reviewers below</p>
+            <h1 className="text-2xl font-bold text-[#3470b2] mb-1">
+              Document Signing Invitation
+            </h1>
+            <p className="text-gray-500 text-sm">
+              Add signers and reviewers below
+            </p>
           </div>
 
           <div className="flex justify-center mb-6">
             <div className="flex items-center space-x-3 bg-white shadow-sm rounded-full px-4 py-2 border border-gray-200">
-              <span className="text-xs text-gray-700 font-medium">Fixed signing order</span>
+              <span className="text-xs text-gray-700 font-medium">
+                Fixed signing order
+              </span>
               <label className="inline-flex items-center cursor-pointer">
-                <input type="checkbox" className="sr-only peer" checked={isFixedOrder} onChange={handleFixedOrderToggle} />
+                <input
+                  type="checkbox"
+                  className="sr-only peer"
+                  checked={isFixedOrder}
+                  onChange={handleFixedOrderToggle}
+                />
                 <div className="relative w-9 h-5 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer peer-checked:bg-green-500 transition-all">
-                  <div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform ${isFixedOrder ? "translate-x-4" : ""}`}></div>
+                  <div
+                    className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform ${isFixedOrder ? "translate-x-4" : ""}`}
+                  ></div>
                 </div>
               </label>
               <div className="h-4 w-px bg-gray-300"></div>
-              <span className="text-xs text-gray-700 font-medium">I will sign</span>
+              <span className="text-xs text-gray-700 font-medium">
+                I will sign this document
+              </span>
               <label className="inline-flex items-center cursor-pointer">
-                <input type="checkbox" className="sr-only peer" checked={iWillSign} onChange={handleIWillSignToggle} />
+                <input
+                  type="checkbox"
+                  className="sr-only peer"
+                  checked={iWillSign}
+                  onChange={handleIWillSignToggle}
+                />
                 <div className="relative w-9 h-5 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer peer-checked:bg-green-500 transition-all">
-                  <div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform ${iWillSign ? "translate-x-4" : ""}`}></div>
+                  <div
+                    className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform ${iWillSign ? "translate-x-4" : ""}`}
+                  ></div>
                 </div>
               </label>
             </div>
@@ -257,13 +373,12 @@ const Requestfile = () => {
                 <div className="flex items-center space-x-2 mb-3">
                   {isFixedOrder ? (
                     <div className="flex items-center space-x-2">
-                      <span 
+                      <span
                         className="bg-[#3470b2] text-white rounded-full w-7 h-7 flex items-center justify-center text-xs font-bold shrink-0"
                         title={`Signing Order: ${invitee.rank}`}
                       >
                         {invitee.rank}
                       </span>
-                      {/* Container for Sort Icon and its Dropdown */}
                       <div className="relative">
                         <button
                           onClick={() => toggleRankSelector(invitee.id)}
@@ -272,65 +387,91 @@ const Requestfile = () => {
                           title="Change signing order"
                           disabled={invitees.length <= 1}
                         >
-                          <FaSortNumericDown className={`text-gray-500 hover:text-gray-700 text-sm ${invitees.length <= 1 ? 'opacity-50 cursor-not-allowed' : ''}`} />
+                          <FaSortNumericDown
+                            className={`text-gray-500 hover:text-gray-700 text-sm ${invitees.length <= 1 ? "opacity-50 cursor-not-allowed" : ""}`}
+                          />
                         </button>
 
-                        {showRankSelector[String(invitee.id)] && invitees.length > 1 && (
-                          <div
-                            ref={(el) => (rankSelectorContainerRefs.current[String(invitee.id)] = el)}
-                            className="absolute z-20 top-full left-1/2 -translate-x-1/2 mt-1 bg-white border border-gray-300 rounded-md shadow-lg p-1 w-max min-w-[50px]"
-                          >
-                            <select
-                              title={`Set signing order for ${invitee.name || 'this invitee'}`}
-                              value={invitee.rank || ''}
-                              onChange={(e) => {
-                                updateInviteeRank(invitee.id, parseInt(e.target.value));
-                                // Close the selector after selection
-                                setShowRankSelector(prev => ({ ...prev, [String(invitee.id)]: false }));
-                              }}
-                              size={Math.min(5, invitees.length)} // Show a few options, or all if less than 5.
-                              className="block w-full text-xs bg-white rounded-sm focus:outline-none appearance-none text-center"
+                        {showRankSelector[String(invitee.id)] &&
+                          invitees.length > 1 && (
+                            <div
+                              ref={(el) =>
+                                (rankSelectorContainerRefs.current[
+                                  String(invitee.id)
+                                ] = el)
+                              }
+                              className="absolute z-20 top-full left-1/2 -translate-x-1/2 mt-1 bg-white border border-gray-300 rounded-md shadow-lg p-1 w-max min-w-[50px]"
                             >
-                              {Array.from({ length: invitees.length }, (_, i) => i + 1).map(rankValue => (
-                                <option key={rankValue} value={rankValue} className="py-1 px-3">
-                                  {rankValue}
-                                </option>
-                              ))}
-                            </select>
-                          </div>
-                        )}
+                              <select
+                                title={`Set signing order for ${invitee.name || "this invitee"}`}
+                                value={invitee.rank || ""}
+                                onChange={(e) => {
+                                  updateInviteeRank(
+                                    invitee.id,
+                                    parseInt(e.target.value)
+                                  );
+                                  setShowRankSelector((prev) => ({
+                                    ...prev,
+                                    [String(invitee.id)]: false,
+                                  }));
+                                }}
+                                size={Math.min(5, invitees.length)}
+                                className="block w-full text-xs bg-white rounded-sm focus:outline-none appearance-none text-center"
+                              >
+                                {Array.from(
+                                  { length: invitees.length },
+                                  (_, i) => i + 1
+                                ).map((rankValue) => (
+                                  <option
+                                    key={rankValue}
+                                    value={rankValue}
+                                    className="py-1 px-3"
+                                  >
+                                    {rankValue}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+                          )}
                       </div>
                     </div>
                   ) : (
                     <div className="bg-gray-300 text-gray-700 rounded-full w-7 h-7 flex items-center justify-center text-xs font-bold shrink-0">
-                      {displayIndex + 1}
+                      {/* Use a simple dot or index for non-fixed order */}•
                     </div>
                   )}
 
-                  <h2 className="text-sm font-semibold text-gray-800 flex-grow truncate" title={invitee.name || "New Invitee"}>
+                  <h2
+                    className="text-sm font-semibold text-gray-800 flex-grow truncate"
+                    title={invitee.name || "New Invitee"}
+                  >
                     {invitee.name || "New Invitee"}
                   </h2>
 
-                  <div
-                    className="relative inline-block text-left ml-auto"
-                    // ref for dropdown content is set inside the conditional render block
-                  >
+                  <div className="relative inline-block text-left">
                     <button
                       onClick={() => toggleOptions(invitee.id)}
-                      data-toggles-options={String(invitee.id)} // Added data-attribute
+                      data-toggles-options={String(invitee.id)}
                       className="p-2 hover:bg-gray-100 rounded-full flex items-center text-sm gap-1 transition-colors"
-                    >Signature Types
+                    >
+                      Signature Types
                       <HiDotsVertical className="text-gray-500 hover:text-gray-700 text-sm" />
                     </button>
 
                     {showOptions[String(invitee.id)] && (
-                      <div 
-                        ref={(el) => (dropdownRefs.current[String(invitee.id)] = el)} // Ref moved here
+                      <div
+                        ref={(el) =>
+                          (dropdownRefs.current[String(invitee.id)] = el)
+                        }
                         className="absolute z-20 right-0 mt-1 w-64 bg-white shadow-lg border border-gray-200 rounded-lg overflow-hidden"
                       >
                         <div className="p-3 border-b border-gray-100 bg-gray-50">
-                          <h3 className="font-semibold text-sm text-gray-800">Select Signing Method</h3>
-                          <p className="text-xs text-gray-500 mt-1">Choose how {invitee.name || 'this person'} will sign</p>
+                          <h3 className="font-semibold text-sm text-gray-800">
+                            Select Signing Method
+                          </h3>
+                          <p className="text-xs text-gray-500 mt-1">
+                            Choose how {invitee.name || "this person"} will sign
+                          </p>
                         </div>
                         <div className="p-1">
                           {methods.map((method) => (
@@ -339,11 +480,15 @@ const Requestfile = () => {
                               onClick={() => toggleMethod(method.id)}
                               className={`flex items-center w-full p-2 rounded-md mb-1 text-sm ${selectedMethods.includes(method.id) ? "bg-blue-50 text-blue-700" : "hover:bg-gray-50 text-gray-700"}`}
                             >
-                              <div className={`flex items-center justify-center w-6 h-6 rounded-full mr-2.5 ${selectedMethods.includes(method.id) ? 'bg-blue-100' : 'bg-gray-100'}`}>
+                              <div
+                                className={`flex items-center justify-center w-6 h-6 rounded-full mr-2.5 ${selectedMethods.includes(method.id) ? "bg-blue-100" : "bg-gray-100"}`}
+                              >
                                 {method.icon}
                               </div>
                               <span className="font-medium">{method.name}</span>
-                              {selectedMethods.includes(method.id) && <FaCheck className="ml-auto text-green-500 text-xs" />}
+                              {selectedMethods.includes(method.id) && (
+                                <FaCheck className="ml-auto text-green-500 text-xs" />
+                              )}
                             </button>
                           ))}
                         </div>
@@ -360,33 +505,67 @@ const Requestfile = () => {
                     )}
                   </div>
                 </div>
-
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label htmlFor={`name-${invitee.id}`} className="block text-xs font-medium text-gray-700 mb-1">Full Name</label>
+                    <label
+                      htmlFor={`name-${invitee.id}`}
+                      className="block text-xs font-medium text-gray-700 mb-1"
+                    >
+                      Full Name
+                    </label>
                     <input
                       id={`name-${invitee.id}`}
                       type="text"
                       value={invitee.name}
-                      onChange={(e) => updateInvitee(invitee.id, "name", e.target.value)}
-                      className="block w-full px-3 py-1.5 border border-gray-300 rounded-md shadow-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                      onChange={(e) =>
+                        updateInvitee(invitee.id, "name", e.target.value)
+                      }
+                      disabled={invitee.isSelf}
+                      className="block w-full px-3 py-1.5 border border-gray-300 rounded-md shadow-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm disabled:bg-gray-100 disabled:cursor-not-allowed"
                       placeholder="Enter full name"
                     />
                   </div>
                   <div>
-                    <label htmlFor={`contact-${invitee.id}`} className="block text-xs font-medium text-gray-700 mb-1">Contact (Email or Phone)</label>
+                    <label
+                      htmlFor={`contact-${invitee.id}`}
+                      className="block text-xs font-medium text-gray-700 mb-1"
+                    >
+                      Contact (Email or Phone)
+                    </label>
                     <div className="relative">
-                      <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm"><FaEnvelope /></span>
+                      <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm">
+                        <FaEnvelope />
+                      </span>
                       <input
                         id={`contact-${invitee.id}`}
                         type="text"
                         value={invitee.contact}
-                        onChange={(e) => updateInvitee(invitee.id, "contact", e.target.value)}
-                        className="pl-8 block w-full px-3 py-1.5 border border-gray-300 rounded-md shadow-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                        onChange={(e) =>
+                          updateInvitee(invitee.id, "contact", e.target.value)
+                        }
+                        disabled={invitee.isSelf}
+                        className="pl-8 block w-full px-3 py-1.5 border border-gray-300 rounded-md shadow-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm disabled:bg-gray-100 disabled:cursor-not-allowed"
                         placeholder="email@example.com"
                       />
                     </div>
                   </div>
+                </div>
+                {/* Delete button (conditionally rendered) */}
+                <div className="flex justify-end mr-[25px] mt-3">
+                  {!invitee.isSelf && (
+                    <button
+                      onClick={() => removeInvitee(invitee.id)}
+                      className="p-2 text-red-700 hover:text-red-600 hover:bg-red-50 rounded-full transition-colors"
+                      title="Remove Invitee"
+                    >
+                      <MdDelete />
+                    </button>
+                  )}
+                  {/* setting button (conditionally rendered) */}
+
+                  <button className="p-2 text-green-700 hover:text-blue-600 hover:bg-red-50 rounded-full transition-colors">
+                    <IoSettings />
+                  </button>
                 </div>
               </div>
             ))}

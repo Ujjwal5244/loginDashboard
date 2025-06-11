@@ -93,7 +93,7 @@ const Header = ({ toggleSidebar, darkMode, toggleDarkMode, sidebarOpen }) => {
             <FaBars size="20" color="white" />
           </button>
           <div
-  className="nifi-logo-name cursor-pointer transition duration-300 hover:bg-[rgba(100,149,237,0.3)] hover:backdrop-blur-sm rounded-[20px] p-2"
+            className="nifi-logo-name cursor-pointer transition duration-300 hover:bg-[rgba(100,149,237,0.3)] hover:backdrop-blur-sm rounded-[20px] p-2"
             onClick={nifiPaymentClick}
           >
             <span className="logo-text">Nifi</span>
@@ -184,7 +184,10 @@ const Header = ({ toggleSidebar, darkMode, toggleDarkMode, sidebarOpen }) => {
         </div>
       </header>
       {notificationOpen && (
-        <NotificationSidebar onClose={() => setNotificationOpen(false)} />
+        <NotificationSidebar
+          onClose={() => setNotificationOpen(false)}
+          darkMode={darkMode}
+        />
       )}
     </>
   );
