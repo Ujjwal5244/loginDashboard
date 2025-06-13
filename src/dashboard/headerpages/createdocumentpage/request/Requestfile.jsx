@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useMemo, use } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import {
   FaEnvelope,
   FaUserPlus,
@@ -20,27 +20,22 @@ import axios from "axios";
 
 const Requestfile = () => {
   const { documentId } = useParams();
-
-  const paramData = useParams();
-  console.log(paramData, "paramData");
-
   const token = localStorage.getItem("userToken");
+
   const [selfSignerInfo, setSelfSignerInfo] = useState(null);
   const [invitees, setInvitees] = useState([]);
   const nextIdRef = useRef(2);
-
   const [isFixedOrder, setIsFixedOrder] = useState(true);
   const [iWillSign, setIWillSign] = useState(true);
-  const navigate = useNavigate();
-
   const [showOptions, setShowOptions] = useState({});
   const [selectedMethods, setSelectedMethods] = useState([]);
   const dropdownRefs = useRef({});
-
   const [showRankSelector, setShowRankSelector] = useState({});
   const rankSelectorContainerRefs = useRef({});
-
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const [location, setLocation] = useState(null);
 
   const methods = [
     {
@@ -65,7 +60,27 @@ const Requestfile = () => {
     },
   ];
 
-  // Fetch profile information for the self-signer
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setLocation({
+            latitude: String(position.coords.latitude),
+            longitude: String(position.coords.longitude),
+          });
+        },
+        (error) => {
+          console.error("Error getting location: ", error);
+          toast.warn(
+            "Could not get your location. It will not be included in the request."
+          );
+        }
+      );
+    } else {
+      toast.warn("Geolocation is not supported by this browser.");
+    }
+  }, []);
+
   useEffect(() => {
     const fetchProfile = async () => {
       if (!token) {
@@ -97,6 +112,7 @@ const Requestfile = () => {
         console.error("Failed to fetch profile:", error);
       }
     };
+
     fetchProfile();
   }, [token]);
 
@@ -310,8 +326,6 @@ const Requestfile = () => {
 
   // ____________________________api calling of invitees____________________________
   const handleNext = async () => {
-    console.log("Current invitees state on 'Next' click:", invitees);
-
     if (!documentId) {
       toast.error("Document ID is missing. Cannot proceed.");
       return;
@@ -322,7 +336,6 @@ const Requestfile = () => {
       return;
     }
 
-    // Validate all invitees
     for (const invitee of invitees) {
       if (!invitee.name.trim() || !invitee.contact.trim()) {
         toast.error(`Please fill in the name and contact for all invitees.`);
@@ -341,38 +354,44 @@ const Requestfile = () => {
       }
     }
 
+    if (!location) {
+      toast.warn(
+        "Location data is not yet available. Please wait a moment and try again."
+      );
+      return;
+    }
+
     setIsLoading(true);
 
     try {
-      // Prepare the payload
-      const payload = {
-        isFixedOrder,
-        iWillSign,
+      // Create the payload object
+      const payloadData = {
         invitees: invitees.map((invitee) => ({
           name: invitee.name,
-          phone: invitee.contact, // This should include the email
-          email: invitee.contact, // Assuming contact is the email
-          signatureTypes: invitee.signatureTypes,
-          rank: invitee.rank,
-          isSelf: invitee.isSelf || false, // Include if backend needs to know who is the sender
+          email: invitee.contact,
+          order: invitee.rank,
+          type: "user",
+          signatureType: invitee.signatureTypes,
+          securityQuestions: [],
+          aadhaarVerification: { enabled: false },
+          advancedOptions: {},
         })),
-        documentId, // Include if backend needs it in the body
+        isInSequence: isFixedOrder,
+        mySign: iWillSign,
+        location: {
+          latitude: location.latitude,
+          longitude: location.longitude,
+        },
       };
 
-      console.log("Original payload:", payload);
+      console.log("Payload data:", payloadData);
 
-      const payloadString = payload;
-      console.log("Stringified payload:", payloadString);
+      // Stringify the payload object
+      const payloadString = payloadData;
 
+      // Encrypt the stringified payload
       const encryptedPayload = await encryptText(payloadString);
-      console.log("Encrypted payload:", encryptedPayload);
-      console.log("Type of encrypted payload:", typeof encryptedPayload);
 
-      if (typeof encryptedPayload !== "string") {
-        throw new Error("Encryption did not return a string");
-      }
-
-      // __________Make the API request__________
       const response = await axios.post(
         `${baseUrl}/api/document/invitees/${documentId}`,
         { body: encryptedPayload },
@@ -384,7 +403,6 @@ const Requestfile = () => {
         }
       );
 
-      // Handle successful response
       if (response.data) {
         try {
           const decryptedResponse = await decryptText(response.data.body);
@@ -393,7 +411,9 @@ const Requestfile = () => {
 
           if (response.status === 200 || response.status === 201) {
             toast.success("Invitations have been sent successfully!");
-            navigate(`/maindashboard/approve/${documentId}`);
+            navigate(
+              `/maindashboard/approve/${documentId}?isInSequence=${isFixedOrder}`
+            );
           } else {
             toast.error(responseData.message || "Failed to send invitations");
           }
@@ -409,7 +429,6 @@ const Requestfile = () => {
 
       let errorMessage = "Failed to send invitations. Please try again.";
       if (error.response) {
-        // Try to decrypt the error response if it's encrypted
         if (error.response.data && typeof error.response.data === "object") {
           try {
             const decryptedError = await decryptText(error.response.data.body);
@@ -502,7 +521,7 @@ const Requestfile = () => {
                   className="sr-only peer"
                   checked={iWillSign}
                   onChange={handleIWillSignToggle}
-                  disabled={!selfSignerInfo} // Disable toggle until profile is loaded
+                  disabled={!selfSignerInfo}
                 />
                 <div className="relative w-9 h-5 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer peer-checked:bg-green-500 transition-all">
                   <div
@@ -686,7 +705,7 @@ const Requestfile = () => {
                       htmlFor={`contact-${invitee.id}`}
                       className="block text-xs font-medium text-gray-700 mb-1"
                     >
-                      Contact (Email or Phone)
+                      Contact (Email)
                     </label>
                     <div className="relative">
                       <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm">
@@ -694,7 +713,7 @@ const Requestfile = () => {
                       </span>
                       <input
                         id={`contact-${invitee.id}`}
-                        type="text"
+                        type="email"
                         value={invitee.contact}
                         onChange={(e) =>
                           updateInvitee(invitee.id, "contact", e.target.value)
@@ -745,7 +764,6 @@ const Requestfile = () => {
             <button
               className="px-5 py-2 bg-[#3470b2] text-white rounded-md font-medium shadow-sm flex items-center space-x-1.5 text-sm hover:bg-[#2c5fa5] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               onClick={handleNext}
-              // Disable if the API call is loading OR if there are no invitees
               disabled={isLoading || invitees.length === 0}
             >
               <span>{isLoading ? "Sending..." : "Next"}</span>

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { baseUrl, decryptText, encryptText } from "../../../../encryptDecrypt"; // Removed encryptText as it's not used for the request
+import { baseUrl, decryptText, encryptText } from "../../../../encryptDecrypt";
 
 const Generatefile = () => {
   const token = localStorage.getItem("userToken");
@@ -16,7 +16,7 @@ const Generatefile = () => {
   });
   const navigate = useNavigate();
 
-  // Function to get tomorrow's date in YYYY-MM-DD format
+  // This function correctly returns 'YYYY-MM-DD' which is needed for the input field
   function getTomorrowDate() {
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
@@ -51,27 +51,33 @@ const Generatefile = () => {
 
     setLoading(true);
     try {
-      const formData = new FormData();
-      // Append the PDF file and document details to the FormData 
-      console.log("pdfFile", pdfFile);                        
-      formData.append("document", pdfFile);
-      console.log("documentDetails", documentDetails);
-     
-    
-      const encryptedBody = await encryptText(
-      {
+      // Helper function to convert 'YYYY-MM-DD' to 'dd-mm-yyyy' for the API
+      const formatDateForAPI = (isoDate) => {
+        if (!isoDate) return "";
+        const [year, month, day] = isoDate.split("-");
+        return `${day}-${month}-${year}`;
+      };
+
+      // Create the payload with the correctly formatted date
+      const payload = {
         name: documentDetails.name,
         refNo: documentDetails.referenceNumber,
-        expiredAt: documentDetails.expiryDate,
-      }
-      )
-      console.log("encryptedBody", encryptedBody);
+        expiredAt: formatDateForAPI(documentDetails.expiryDate), // Use the formatted date
+      };
+
+      const formData = new FormData();
+      formData.append("document", pdfFile);
+
+      // Encrypt the payload object
+      const encryptedBody = await encryptText(payload);
       formData.append("body", encryptedBody);
+
       // Conditionally append the stamp image if it exists
       if (stampImage) {
         formData.append("stamp", stampImage);
       }
-      console.log(formData, "data");
+      
+      console.log("Submitting payload with date:", payload.expiredAt);
 
       const response = await axios.post(
         `${baseUrl}/api/document/create`,
@@ -82,10 +88,9 @@ const Generatefile = () => {
           },
         }
       );
-      console.log(response, "data");
+      
       const decrypted = await decryptText(response.data.body);
       const data = JSON.parse(decrypted);
-      console.log(data);
 
       if (response.status === 200 || response.status === 201) {
         toast.success("Document generated successfully. Redirecting...");
@@ -94,17 +99,26 @@ const Generatefile = () => {
         throw new Error(data.message || "Failed to generate document");
       }
     } catch (error) {
-      console.log(error, "error");
       console.error("Error generating document:", error);
-      const errorMessage =
-        error.response?.data?.message ||
-        error.message ||
-        "An unexpected error occurred.";
+      // Enhanced error handling to decrypt the error message from the server if it exists
+      let errorMessage = "An unexpected error occurred.";
+      if (error.response?.data?.body) {
+         try {
+           const decryptedError = await decryptText(error.response.data.body);
+           const parsedError = JSON.parse(decryptedError);
+           errorMessage = parsedError.error || parsedError.message || "Failed to generate document.";
+         } catch (e) {
+           errorMessage = error.response?.data?.message || error.message;
+         }
+      } else {
+         errorMessage = error.response?.data?.message || error.message;
+      }
       toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
   };
+
 
   return (
     <div className="font-sans py-4">

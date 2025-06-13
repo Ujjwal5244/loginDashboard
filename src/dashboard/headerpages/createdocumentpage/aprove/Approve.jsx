@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { FaUsers } from "react-icons/fa";
+import { useNavigate, useParams, useLocation } from "react-router-dom";import { FaUsers } from "react-icons/fa";
 import { TiDelete } from "react-icons/ti";
 import axios from "axios";
 import { baseUrl, decryptText } from "../../../../encryptDecrypt";
@@ -35,7 +34,8 @@ const Approve = () => {
   const token = localStorage.getItem("userToken");
   const { documentId } = useParams();
   const navigate = useNavigate();
-
+  const {search} = useLocation();
+  const isInSequence = new URLSearchParams(search).get("isInSequence");
   // --- State Management ---
   const [pdfUrl, setPdfUrl] = useState(null);
   const [numPages, setNumPages] = useState(null);
@@ -49,13 +49,15 @@ const Approve = () => {
   const [info, setInfo] = useState(null);
 
   useEffect(() => {
+        console.log(`Document signing sequence is fixed: ${isInSequence}`);
+
     fetch("https://ipwho.is/")
       .then((res) => res.json())
       .then((data) => {
         setInfo(data);
       })
       .catch((err) => console.error("Error fetching IP/location:", err));
-  }, []);
+  }, [isInSequence]);
 
   // --- Effects ---
   useEffect(() => {
@@ -183,6 +185,9 @@ const Approve = () => {
 
   // --- CORRECTED FUNCTION ---
   const handleSendToSign = async () => {
+     if (isInSequence) {
+        toast.info("Sequential signing order is active.");
+     }
     if (signatures.length === 0) {
       toast.warn("There are no signature fields. Please add invitees first.");
       return;
@@ -235,7 +240,7 @@ const Approve = () => {
       const encryptedPayloadString = await encryptText(payload);
 
       await axios.post(
-        `${baseUrl}/api/document/invitees/updateCoordinates/${documentId}`,
+        `${baseUrl}/api/document/invitees/updateCoordinates/${documentId}?isInSequence=${isInSequence}`,
         { body: encryptedPayloadString },
         {
           headers: {
