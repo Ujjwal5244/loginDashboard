@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { GoogleOAuthProvider } from '@react-oauth/google'; // Add this import
+import { GoogleOAuthProvider } from "@react-oauth/google"; // Add this import
 import "./App.css";
 import Login from "./login/Login";
 import Signup from "./signup/Signup";
@@ -40,6 +40,7 @@ import Requestfile from "./dashboard/headerpages/createdocumentpage/request/Requ
 import Approve from "./dashboard/headerpages/createdocumentpage/aprove/Approve";
 import Allinvites from "./dashboard/headerpages/createdocumentpage/allinvities/Allinvities";
 import Nifipaymentmain from "./nifipayment/Nifipaymentmain";
+import Clientpdfview from "./outsideusersign/Clientpdfview";
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -56,60 +57,64 @@ function App() {
 
   return (
     <GoogleOAuthProvider clientId="587797030071-kt1lgl2gs8b712ar1ju8otgsroa3dltp.apps.googleusercontent.com">
-    <Router>
-      <ToastContainer />
-      <div className={`app ${darkMode ? "dark-mode" : ""}`}>
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/Nifipayment" element={<Nifipaymentmain />} />
-          <Route
-            path="/Maindashboard"
-            element={
-              <Maindashboard
-                sidebarOpen={sidebarOpen}
-                toggleSidebar={toggleSidebar}
-                darkMode={darkMode}
-                toggleDarkMode={toggleDarkMode}
+      <Router>
+        <ToastContainer />
+        <div className={`app ${darkMode ? "dark-mode" : ""}`}>
+          <Routes>
+            <Route path="/" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/Nifipayment" element={<Nifipaymentmain />} />
+            <Route path="/Signature" element={<Clientpdfview />} />
+            <Route
+              path="/Maindashboard"
+              element={
+                <Maindashboard
+                  sidebarOpen={sidebarOpen}
+                  toggleSidebar={toggleSidebar}
+                  darkMode={darkMode}
+                  toggleDarkMode={toggleDarkMode}
+                />
+              }
+            >
+              <Route index element={<Home />} />
+              <Route path="home" element={<Home />} />
+              <Route path="analytics" element={<Analytics />} />
+              <Route
+                path="role-management"
+                element={<Rolemanagement darkMode={darkMode} />}
               />
-            }
-          >
-            <Route index element={<Home />} />
-            <Route path="home" element={<Home />} />
-            <Route path="analytics" element={<Analytics />} />
-            <Route
-              path="role-management"
-              element={<Rolemanagement darkMode={darkMode} />}
-            />
-            <Route path="my-team" element={<Myteam darkMode={darkMode} />} />
-            <Route
-              path="ip-whitelist"
-              element={<Ipwhitelist darkMode={darkMode} />}
-            />
-            <Route path="webhooks" element={<Webhooks darkMode={darkMode} />} />
-            <Route path="logs" element={<Logs darkMode={darkMode} />} />
-            <Route
-              path="api-credential"
-              element={<Apicredential darkMode={darkMode} />}
-            />
-            <Route
-              path="kycstudio"
-              element={<KycStudio darkMode={darkMode} />}
-            />
+              <Route path="my-team" element={<Myteam darkMode={darkMode} />} />
+              <Route
+                path="ip-whitelist"
+                element={<Ipwhitelist darkMode={darkMode} />}
+              />
+              <Route
+                path="webhooks"
+                element={<Webhooks darkMode={darkMode} />}
+              />
+              <Route path="logs" element={<Logs darkMode={darkMode} />} />
+              <Route
+                path="api-credential"
+                element={<Apicredential darkMode={darkMode} />}
+              />
+              <Route
+                path="kycstudio"
+                element={<KycStudio darkMode={darkMode} />}
+              />
 
-            <Route
-              path="transactionhistory"
-              element={<Transactionhistory darkMode={darkMode} />}
-            />
-            <Route path="signed-agreement" element={<SignedAgreement />} />
-            <Route path="yourkyc" element={<Yourkyc />} />
-            {/* ---------------------all email pagese routes--------------------------- */}
-            <Route
-              path="email"
-              element={<Emaildashboard darkMode={darkMode} />}
-            />
+              <Route
+                path="transactionhistory"
+                element={<Transactionhistory darkMode={darkMode} />}
+              />
+              <Route path="signed-agreement" element={<SignedAgreement />} />
+              <Route path="yourkyc" element={<Yourkyc />} />
+              {/* ---------------------all email pagese routes--------------------------- */}
+              <Route
+                path="email"
+                element={<Emaildashboard darkMode={darkMode} />}
+              />
 
-            {/* <Route
+              {/* <Route
               path="Email"
               element={
                 <Emaildashboard sidebarOpen={sidebarOpen} darkMode={darkMode} />
@@ -123,31 +128,34 @@ function App() {
               <Route path="drafts" element={<Drafts />} />
               <Route path="compose" element={<Compose />} />
             </Route> */}
-            {/* ---------------------end email pagese routes--------------------------- */}
-            <Route path="completed" element={<Completed />} />
-            <Route path="setting" element={<Setting />} />
+              {/* ---------------------end email pagese routes--------------------------- */}
+              <Route path="completed" element={<Completed />} />
+              <Route path="setting" element={<Setting />} />
 
-            <Route
-              path="myprofile"
-              element={<Myprofile darkMode={darkMode} />}
-            />
-            <Route
-              path="verification"
-              element={<Verification darkMode={darkMode} />}
-            />
-            <Route path="sign-agreement" element={<Agreement />} />
-            <Route path="pdf-sign" element={<PdfSign darkMode={darkMode} />} />
-            <Route path="kycstatus" element={<Kycstatus />} />
-            <Route path="mobilemenu" element={<MobileMenu />} />
-            {/* ---------------------create header pagese routes--------------------------- */}
-            <Route path="createfile" element={<Createfile />} />
-            <Route path="requestfile/:documentId" element={<Requestfile />} />
-            <Route path="approve/:documentId" element={<Approve />} />
-            <Route path="allinvities" element={<Allinvites />} />
-          </Route>
-        </Routes>
-      </div>
-    </Router>
+              <Route
+                path="myprofile"
+                element={<Myprofile darkMode={darkMode} />}
+              />
+              <Route
+                path="verification"
+                element={<Verification darkMode={darkMode} />}
+              />
+              <Route path="sign-agreement" element={<Agreement />} />
+              <Route
+                path="pdf-sign"
+                element={<PdfSign darkMode={darkMode} />}
+              />
+              <Route path="kycstatus" element={<Kycstatus />} />
+              <Route path="mobilemenu" element={<MobileMenu />} />
+              {/* ---------------------create header pagese routes--------------------------- */}
+              <Route path="createfile" element={<Createfile />} />
+              <Route path="requestfile/:documentId" element={<Requestfile />} />
+              <Route path="approve/:documentId" element={<Approve />} />
+              <Route path="allinvities" element={<Allinvites />} />
+            </Route>
+          </Routes>
+        </div>
+      </Router>
     </GoogleOAuthProvider>
   );
 }
