@@ -1,216 +1,521 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { FaUsers } from "react-icons/fa";
+import { TiDelete } from "react-icons/ti";
+import axios from "axios";
+import { baseUrl, decryptText } from "../../../../encryptDecrypt";
+import { toast } from "react-toastify";
 import { Document, Page, pdfjs } from "react-pdf";
+import Draggable from "react-draggable";
+import { encryptText } from "../../../../encryptDecrypt";
+
+// Standard react-pdf setup
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
-import { useNavigate } from "react-router-dom";
-import { FaUserEdit } from "react-icons/fa";
+import "react-pdf/dist/esm/Page/TextLayer.css";
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
-pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
-
-// --- Dummy Data for Invitees (replace with your actual data) ---
-const invitees = [
-  { id: 1, name: "Alice Johnson", email: "alice.j@example.com" },
-  { id: 2, name: "Bob Williams", email: "bob.w@example.com" },
-  { id: 3, name: "Charlie Brown", email: "charlie.b@example.com" },
-  { id: 4, name: "Diana Miller", email: "diana.m@example.com" },
-];
+const getColorForInvitee = (inviteeId, invitees) => {
+  const colors = [
+    "#007BFF",
+    "#28A745",
+    "#DC3545",
+    "#FFC107",
+    "#17A2B8",
+    "#6610F2",
+    "#fd7e14",
+    "#20c997",
+  ];
+  if (!invitees || invitees.length === 0) return "#6c757d";
+  const index = invitees.findIndex((inv) => inv.id === inviteeId);
+  if (index === -1) return "#6c757d";
+  return colors[index % colors.length];
+};
 
 const Approve = () => {
+  const token = localStorage.getItem("userToken");
+  const { documentId } = useParams();
+  const navigate = useNavigate();
+
+  // --- State Management ---
   const [pdfUrl, setPdfUrl] = useState(null);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // State for sidebar visibility
+  const [numPages, setNumPages] = useState(null);
+  const [documentDetails, setDocumentDetails] = useState(null);
+  const [invitees, setInvitees] = useState([]);
+  const [signatures, setSignatures] = useState([]);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const hasPopulatedFields = useRef(false);
+  const pageRefs = useRef({});
+  const [info, setInfo] = useState(null);
 
   useEffect(() => {
-    const fetchPdf = async () => {
-      try {
-        const response = await fetch("/sample.pdf"); // File must be in public/
-        const blob = await response.blob();
-        const url = URL.createObjectURL(blob);
-        setPdfUrl(url);
-      } catch (error) {
-        console.error("Error fetching PDF:", error);
-      }
-    };
+    fetch("https://ipwho.is/")
+      .then((res) => res.json())
+      .then((data) => {
+        setInfo(data);
+      })
+      .catch((err) => console.error("Error fetching IP/location:", err));
+  }, []);
 
-    fetchPdf();
-
-    // Clean up the created URL when the component unmounts
+  // --- Effects ---
+  useEffect(() => {
+    if (documentId) {
+      fetchDocumentAndInvitees();
+    }
     return () => {
       if (pdfUrl) {
         URL.revokeObjectURL(pdfUrl);
       }
     };
-  }, []);
+  }, [documentId]);
 
-  // Effect to disable body scroll when sidebar is open for better UX
   useEffect(() => {
-    if (isSidebarOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
+    if (numPages > 0 && invitees.length > 0 && !hasPopulatedFields.current) {
+      const initialSignatures = [];
+      invitees.forEach((invitee, inviteeIndex) => {
+        const initialX = 10;
+        const initialY = 10 + inviteeIndex * 12;
+        for (let pageNum = 1; pageNum <= numPages; pageNum++) {
+          initialSignatures.push({
+            id: `sig-${pageNum}-${invitee.id}`,
+            inviteeId: invitee.id,
+            inviteeName: invitee.name,
+            pageNumber: pageNum,
+            x: initialX,
+            y: initialY,
+          });
+        }
+      });
+      setSignatures(initialSignatures);
+      hasPopulatedFields.current = true;
     }
-    // Cleanup function
-    return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, [isSidebarOpen]);
+  }, [numPages, invitees]);
 
-  const navigate = useNavigate();
-
-  const handleViewInvitees = () => {
-    setIsSidebarOpen(true); // Open the sidebar
+  // --- Data Fetching ---
+  const fetchDocumentAndInvitees = async () => {
+    setLoading(true);
+    hasPopulatedFields.current = false;
+    try {
+      await Promise.all([fetchDocumentDetails(), fetchInvitees()]);
+    } catch (error) {
+      console.error("Error during initial data fetch:", error);
+      toast.error("An error occurred while loading document data.");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleCloseSidebar = () => {
-    setIsSidebarOpen(false); // Close the sidebar
+  const fetchDocumentDetails = async () => {
+    try {
+      const metaResponse = await axios.get(
+        `${baseUrl}/api/document/getdocument/${documentId}`,
+        { headers: { authorization: token } }
+      );
+      const decrypted = await decryptText(metaResponse.data.body);
+      const data = JSON.parse(decrypted);
+      const document = data.document;
+      setDocumentDetails(document);
+
+      if (document?.documentUrl) {
+        const pdfResponse = await axios.get(document.documentUrl, {
+          responseType: "blob",
+        });
+        const file = new Blob([pdfResponse.data], { type: "application/pdf" });
+        const fileURL = URL.createObjectURL(file);
+        setPdfUrl(fileURL);
+      } else {
+        toast.error("Document URL not found.");
+      }
+    } catch (error) {
+      console.error("Error fetching document:", error);
+      toast.error("Failed to load document details or file.");
+      throw error;
+    }
   };
 
-  const handleSendToSign = () => {
-    navigate("/maindashboard/allinvities");
+  const fetchInvitees = async () => {
+    try {
+      const response = await axios.get(
+        `${baseUrl}/api/document/getInvitees/${documentId}`,
+        { headers: { authorization: token } }
+      );
+      const decrypted = await decryptText(response.data.body);
+      const data = JSON.parse(decrypted);
+
+      if (Array.isArray(data?.invitees)) {
+        setInvitees(data.invitees);
+      } else {
+        toast.error("Could not find an invitee list for this document.");
+        setInvitees([]);
+      }
+    } catch (error) {
+      console.error("Error fetching invitees:", error);
+      toast.error("Failed to load invitees.");
+      setInvitees([]);
+      throw error;
+    }
   };
+
+  // --- Event Handlers ---
+  const handleDragStop = (signatureId, data, pageNum) => {
+    const pageElement = pageRefs.current[pageNum];
+    if (!pageElement) return;
+
+    const draggedSignature = signatures.find((s) => s.id === signatureId);
+    if (!draggedSignature) return;
+    const targetInviteeId = draggedSignature.inviteeId;
+
+    const pageRect = pageElement.getBoundingClientRect();
+    const newX = (data.x / pageRect.width) * 100;
+    const newY = (data.y / pageRect.height) * 100;
+
+    setSignatures((prevSignatures) =>
+      prevSignatures.map((sig) =>
+        sig.inviteeId === targetInviteeId ? { ...sig, x: newX, y: newY } : sig
+      )
+    );
+  };
+
+  const handleRemoveSignature = (idToRemove) => {
+    setSignatures((prev) => prev.filter((sig) => sig.id !== idToRemove));
+    toast.info("Signature field removed for this page.");
+  };
+
+  // --- CORRECTED FUNCTION ---
+  const handleSendToSign = async () => {
+    if (signatures.length === 0) {
+      toast.warn("There are no signature fields. Please add invitees first.");
+      return;
+    }
+
+    try {
+      const uniqueInviteePositions = invitees
+        .map((invitee) => {
+          const signatureData = signatures.find(
+            (sig) => sig.inviteeId === invitee.id
+          );
+          if (!signatureData) {
+            console.warn(
+              `No signature position found for invitee ${invitee.id}. Skipping.`
+            );
+            return null;
+          }
+
+          return {
+            id: invitee.id,
+            coordinates: {
+              x: signatureData.x,
+              y: signatureData.y,
+            },
+          };
+        })
+        .filter(Boolean);
+
+      if (uniqueInviteePositions.length === 0) {
+        toast.error(
+          "Could not find signature positions for any invitees. Please ensure fields are placed."
+        );
+        return;
+      }
+
+      const payload = {
+        ip: info?.ip || "Unknown",
+        location: {
+          latitude: String(info?.latitude || "Unknown"),
+          longitude: String(info?.longitude || "Unknown"),
+        },
+        inviteePositions: uniqueInviteePositions,
+      };
+
+      console.log(
+        "Sending Corrected Payload:",
+        JSON.stringify(payload, null, 2)
+      );
+
+      const encryptedPayloadString = await encryptText(payload);
+
+      await axios.post(
+        `${baseUrl}/api/document/invitees/updateCoordinates/${documentId}`,
+        { body: encryptedPayloadString },
+        {
+          headers: {
+            authorization: token,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      toast.success("Document sent for signatures successfully!");
+      navigate("/maindashboard/allinvities");
+    } catch (error) {
+      console.error("Error sending signatures:", error);
+      let errorMessage = "Failed to send signatures. Please try again.";
+      if (error.response?.data?.body) {
+        try {
+          const decryptedError = await decryptText(error.response.data.body);
+          const errorJson = JSON.parse(decryptedError);
+          if (errorJson.message) {
+            errorMessage = errorJson.message;
+          }
+        } catch (e) {
+          console.error("Could not decrypt or parse error response", e);
+        }
+      }
+      toast.error(errorMessage);
+    }
+  };
+
+  const handleViewInvitees = () => setIsSidebarOpen(true);
+  const handleCloseSidebar = () => setIsSidebarOpen(false);
 
   return (
     <>
-      {/* --- Sidebar and Overlay --- */}
+      {/* Sidebar for viewing invitees */}
       {isSidebarOpen && (
         <>
-          {/* Overlay with smoother transition */}
           <div
-            className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 transition-opacity duration-300"
+            className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40"
             onClick={handleCloseSidebar}
-            aria-hidden="true"
           ></div>
+          <div className="fixed top-0 right-0 h-full w-[300px] bg-white shadow-2xl z-[2000] p-0 transform transition-all duration-300 ease-in-out translate-x-0 overflow-hidden">
+            <div className="sticky top-0 z-10 bg-white/80 backdrop-blur-md p-5 border-b border-gray-100">
+              <div className="flex justify-between items-center">
+                <div className="flex items-center space-x-3">
+                  <div className="p-2 rounded-lg bg-blue-100 text-blue-600">
+                    <FaUsers className="text-xl" />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-bold text-gray-900">Signers</h2>
+                    <p className="text-xs text-gray-500">
+                      {invitees.length}{" "}
+                      {invitees.length === 1 ? "participant" : "participants"}
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={handleCloseSidebar}
+                  className="p-1 rounded-full hover:bg-gray-100 transition-colors"
+                  aria-label="Close sidebar"
+                >
+                  <svg
+                    className="w-5 h-5 text-gray-500"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
 
-          {/* Sidebar with blue accent theme */}
-          <div
-            className={`fixed top-0 right-0 h-full w-[300px] bg-white shadow-2xl z-[2200] p-5 transition-transform duration-300 ease-in-out ${
-              isSidebarOpen ? "translate-x-0" : "translate-x-full"
-            }`}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="sidebar-title"
-          >
-            {/* Header with blue accent */}
-            <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-200">
-              <h2
-                id="sidebar-title"
-                className="text-xl font-bold text-[#3470b2]"
-              >
-                Invitees
-              </h2>
+            <div className="h-[calc(100%-120px)] overflow-y-auto p-5">
+              <ul className="space-y-3">
+                {invitees.map((invitee) => {
+                  const bgColor = getColorForInvitee(invitee.id, invitees);
+                  const textColor =
+                    bgColor === "#FFC107" || bgColor === "#20c997"
+                      ? "text-gray-800"
+                      : "text-white";
+
+                  return (
+                    <li
+                      key={invitee.id}
+                      className="group flex items-center p-3 rounded-xl hover:bg-gray-50 transition-all duration-200 border border-gray-100 hover:border-gray-200"
+                    >
+                      <div
+                        className={`relative flex-shrink-0 h-11 w-11 rounded-xl flex items-center justify-center font-bold ${textColor} shadow-md`}
+                        style={{ backgroundColor: bgColor }}
+                      >
+                        {invitee.name.charAt(0).toUpperCase()}
+                        <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></span>
+                      </div>
+                      <div className="ml-4 flex-1 min-w-0">
+                        <p className="font-medium text-gray-900 truncate">
+                          {invitee.name}
+                        </p>
+                        <p className="text-xs text-gray-500 truncate">
+                          {invitee.email}
+                        </p>
+                      </div>
+                      <div className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <svg
+                          className="w-5 h-5 text-gray-400"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 5l7 7-7 7"
+                          />
+                        </svg>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+
+            <div className="absolute bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-white via-white to-white/80 border-t border-gray-100">
               <button
                 onClick={handleCloseSidebar}
-                className="text-gray-400 hover:text-[#3470b2] transition-colors duration-200"
-                aria-label="Close"
+                className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl transition-all duration-200 shadow hover:shadow-md flex items-center justify-center space-x-2"
               >
+                <span>Done</span>
                 <svg
-                  className="w-6 h-6"
+                  className="w-4 h-4"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
+                    d="M5 13l4 4L19 7"
                   />
                 </svg>
-              </button>
-            </div>
-
-            {/* Invitees List with hover effects */}
-            <ul className="space-y-3 overflow-y-auto max-h-[calc(100vh-120px)] pr-2">
-              {invitees.map((invitee) => (
-                <li
-                  key={invitee.id}
-                  className="flex items-center p-3 rounded-lg transition-all duration-200 hover:bg-[#f5f9ff] hover:shadow-sm border border-gray-100"
-                >
-                  <div className="flex-shrink-0 h-10 w-10 rounded-full bg-[#3470b2] flex items-center justify-center font-bold text-white">
-                    {invitee.name.charAt(0).toUpperCase()}
-                  </div>
-                  <div className="ml-4 flex-1 min-w-0">
-                    <p className="font-medium text-gray-900 truncate">
-                      {invitee.name}
-                    </p>
-                    <p className="text-sm text-gray-500 truncate">
-                      {invitee.email}
-                    </p>
-                  </div>
-                  <div className="">
-                    <button >
-                      <FaUserEdit />
-                    </button>
-                  </div>
-                </li>
-              ))}
-            </ul>
-
-            {/* Optional footer with blue accent */}
-            <div className="absolute bottom-0 left-0 right-0 p-4 bg-gray-50 border-t border-gray-100">
-              <button className="w-full py-2 px-4 bg-[#3470b2] hover:bg-[#2a5c9a] text-white font-medium rounded-md transition-colors duration-200">
-                Send Invites
               </button>
             </div>
           </div>
         </>
       )}
 
-      {/* --- Main Page Content --- */}
+      {/* Main Content Area */}
       <div className="font-sans py-4">
-        <div className="max-w-5xl mx-auto">
-          {/* Progress Bar - Step 3 Active */}
-          <div className="flex items-center justify-center gap-2 mb-8">
-            <div className="flex items-center gap-1">
-              <span className="border border-gray-400 rounded-full w-6 h-6 flex items-center justify-center text-xs">
-                1
-              </span>
-              <span className="text-sm text-gray-500">Generate</span>
-            </div>
-            <div className="w-8 h-px bg-gray-300"></div>
-            <div className="flex items-center gap-1">
-              <span className="border border-gray-400 rounded-full w-6 h-6 flex items-center justify-center text-xs">
-                2
-              </span>
-              <span className="text-sm text-gray-500">Request</span>
-            </div>
-            <div className="w-8 h-px bg-gray-300"></div>
-            <div className="flex items-center gap-1">
-              <span className="bg-[#2c5fa5] text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">
-                3
-              </span>
-              <span className="font-medium text-sm text-[#2c5fa5]">
-                Approve
-              </span>
-            </div>
-          </div>
-
+        <div className="max-w-6xl mx-auto">
           <div className="flex flex-col items-center p-4 bg-gray-50 rounded-xl shadow-lg border border-gray-200">
-            <h1 className="text-xl font-bold mb-4">Document Approval</h1>
-            <div className="border shadow-md p-4 max-w-4xl w-full">
-              {pdfUrl ? (
-                <Document file={pdfUrl} onLoadError={console.error}>
-                  <Page pageNumber={1} />
+            <div className="w-full text-center mb-4">
+              <h1 className="text-2xl font-bold text-gray-800">
+                Prepare Document for Signing
+              </h1>
+              <p className="text-gray-600">
+                {invitees.length > 0
+                  ? "Drag a signature field to apply its position to all pages for that signer."
+                  : "Loading invitees..."}
+              </p>
+            </div>
+
+            <div
+              className="overflow-y-auto w-full bg-gray-200 p-4 rounded-lg"
+              style={{ maxHeight: "60vh" }}
+            >
+              {loading ? (
+                <div className="flex justify-center items-center h-[400px]">
+                  <p className="text-lg font-semibold">
+                    Loading document, please wait...
+                  </p>
+                </div>
+              ) : pdfUrl ? (
+                <Document
+                  file={pdfUrl}
+                  onLoadSuccess={({ numPages }) => setNumPages(numPages)}
+                  className="flex flex-col items-center"
+                >
+                  {Array.from(new Array(numPages), (_, index) => {
+                    const pageNum = index + 1;
+                    return (
+                      <div
+                        key={`page_container_${pageNum}`}
+                        ref={(el) => (pageRefs.current[pageNum] = el)}
+                        className="pdf-page-container relative shadow-lg mb-8"
+                      >
+                        {signatures
+                          .filter((sig) => sig.pageNumber === pageNum)
+                          .map((sig) => {
+                            const pageElement = pageRefs.current[pageNum];
+                            const position = { x: 0, y: 0 };
+                            if (pageElement) {
+                              position.x =
+                                (sig.x / 100) * pageElement.clientWidth;
+                              position.y =
+                                (sig.y / 100) * pageElement.clientHeight;
+                            }
+
+                            return (
+                              <Draggable
+                                key={sig.id}
+                                bounds="parent"
+                                position={position}
+                                onStop={(e, data) =>
+                                  handleDragStop(sig.id, data, pageNum)
+                                }
+                              >
+                                <div
+                                  className="absolute z-[1000] mt-4 flex flex-col justify-center items-center p-1 bg-white bg-opacity-90 backdrop-blur-sm rounded-md shadow-lg cursor-move"
+                                  style={{
+                                    width: "160px",
+                                    height: "50px",
+                                    border: `2px dashed ${getColorForInvitee(sig.inviteeId, invitees)}`,
+                                  }}
+                                >
+                                  <button
+                                    onClick={() =>
+                                      handleRemoveSignature(sig.id)
+                                    }
+                                    className="absolute -top-3 -right-3 text-red-500 hover:text-red-700 bg-white rounded-full z-10"
+                                    title="Remove field from this page"
+                                  >
+                                    <TiDelete size={26} />
+                                  </button>
+                                  <p
+                                    className="text-sm font-bold truncate w-full text-center px-1"
+                                    style={{
+                                      color: getColorForInvitee(
+                                        sig.inviteeId,
+                                        invitees
+                                      ),
+                                    }}
+                                    title={sig.inviteeName}
+                                  >
+                                    {sig.inviteeName}
+                                  </p>
+                                  <p className="text-xs text-gray-500">
+                                    Signature Field
+                                  </p>
+                                </div>
+                              </Draggable>
+                            );
+                          })}
+                        <Page pageNumber={pageNum} width={700} />
+                      </div>
+                    );
+                  })}
                 </Document>
               ) : (
-                <p>Loading PDF...</p>
+                <div className="flex justify-center items-center h-[70vh]">
+                  <p className="text-xl text-red-500 font-semibold">
+                    Document could not be loaded.
+                  </p>
+                </div>
               )}
             </div>
 
-            {/* Buttons */}
-            <div className="mt-6 flex gap-4">
-              <button
-                onClick={handleViewInvitees}
-                className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded"
-              >
-                View Invitees
-              </button>
-              <button
-                onClick={handleSendToSign}
-                className="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded"
-              >
-                Send to Sign
-              </button>
-            </div>
+            {!loading && (
+              <div className="mt-6 w-full flex justify-center items-center gap-4 p-4 bg-white rounded-lg shadow-inner">
+                <button
+                  onClick={handleViewInvitees}
+                  className="px-6 py-3 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-100 transition-colors flex items-center gap-2"
+                >
+                  <FaUsers /> View Invitees
+                </button>
+                <button
+                  onClick={handleSendToSign}
+                  disabled={signatures.length === 0}
+                  className="px-8 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+                >
+                  Send for Signature ({signatures.length} fields)
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>

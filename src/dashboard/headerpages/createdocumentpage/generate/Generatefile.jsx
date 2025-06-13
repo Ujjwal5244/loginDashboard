@@ -89,9 +89,7 @@ const Generatefile = () => {
 
       if (response.status === 200 || response.status === 201) {
         toast.success("Document generated successfully. Redirecting...");
-        navigate("/Maindashboard/requestfile", {
-          state: { documentId: data.documentId },
-        });
+        navigate(`/Maindashboard/requestfile/${data._id}`);
       } else {
         throw new Error(data.message || "Failed to generate document");
       }

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useMemo } from "react";
+import React, { useState, useRef, useEffect, useMemo, use } from "react";
 import {
   FaEnvelope,
   FaUserPlus,
@@ -8,23 +8,25 @@ import {
   FaFingerprint,
   FaMobileAlt,
   FaIdCard,
-  FaSortNumericDown, // Icon for sorting/rank
+  FaSortNumericDown,
 } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { IoSettings } from "react-icons/io5";
 import { HiDotsVertical } from "react-icons/hi";
-import { useNavigate } from "react-router-dom";
-
-const selfSignerInfo = {
-  id: 1,
-  name: "Ujjwal Yadav",
-  contact: "ujjwalyadav5244@gmail.com",
-  isSelf: true,
-};
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import { baseUrl, decryptText, encryptText } from "../../../../encryptDecrypt";
+import axios from "axios";
 
 const Requestfile = () => {
-  const [invitees, setInvitees] = useState([{ ...selfSignerInfo, rank: 1 }]);
+  const { documentId } = useParams();
 
+  const paramData = useParams();
+  console.log(paramData, "paramData");
+
+  const token = localStorage.getItem("userToken");
+  const [selfSignerInfo, setSelfSignerInfo] = useState(null);
+  const [invitees, setInvitees] = useState([]);
   const nextIdRef = useRef(2);
 
   const [isFixedOrder, setIsFixedOrder] = useState(true);
@@ -37,6 +39,8 @@ const Requestfile = () => {
 
   const [showRankSelector, setShowRankSelector] = useState({});
   const rankSelectorContainerRefs = useRef({});
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const methods = [
     {
@@ -61,19 +65,56 @@ const Requestfile = () => {
     },
   ];
 
+  // Fetch profile information for the self-signer
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (!token) {
+        toast.error("Authentication token not found.");
+        return;
+      }
+      try {
+        const response = await axios.get(`${baseUrl}/api/user/profile`, {
+          headers: { authorization: token },
+        });
+        const decrypted = await decryptText(response.data.body);
+        const data = JSON.parse(decrypted);
+
+        if (data?.data?.name && data?.data?.email) {
+          const signer = {
+            id: data.data.id,
+            name: data.data.name,
+            contact: data.data.email,
+            isSelf: true,
+            signatureTypes: [],
+          };
+          setSelfSignerInfo(signer);
+          if (iWillSign) {
+            setInvitees([{ ...signer, rank: 1 }]);
+          }
+        }
+      } catch (error) {
+        toast.error("Failed to fetch your profile information.");
+        console.error("Failed to fetch profile:", error);
+      }
+    };
+    fetchProfile();
+  }, [token]);
+
   const toggleOptions = (inviteeId) => {
+    const invitee = invitees.find((inv) => inv.id === inviteeId);
+    if (!invitee) return;
+
     const key = String(inviteeId);
     setShowRankSelector({});
     setShowOptions((prev) => ({
       ...Object.fromEntries(Object.entries(prev).map(([k, v]) => [k, false])),
       [key]: !prev[key],
     }));
-    setSelectedMethods([]);
+    setSelectedMethods(invitee.signatureTypes || []);
   };
 
   const toggleRankSelector = (inviteeId) => {
     if (invitees.length <= 1) return;
-
     const key = String(inviteeId);
     setShowOptions({});
     setShowRankSelector((prev) => {
@@ -83,10 +124,7 @@ const Requestfile = () => {
           .map((k) => [k, false])
           .filter((entry) => entry !== undefined)
       );
-      return {
-        ...allClosed,
-        [key]: !isOpenCurrently,
-      };
+      return { ...allClosed, [key]: !isOpenCurrently };
     });
   };
 
@@ -99,14 +137,12 @@ const Requestfile = () => {
   };
 
   const handleSubmit = (inviteeId) => {
-    const invitee = invitees.find((inv) => inv.id === inviteeId);
-    if (!invitee) return;
-
-    alert(
-      `Selected methods for ${invitee.name}: ${selectedMethods
-        .map((id) => methods.find((m) => m.id === id).name)
-        .join(", ")}`
+    setInvitees((prevInvitees) =>
+      prevInvitees.map((inv) =>
+        inv.id === inviteeId ? { ...inv, signatureTypes: selectedMethods } : inv
+      )
     );
+    toast.success("Signature methods confirmed for this invitee.");
     setShowOptions((prev) => ({ ...prev, [String(inviteeId)]: false }));
     setSelectedMethods([]);
   };
@@ -119,7 +155,6 @@ const Requestfile = () => {
           const optionsToggleButton = document.querySelector(
             `button[data-toggles-options='${inviteeIdStr}']`
           );
-
           if (
             optionsDropdownRef &&
             !optionsDropdownRef.contains(event.target) &&
@@ -130,7 +165,6 @@ const Requestfile = () => {
           }
         }
       });
-
       Object.keys(showRankSelector).forEach((inviteeIdStr) => {
         if (showRankSelector[inviteeIdStr]) {
           const rankDropdownRef =
@@ -138,7 +172,6 @@ const Requestfile = () => {
           const rankToggleButton = document.querySelector(
             `button[data-toggles-rank-selector='${inviteeIdStr}']`
           );
-
           if (
             rankDropdownRef &&
             !rankDropdownRef.contains(event.target) &&
@@ -149,7 +182,6 @@ const Requestfile = () => {
         }
       });
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [showOptions, showRankSelector]);
@@ -159,7 +191,6 @@ const Requestfile = () => {
       const newIsFixed = !prevIsFixed;
       setInvitees((currentInvitees) => {
         if (newIsFixed) {
-          // Sort by previous order before assigning new ranks to maintain consistency
           const sorted = [...currentInvitees].sort((a, b) => a.id - b.id);
           return sorted.map((invitee, index) => ({
             ...invitee,
@@ -175,16 +206,13 @@ const Requestfile = () => {
   const handleIWillSignToggle = () => {
     const newIWillSignState = !iWillSign;
     setIWillSign(newIWillSignState);
-
     if (newIWillSignState) {
       setInvitees((prevInvitees) => {
-        // Add the self-signer to the start of the list
         const updatedInvitees = [
-          { ...selfSignerInfo, rank: null },
+          { ...selfSignerInfo, rank: null, signatureTypes: [] },
           ...prevInvitees,
         ];
         if (isFixedOrder) {
-          // Re-rank the entire list
           return updatedInvitees.map((inv, index) => ({
             ...inv,
             rank: index + 1,
@@ -194,7 +222,6 @@ const Requestfile = () => {
       });
     } else {
       setInvitees((prevInvitees) => {
-        // Remove the self-signer
         const updatedInvitees = prevInvitees.filter((inv) => !inv.isSelf);
         if (isFixedOrder) {
           return updatedInvitees.map((inv, index) => ({
@@ -210,42 +237,36 @@ const Requestfile = () => {
   const addInvitee = () => {
     const newId = nextIdRef.current;
     nextIdRef.current += 1;
-
     setInvitees((prevInvitees) => {
       const newRank = isFixedOrder ? prevInvitees.length + 1 : null;
       const newInviteesList = [
         ...prevInvitees,
-        { id: newId, name: "", contact: "", rank: newRank },
+        { id: newId, name: "", contact: "", rank: newRank, signatureTypes: [] },
       ];
-      // No need to re-rank if not fixed order
       return newInviteesList;
     });
   };
 
-  // A function to remove an invitee
   const removeInvitee = (inviteeIdToRemove) => {
     setInvitees((prevInvitees) => {
       const inviteeToRemove = prevInvitees.find(
         (inv) => inv.id === inviteeIdToRemove
       );
       if (inviteeToRemove && inviteeToRemove.isSelf) {
-        alert(
+        toast.warn(
           "To remove yourself, please turn off the 'I will sign this document' toggle."
         );
         return prevInvitees;
       }
-
       const updatedInvitees = prevInvitees.filter(
         (inv) => inv.id !== inviteeIdToRemove
       );
-
       if (isFixedOrder) {
         return updatedInvitees.map((inv, index) => ({
           ...inv,
           rank: index + 1,
         }));
       }
-
       return updatedInvitees;
     });
   };
@@ -263,9 +284,7 @@ const Requestfile = () => {
       const currentInvitee = prevInvitees.find((inv) => inv.id === inviteeId);
       if (!currentInvitee || currentInvitee.rank === newSelectedRank)
         return prevInvitees;
-
       const oldRank = currentInvitee.rank;
-
       return prevInvitees
         .map((inv) => {
           if (inv.id === inviteeId) {
@@ -288,6 +307,135 @@ const Requestfile = () => {
     }
     return invitees;
   }, [invitees, isFixedOrder]);
+
+  // ____________________________api calling of invitees____________________________
+  const handleNext = async () => {
+    console.log("Current invitees state on 'Next' click:", invitees);
+
+    if (!documentId) {
+      toast.error("Document ID is missing. Cannot proceed.");
+      return;
+    }
+
+    if (invitees.length === 0) {
+      toast.error("Please add at least one invitee.");
+      return;
+    }
+
+    // Validate all invitees
+    for (const invitee of invitees) {
+      if (!invitee.name.trim() || !invitee.contact.trim()) {
+        toast.error(`Please fill in the name and contact for all invitees.`);
+        return;
+      }
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(invitee.contact)) {
+        toast.error(`Please provide a valid email for ${invitee.name}.`);
+        return;
+      }
+      if (!invitee.signatureTypes || invitee.signatureTypes.length === 0) {
+        toast.error(
+          `Please select and confirm at least one signature method for ${invitee.name}.`
+        );
+        return;
+      }
+    }
+
+    setIsLoading(true);
+
+    try {
+      // Prepare the payload
+      const payload = {
+        isFixedOrder,
+        iWillSign,
+        invitees: invitees.map((invitee) => ({
+          name: invitee.name,
+          phone: invitee.contact, // This should include the email
+          email: invitee.contact, // Assuming contact is the email
+          signatureTypes: invitee.signatureTypes,
+          rank: invitee.rank,
+          isSelf: invitee.isSelf || false, // Include if backend needs to know who is the sender
+        })),
+        documentId, // Include if backend needs it in the body
+      };
+
+      console.log("Original payload:", payload);
+
+      const payloadString = payload;
+      console.log("Stringified payload:", payloadString);
+
+      const encryptedPayload = await encryptText(payloadString);
+      console.log("Encrypted payload:", encryptedPayload);
+      console.log("Type of encrypted payload:", typeof encryptedPayload);
+
+      if (typeof encryptedPayload !== "string") {
+        throw new Error("Encryption did not return a string");
+      }
+
+      // __________Make the API request__________
+      const response = await axios.post(
+        `${baseUrl}/api/document/invitees/${documentId}`,
+        { body: encryptedPayload },
+        {
+          headers: {
+            Authorization: token,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      // Handle successful response
+      if (response.data) {
+        try {
+          const decryptedResponse = await decryptText(response.data.body);
+          console.log("Decrypted response:", decryptedResponse);
+          const responseData = JSON.parse(decryptedResponse);
+
+          if (response.status === 200 || response.status === 201) {
+            toast.success("Invitations have been sent successfully!");
+            navigate(`/maindashboard/approve/${documentId}`);
+          } else {
+            toast.error(responseData.message || "Failed to send invitations");
+          }
+        } catch (decryptError) {
+          console.error("Failed to decrypt response:", decryptError);
+          toast.error("Failed to process server response");
+        }
+      } else {
+        toast.error("No data received from server");
+      }
+    } catch (error) {
+      console.error("Failed to send invitations:", error);
+
+      let errorMessage = "Failed to send invitations. Please try again.";
+      if (error.response) {
+        // Try to decrypt the error response if it's encrypted
+        if (error.response.data && typeof error.response.data === "object") {
+          try {
+            const decryptedError = await decryptText(error.response.data.body);
+            const errorData = JSON.parse(decryptedError);
+            errorMessage = errorData.message || errorMessage;
+          } catch (decryptError) {
+            console.error("Failed to decrypt error response:", decryptError);
+            errorMessage = error.response.data.message || errorMessage;
+          }
+        } else if (
+          error.response.data &&
+          typeof error.response.data === "string"
+        ) {
+          errorMessage = error.response.data;
+        }
+      } else if (error.request) {
+        errorMessage = "No response received from server";
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+
+      toast.error(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="font-sans py-4">
@@ -354,6 +502,7 @@ const Requestfile = () => {
                   className="sr-only peer"
                   checked={iWillSign}
                   onChange={handleIWillSignToggle}
+                  disabled={!selfSignerInfo} // Disable toggle until profile is loaded
                 />
                 <div className="relative w-9 h-5 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer peer-checked:bg-green-500 transition-all">
                   <div
@@ -365,7 +514,7 @@ const Requestfile = () => {
           </div>
 
           <div className="space-y-3">
-            {inviteesToDisplay.map((invitee, displayIndex) => (
+            {inviteesToDisplay.map((invitee) => (
               <div
                 key={invitee.id}
                 className="bg-white p-4 shadow-sm rounded-lg border border-gray-100 transition-all hover:shadow-md"
@@ -437,7 +586,7 @@ const Requestfile = () => {
                     </div>
                   ) : (
                     <div className="bg-gray-300 text-gray-700 rounded-full w-7 h-7 flex items-center justify-center text-xs font-bold shrink-0">
-                      {/* Use a simple dot or index for non-fixed order */}•
+                      •
                     </div>
                   )}
 
@@ -447,16 +596,23 @@ const Requestfile = () => {
                   >
                     {invitee.name || "New Invitee"}
                   </h2>
-
                   <div className="relative inline-block text-left">
-                    <button
-                      onClick={() => toggleOptions(invitee.id)}
-                      data-toggles-options={String(invitee.id)}
-                      className="p-2 hover:bg-gray-100 rounded-full flex items-center text-sm gap-1 transition-colors"
-                    >
-                      Signature Types
-                      <HiDotsVertical className="text-gray-500 hover:text-gray-700 text-sm" />
-                    </button>
+                    <div className="flex items-center gap-1">
+                      {invitee.signatureTypes?.length > 0 && (
+                        <FaCheck
+                          title="Methods Confirmed"
+                          className="text-green-500"
+                        />
+                      )}
+                      <button
+                        onClick={() => toggleOptions(invitee.id)}
+                        data-toggles-options={String(invitee.id)}
+                        className="p-2 hover:bg-gray-100 rounded-full flex items-center text-sm gap-1 transition-colors"
+                      >
+                        Signature Types
+                        <HiDotsVertical className="text-gray-500 hover:text-gray-700 text-sm" />
+                      </button>
+                    </div>
 
                     {showOptions[String(invitee.id)] && (
                       <div
@@ -550,7 +706,6 @@ const Requestfile = () => {
                     </div>
                   </div>
                 </div>
-                {/* Delete button (conditionally rendered) */}
                 <div className="flex justify-end mr-[25px] mt-3">
                   {!invitee.isSelf && (
                     <button
@@ -561,8 +716,6 @@ const Requestfile = () => {
                       <MdDelete />
                     </button>
                   )}
-                  {/* setting button (conditionally rendered) */}
-
                   <button className="p-2 text-green-700 hover:text-blue-600 hover:bg-red-50 rounded-full transition-colors">
                     <IoSettings />
                   </button>
@@ -585,15 +738,18 @@ const Requestfile = () => {
             <button
               className="px-5 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 text-sm font-medium shadow-sm transition-colors"
               onClick={() => navigate("/maindashboard/createfile")}
+              disabled={isLoading}
             >
               Back
             </button>
             <button
-              className="px-5 py-2 bg-[#3470b2] text-white rounded-md font-medium shadow-sm flex items-center space-x-1.5 text-sm hover:bg-[#2c5fa5] transition-colors"
-              onClick={() => navigate("/maindashboard/approve")}
+              className="px-5 py-2 bg-[#3470b2] text-white rounded-md font-medium shadow-sm flex items-center space-x-1.5 text-sm hover:bg-[#2c5fa5] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={handleNext}
+              // Disable if the API call is loading OR if there are no invitees
+              disabled={isLoading || invitees.length === 0}
             >
-              <span>Next</span>
-              <FaChevronRight className="text-xs" />
+              <span>{isLoading ? "Sending..." : "Next"}</span>
+              {!isLoading && <FaChevronRight className="text-xs" />}
             </button>
           </div>
         </div>

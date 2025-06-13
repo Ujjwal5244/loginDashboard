@@ -141,8 +141,8 @@ function App() {
             <Route path="mobilemenu" element={<MobileMenu />} />
             {/* ---------------------create header pagese routes--------------------------- */}
             <Route path="createfile" element={<Createfile />} />
-            <Route path="requestfile" element={<Requestfile />} />
-            <Route path="approve" element={<Approve />} />
+            <Route path="requestfile/:documentId" element={<Requestfile />} />
+            <Route path="approve/:documentId" element={<Approve />} />
             <Route path="allinvities" element={<Allinvites />} />
           </Route>
         </Routes>
