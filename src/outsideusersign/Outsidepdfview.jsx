@@ -1,5 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { Document, Page, pdfjs } from "react-pdf";
+import axios from "axios";
+import { baseUrl,token, decryptText } from '../encryptDecrypt'; 
 import "react-pdf/dist/esm/Page/AnnotationLayer.css"; // Required for annotation layer
 import "react-pdf/dist/esm/Page/TextLayer.css"; // Required for text layer
 import {
@@ -13,7 +16,9 @@ import {
 
 // Setup for PDF.js worker. This is essential for react-pdf to work.
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
-
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
 const sidebarItems = [
   { text: "Document Sign", icon: <FiEdit size={18} />, active: true },
   { text: "Verification", icon: <FiCheckCircle size={18} /> },
@@ -25,6 +30,85 @@ const sidebarItems = [
 const DocumentSigningFlow = () => {
   const [showPdfViewer, setShowPdfViewer] = useState(false);
   const [numPages, setNumPages] = useState(null);
+  const [inviteeDetail, setInviteeDetail] = useState(null);
+  const [documentUrl,setDocumentUrl] = useState("");
+  const [info, setInfo] = useState(null);
+
+  const query = useQuery();
+  const searchTerm = query.get('t')||'';
+  // ✅ Corrected useEffect
+useEffect(() => {
+  console.log("Invitee Detail:", inviteeDetail);
+  console.log("Info:", info);
+  if (!inviteeDetail || !info) return; // safer condition
+  async function fetchInviteeDetail() {
+    try {
+      const response = await axios.get(
+        `${baseUrl}/api/document/getdocument/${inviteeDetail.documentId}`,
+        {
+          ip: info?.ip || "",
+          machine: info?.machine || "",
+          browser: info?.browser || "",
+          os: info?.os || "",
+          location: {
+            latitude: info?.latitude || "",
+            longitude: info?.longitude || "",
+            city: info?.city || "",
+            country: info?.country || "",
+          },
+        }
+      );
+      if (response.status === 200) {
+        const decrypted = await decryptText(response.data.body);
+        const parsed = JSON.parse(decrypted);
+        console.log("Decrypted Document Data:", parsed);
+        setDocumentUrl(parsed.document.documentUrl);
+      } else {
+        console.error("Failed to fetch document URL:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching invitee detail:", error);
+    }
+  }
+  fetchInviteeDetail();
+}, [inviteeDetail, info]);
+
+// ✅ Corrected inviteeByTOken
+useEffect(() => {
+  async function inviteeByTOken() {
+    try {
+      const response = await axios.get(
+        `${baseUrl}/api/document/inviteeBytoken?t=${searchTerm}`,
+        {
+          headers: { authorization: token }
+        }
+      );
+      if (response.status === 200) {
+        const decrypted = await decryptText(response.data.body);
+        const parsed = JSON.parse(decrypted);
+        console.log("Decrypted Invitee Data:", parsed);
+        setInviteeDetail(parsed.invitee);
+      } else {
+        console.error("Failed to fetch invitee data:",response.data );
+      }
+    } catch (error) {
+      console.error("Error fetching invitee by token:", error);
+    }
+  }
+  if (searchTerm)  inviteeByTOken();
+}, [searchTerm]);
+
+  
+  useEffect(() => {
+       
+
+    fetch("https://ipwho.is/")
+      .then((res) => res.json())
+      .then((data) => {
+        setInfo(data);
+      })
+      .catch((err) => console.error("Error fetching IP/location:", err));
+  }, []);
 
   const onDocumentLoadSuccess = ({ numPages }) => {
     setNumPages(numPages);
@@ -33,7 +117,7 @@ const DocumentSigningFlow = () => {
   const handleContinue = () => {
     setShowPdfViewer(true);
   };
-
+console.log("Document URL:", documentUrl);
   return (
     // Parent container needs to be `relative` to position the overlay correctly.
     <div className="relative h-screen overflow-hidden bg-gray-50">
@@ -152,7 +236,7 @@ const DocumentSigningFlow = () => {
                 {/* Changed: This is the dedicated scrollable container for the PDF */}
                 <div className="flex-1 overflow-y-auto bg-gray-100">
                   <Document
-                    file="/sample.pdf"
+                    file= {documentUrl}
                     onLoadSuccess={onDocumentLoadSuccess}
                     // This className centers the pages inside the scrollable container
                     className="flex flex-col items-center p-4"
