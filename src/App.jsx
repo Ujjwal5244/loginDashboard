@@ -41,7 +41,9 @@ import Approve from "./dashboard/headerpages/createdocumentpage/aprove/Approve";
 import Allinvites from "./dashboard/headerpages/createdocumentpage/allinvities/Allinvities";
 import Nifipaymentmain from "./nifipayment/Nifipaymentmain";
 import Outsidepdfview from "./outsideusersign/Outsidepdfview";
-
+import OutsideVerifyotp from "./outsideusersign/OutsideVerifyotp";
+import OutsideSecurity from "./outsideusersign/OutsideSecurity";
+import OutsideSignature from "./outsideusersign/OutsideSignature";
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -155,9 +157,14 @@ function App() {
             </Route>
 
             {/* __________________________________Outsidepdf routes_____________________________ */}
-             {/* Outside routes with integrated navigation */}
+            {/* Outside routes with integrated navigation */}
             <Route path="/invitee/preview" element={<Outsidepdfview />} />
-
+            <Route path="/invitee/verify" element={<OutsideVerifyotp />} />
+            <Route
+              path="/invitee/security-question"
+              element={<OutsideSecurity />}
+            />
+            <Route path="/invitee/sign" element={<OutsideSignature />} />
           </Routes>
         </div>
       </Router>
