@@ -44,6 +44,7 @@ import Outsidepdfview from "./outsideusersign/Outsidepdfview";
 import OutsideVerifyotp from "./outsideusersign/OutsideVerifyotp";
 import OutsideSecurity from "./outsideusersign/OutsideSecurity";
 import OutsideSignature from "./outsideusersign/OutsideSignature";
+import OutsideSignedViewpdf from "./outsideusersign/OutsideSignedViewpdf";
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -165,6 +166,7 @@ function App() {
               element={<OutsideSecurity />}
             />
             <Route path="/invitee/sign" element={<OutsideSignature />} />
+            <Route path="/invitee/done" element={<OutsideSignedViewpdf />} />
           </Routes>
         </div>
       </Router>

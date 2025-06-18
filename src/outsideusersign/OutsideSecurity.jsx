@@ -149,24 +149,6 @@ const OutsideSecurity = () => {
               Nifi <span className="font-bold text-white/80">Payments</span>
             </h1>
           </div>
-          <nav className="hidden md:flex space-x-8">
-            <a href="#" className="relative group font-medium">
-              Features
-              <span className="absolute left-0 bottom-0 h-0.5 bg-white w-0 group-hover:w-full transition-all duration-300"></span>
-            </a>
-            <a href="#" className="relative group font-medium">
-              Pricing
-              <span className="absolute left-0 bottom-0 h-0.5 bg-white w-0 group-hover:w-full transition-all duration-300"></span>
-            </a>
-            <a href="#" className="relative group font-medium">
-              Solutions
-              <span className="absolute left-0 bottom-0 h-0.5 bg-white w-0 group-hover:w-full transition-all duration-300"></span>
-            </a>
-            <a href="#" className="relative group font-medium">
-              Contact
-              <span className="absolute left-0 bottom-0 h-0.5 bg-white w-0 group-hover:w-full transition-all duration-300"></span>
-            </a>
-          </nav>
           <button className="relative overflow-hidden bg-white text-[#3470b2] px-6 py-2 rounded-full font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-[#3470b2]/30 group">
             <span className="relative z-10">Get Started</span>
             <span className="absolute inset-0 bg-gradient-to-r from-white to-white/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 -translate-x-full group-hover:translate-x-0"></span>
