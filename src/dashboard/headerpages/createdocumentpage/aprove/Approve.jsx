@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useNavigate, useParams, useLocation } from "react-router-dom";import { FaUsers } from "react-icons/fa";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { FaUsers } from "react-icons/fa";
 import { TiDelete } from "react-icons/ti";
 import axios from "axios";
 import { baseUrl, decryptText } from "../../../../encryptDecrypt";
@@ -47,9 +48,19 @@ const Approve = () => {
   const hasPopulatedFields = useRef(false);
   const pageRefs = useRef({});
   const [info, setInfo] = useState(null);
+  const [pdfWidth, setPdfWidth] = useState(700); // Initial width
 
   useEffect(() => {
-        console.log(`Document signing sequence is fixed: ${isInSequence}`);
+    // Update PDF width based on window size
+    const updatePdfWidth = () => {
+      const width = Math.min(window.innerWidth - 40, 700); // Max 700px, but responsive to screen
+      setPdfWidth(width);
+    };
+
+    updatePdfWidth();
+    window.addEventListener('resize', updatePdfWidth);
+    
+    console.log(`Document signing sequence is fixed: ${isInSequence}`);
 
     fetch("https://ipwho.is/")
       .then((res) => res.json())
@@ -57,18 +68,20 @@ const Approve = () => {
         setInfo(data);
       })
       .catch((err) => console.error("Error fetching IP/location:", err));
-  }, [isInSequence]);
+
+    return () => {
+      window.removeEventListener('resize', updatePdfWidth);
+      if (pdfUrl) {
+        URL.revokeObjectURL(pdfUrl);
+      }
+    };
+  }, [isInSequence, pdfUrl]);
 
   // --- Effects ---
   useEffect(() => {
     if (documentId) {
       fetchDocumentAndInvitees();
     }
-    return () => {
-      if (pdfUrl) {
-        URL.revokeObjectURL(pdfUrl);
-      }
-    };
   }, [documentId]);
 
   useEffect(() => {
@@ -183,90 +196,85 @@ const Approve = () => {
     toast.info("Signature field removed for this page.");
   };
 
-  // --- CORRECTED FUNCTION ---
   const handleSendToSign = async () => {
-     if (isInSequence) {
+    if (isInSequence) {
         toast.info("Sequential signing order is active.");
-     }
+    }
     if (signatures.length === 0) {
-      toast.warn("There are no signature fields. Please add invitees first.");
-      return;
+        toast.warn("There are no signature fields. Please add invitees first.");
+        return;
     }
 
     try {
-      const uniqueInviteePositions = invitees
+        const uniqueInviteePositions = invitees
         .map((invitee) => {
-          const signatureData = signatures.find(
+            const signatureData = signatures.find(
             (sig) => sig.inviteeId === invitee.id
-          );
-          if (!signatureData) {
+            );
+            if (!signatureData) {
             console.warn(
-              `No signature position found for invitee ${invitee.id}. Skipping.`
+                `No signature position found for invitee ${invitee.id}. Skipping.`
             );
             return null;
-          }
+            }
 
-          return {
+            return {
             id: invitee.id,
             coordinates: {
-              x: signatureData.x,
-              y: signatureData.y,
+                x: signatureData.x,
+                y: signatureData.y,
             },
-          };
+            };
         })
         .filter(Boolean);
 
-      if (uniqueInviteePositions.length === 0) {
+        if (uniqueInviteePositions.length === 0) {
         toast.error(
-          "Could not find signature positions for any invitees. Please ensure fields are placed."
+            "Could not find signature positions for any invitees. Please ensure fields are placed."
         );
         return;
-      }
+        }
 
-      const payload = {
+        const payload = {
         ip: info?.ip || "Unknown",
         location: {
-          latitude: String(info?.latitude || "Unknown"),
-          longitude: String(info?.longitude || "Unknown"),
+            latitude: String(info?.latitude || "Unknown"),
+            longitude: String(info?.longitude || "Unknown"),
         },
         inviteePositions: uniqueInviteePositions,
-      };
+        };
 
-      console.log(
-        "Sending Corrected Payload:",
-        JSON.stringify(payload, null, 2)
-      );
+        const encryptedPayloadString = await encryptText(payload);
 
-      const encryptedPayloadString = await encryptText(payload);
-
-      await axios.post(
+        await axios.post(
         `${baseUrl}/api/document/invitees/updateCoordinates/${documentId}?isInSequence=${isInSequence}`,
         { body: encryptedPayloadString },
         {
-          headers: {
+            headers: {
             authorization: token,
             "Content-Type": "application/json",
-          },
+            },
         }
-      );
+        );
 
-      toast.success("Document sent for signatures successfully!");
-      navigate("/maindashboard/allinvities");
+        toast.success("Document sent for signatures successfully!");
+        navigate(`/maindashboard/allinvities?documentId=${documentId}`);
+
     } catch (error) {
-      console.error("Error sending signatures:", error);
-      let errorMessage = "Failed to send signatures. Please try again.";
-      if (error.response?.data?.body) {
+        console.error("Error sending signatures:", error);
+        let errorMessage = "Failed to send signatures. Please try again.";
+        if (error.response?.data?.body) {
         try {
-          const decryptedError = await decryptText(error.response.data.body);
-          const errorJson = JSON.parse(decryptedError);
-          if (errorJson.message) {
+            const decryptedError = await decryptText(error.response.data.body);
+            const errorJson = JSON.parse(decryptedError);
+            if (errorJson.message) {
             errorMessage = errorJson.message;
-          }
+            }
         } catch (e) {
-          console.error("Could not decrypt or parse error response", e);
+            console.error("Could not decrypt or parse error response", e);
         }
-      }
-      toast.error(errorMessage);
+        }
+        toast.error(errorMessage);
     }
   };
 
@@ -282,7 +290,7 @@ const Approve = () => {
             className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40"
             onClick={handleCloseSidebar}
           ></div>
-          <div className="fixed top-0 right-0 h-full w-[300px] bg-white shadow-2xl z-[2000] p-0 transform transition-all duration-300 ease-in-out translate-x-0 overflow-hidden">
+          <div className="fixed top-0 right-0 h-full w-full sm:w-[300px] bg-white shadow-2xl z-[2000] p-0 transform transition-all duration-300 ease-in-out translate-x-0 overflow-hidden">
             <div className="sticky top-0 z-10 bg-white/80 backdrop-blur-md p-5 border-b border-gray-100">
               <div className="flex justify-between items-center">
                 <div className="flex items-center space-x-3">
@@ -395,14 +403,14 @@ const Approve = () => {
       )}
 
       {/* Main Content Area */}
-      <div className="font-sans py-4">
+      <div className="font-sans py-4 px-2 sm:px-4">
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col items-center p-4 bg-gray-50 rounded-xl shadow-lg border border-gray-200">
             <div className="w-full text-center mb-4">
-              <h1 className="text-2xl font-bold text-gray-800">
+              <h1 className="md:text-xl xs:text-[16px] font-bold text-gray-800">
                 Prepare Document for Signing
               </h1>
-              <p className="text-gray-600">
+              <p className="md:text-sm xs:text-[10px] text-gray-600">
                 {invitees.length > 0
                   ? "Drag a signature field to apply its position to all pages for that signer."
                   : "Loading invitees..."}
@@ -410,7 +418,7 @@ const Approve = () => {
             </div>
 
             <div
-              className="overflow-y-auto w-full bg-gray-200 p-4 rounded-lg"
+              className="overflow-y-auto w-full bg-gray-200 p-2 sm:p-4 rounded-lg"
               style={{ maxHeight: "60vh" }}
             >
               {loading ? (
@@ -431,7 +439,8 @@ const Approve = () => {
                       <div
                         key={`page_container_${pageNum}`}
                         ref={(el) => (pageRefs.current[pageNum] = el)}
-                        className="pdf-page-container relative shadow-lg mb-8"
+                        className="pdf-page-container relative shadow-lg mb-8 mx-auto"
+                        style={{ width: '100%', maxWidth: `${pdfWidth}px` }}
                       >
                         {signatures
                           .filter((sig) => sig.pageNumber === pageNum)
@@ -457,8 +466,8 @@ const Approve = () => {
                                 <div
                                   className="absolute z-[1000] mt-4 flex flex-col justify-center items-center p-1 bg-white bg-opacity-90 backdrop-blur-sm rounded-md shadow-lg cursor-move"
                                   style={{
-                                    width: "160px",
-                                    height: "50px",
+                                    width: `${Math.min(pdfWidth * 0.25, 160)}px`, // Responsive width (25% of pdf width or max 160px)
+                                    height: `${Math.min(pdfWidth * 0.08, 50)}px`, // Responsive height (8% of pdf width or max 50px)
                                     border: `2px dashed ${getColorForInvitee(sig.inviteeId, invitees)}`,
                                   }}
                                 >
@@ -466,10 +475,10 @@ const Approve = () => {
                                     onClick={() =>
                                       handleRemoveSignature(sig.id)
                                     }
-                                    className="absolute -top-3 -right-3 text-red-500 hover:text-red-700 bg-white rounded-full z-10"
+                                    className="absolute -top-3 -right-3 text-red-500 hover:text-red-700 bg-white p-[2px] rounded-full z-10"
                                     title="Remove field from this page"
                                   >
-                                    <TiDelete size={26} />
+                                    <TiDelete size={Math.min(pdfWidth * 0.04, 26)} /> 
                                   </button>
                                   <p
                                     className="text-sm font-bold truncate w-full text-center px-1"
@@ -483,14 +492,18 @@ const Approve = () => {
                                   >
                                     {sig.inviteeName}
                                   </p>
-                                  <p className="text-xs text-gray-500">
+                                  <p className="text-[8px] text-gray-500">
                                     Signature Field
                                   </p>
                                 </div>
                               </Draggable>
                             );
                           })}
-                        <Page pageNumber={pageNum} width={700} />
+                        <Page 
+                          pageNumber={pageNum} 
+                          width={pdfWidth}
+                          className="border border-gray-300"
+                        />
                       </div>
                     );
                   })}
@@ -505,17 +518,17 @@ const Approve = () => {
             </div>
 
             {!loading && (
-              <div className="mt-6 w-full flex justify-center items-center gap-4 p-4 bg-white rounded-lg shadow-inner">
+              <div className="mt-6 w-full flex flex-col sm:flex-row justify-center items-center gap-4 p-4 bg-white rounded-lg shadow-inner">
                 <button
                   onClick={handleViewInvitees}
-                  className="px-6 py-3 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-100 transition-colors flex items-center gap-2"
+                  className="w-full sm:w-auto px-6 py-3 bg-white border border-gray-300 text-gray-700 md:text-[15px] xs:text-[12px] font-semibold rounded-lg hover:bg-gray-100 transition-colors flex items-center justify-center gap-2"
                 >
                   <FaUsers /> View Invitees
                 </button>
                 <button
                   onClick={handleSendToSign}
                   disabled={signatures.length === 0}
-                  className="px-8 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+                  className="w-full sm:w-auto px-8 py-3 bg-[#3470b2] text-white md:text-[15px] xs:text-[12px] font-bold rounded-lg transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
                 >
                   Send for Signature ({signatures.length} fields)
                 </button>

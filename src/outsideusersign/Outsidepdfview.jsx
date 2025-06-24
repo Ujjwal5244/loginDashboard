@@ -214,7 +214,7 @@ const DocumentSigningFlow = () => {
               </button>
               <div
                 className="p-1 bg-white/10 rounded-lg backdrop-blur-sm"
-                style={{ display: window.innerWidth < 700 ? "none" : "block" }}
+                style={{ display: window.innerWidth < 768 ? "none" : "block" }}
               >
                 <svg
                   className="w-6 h-6 text-white"
@@ -381,7 +381,7 @@ const DocumentSigningFlow = () => {
                     <p className="font-semibold text-gray-700">
                       Ready to sign this document?
                     </p>
-                    <p className="text-sm text-gray-500 mt-1">
+                    <p className="md:text-sm xs:text-[10px] text-center text-gray-500 mt-1">
                       Review all pages carefully before you proceed.
                     </p>
                   </div>

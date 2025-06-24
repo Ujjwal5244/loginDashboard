@@ -121,33 +121,33 @@ const Generatefile = () => {
 
 
   return (
-    <div className="font-sans py-4">
+    <div className="font-sans py-4 p-2">
       <div className="max-w-5xl mx-auto">
         {/* Simplified Progress Bar */}
-        <div className="flex items-center justify-center gap-2 mb-8">
+        <div className="flex items-center justify-center gap-2 mb-8 ">
           <div className="flex items-center gap-1">
-            <span className="bg-[#2c5fa5] text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">
+            <span className="bg-[#2c5fa5] text-white rounded-full md:w-6 md:h-6 xs:w-4 xs:h-4 flex items-center justify-center md:text-xs xs:text-[8px] font-bold">
               1
             </span>
-            <span className="font-medium text-sm text-[#2c5fa5]">Generate</span>
+            <span className="font-medium md:text-sm xs:text-[12px] text-[#2c5fa5]">Generate</span>
           </div>
 
-          <div className="w-8 h-px bg-gray-300"></div>
+          <div className="md:w-8 xs:w-4 h-px bg-gray-300"></div>
 
           <div className="flex items-center gap-1">
-            <span className="border border-gray-400 rounded-full w-6 h-6 flex items-center justify-center text-xs">
+            <span className="border border-gray-400 rounded-full md:w-6 md:h-6 xs:w-4 xs:h-4 flex items-center justify-center md:text-xs xs:text-[8px]">
               2
             </span>
-            <span className="text-sm text-gray-500">Request</span>
+            <span className="md:text-sm xs:text-[12px] text-gray-500">Request</span>
           </div>
 
-          <div className="w-8 h-px bg-gray-300"></div>
+          <div className="md:w-8 xs:w-4 h-px bg-gray-300"></div>
 
           <div className="flex items-center gap-1">
-            <span className="border border-gray-400 rounded-full w-6 h-6 flex items-center justify-center text-xs">
+            <span className="border border-gray-400 rounded-full md:w-6 md:h-6 xs:w-4 xs:h-4 flex items-center justify-center md:text-xs xs:text-[8px]">
               3
             </span>
-            <span className="text-sm text-gray-500">Approve</span>
+            <span className="md:text-sm xs:text-[12px] text-gray-500">Approve</span>
           </div>
         </div>
 

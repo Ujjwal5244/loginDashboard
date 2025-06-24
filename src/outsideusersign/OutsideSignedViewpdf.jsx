@@ -34,7 +34,7 @@ const OutsideSignedViewpdf = () => {
   const [numPages, setNumPages] = React.useState(null);
   const [pdfUrl, setPdfUrl] = useState(null);
 
-  // --- NEW: Refs and state for responsive PDF width ---
+  // --- Refs and state for responsive PDF width ---
   const pdfContainerRef = useRef(null);
   const [pdfContainerWidth, setPdfContainerWidth] = useState(0);
 
@@ -70,9 +70,9 @@ const OutsideSignedViewpdf = () => {
     }
   }, [searchParams, navigate]);
 
-  // --- NEW: Effect to calculate responsive PDF width ---
+  // --- Effect to calculate responsive PDF width ---
   useEffect(() => {
-    const resizeObserver = new ResizeObserver(entries => {
+    const resizeObserver = new ResizeObserver((entries) => {
       if (entries[0]) {
         const { width } = entries[0].contentRect;
         // Subtract a small amount for padding/margin to prevent horizontal scrollbar
@@ -86,7 +86,9 @@ const OutsideSignedViewpdf = () => {
 
     return () => {
       if (pdfContainerRef.current) {
-        resizeObserver.unobserve(pdfContainerRef.current);
+        // Use a local variable to prevent issues during unmount
+        const ref = pdfContainerRef.current;
+        resizeObserver.unobserve(ref);
       }
     };
   }, []); // Run only once on mount
@@ -121,9 +123,7 @@ const OutsideSignedViewpdf = () => {
           });
           setAllowedSignatureTypes(inviteeData.signatureType || []);
         } else {
-          console.warn(
-            "Decryption success, but no invitee object in payload."
-          );
+          console.warn("Decryption success, but no invitee object in payload.");
           setInvitee({
             name: "Not Found",
             email: "Data missing post-decryption",
@@ -157,40 +157,62 @@ const OutsideSignedViewpdf = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-50">
+    <div className="flex flex-col min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-gradient-to-r from-[#2a5a99] to-[#3470b2] border-b text-white p-4 shadow-lg z-50 sticky top-0">
-        <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="p-2 bg-white/10 rounded-lg backdrop-blur-sm">
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                </svg>
-              </div>
-              <h1 className="text-2xl font-bold tracking-tight">Nifi <span className="font-bold text-white/80">Payments</span></h1>
+<header className="bg-gradient-to-r from-[#2a5a99] to-[#3470b2] border-b text-white p-4 shadow-lg z-50 sticky top-0">        <div className="flex items-center justify-between">
+          <div className="flex items-center md:space-x-3 xs:space-x-1">
+            <div className="md:p-2 xs:p-1 bg-white/10 rounded-lg backdrop-blur-sm">
+              <svg
+                className="md:w-6 md:h-6 xs:w-4 xs:h-4 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+                />
+              </svg>
             </div>
-            <button className="relative overflow-hidden bg-white text-[#3470b2] px-6 py-2 rounded-full font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-[#3470b2]/30 group">
-              <span className="relative z-10">Get Started</span>
-              <span className="absolute inset-0 bg-gradient-to-r from-white to-white/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 -translate-x-full group-hover:translate-x-0"></span>
-            </button>
+            <h1 className="text-xl md:text-2xl font-bold tracking-tight">
+              Nifi <span className="font-bold text-white/80">Payments</span>
+            </h1>
+          </div>
+          <button className="relative overflow-hidden bg-white text-[#3470b2] xs:px-3 xs:py-1 md:px-6 md:py-2 rounded-full font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-[#3470b2]/30 group">
+            <span className="relative z-10">Get Started</span>
+            <span className="absolute inset-0 bg-gradient-to-r from-white to-white/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 -translate-x-full group-hover:translate-x-0"></span>
+          </button>
         </div>
       </header>
-      
-      {/* CHANGED: flex-1 and overflow-hidden prevent this outer container from scrolling */}
-      <div className="flex flex-1 overflow-hidden">
-        {/* Sidebar */}
-        <aside className="w-[315px] bg-white p-5 pt-8 flex flex-col border-r border-gray-200">
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-            <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 pt-5 pb-2">Document Actions</h2>
+
+      {/* --- RESPONSIVE CHANGE: This container is now a flexbox only on medium screens and up --- */}
+      <div className="md:flex flex-1">
+        {/* --- RESPONSIVE CHANGE: Sidebar is hidden on small screens, visible as flex on medium+ --- */}
+ <aside className="hidden md:flex w-[315px] flex-shrink-0 bg-white p-5 pt-8 flex-col border-r border-gray-200">          <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 pt-5 pb-2">
+              Document Actions
+            </h2>
             <ul className="divide-y divide-gray-100">
               {sidebarItems.map((item, index) => (
                 <li key={index}>
-                  <a href="#" className={`flex items-center justify-between px-6 py-4 transition-all duration-200 ${item.active ? "bg-blue-50 text-blue-600" : "hover:bg-gray-50 text-gray-700"}`}>
+                  <a
+                    href="#"
+                    className={`flex items-center justify-between px-6 py-4 transition-all duration-200 ${item.active ? "bg-blue-50 text-blue-600" : "hover:bg-gray-50 text-gray-700"}`}
+                  >
                     <div className="flex items-center">
-                      <span className={`p-2 rounded-lg ${item.active ? "bg-blue-100 text-blue-600" : "bg-gray-100 text-gray-600"}`}>{item.icon}</span>
+                      <span
+                        className={`p-2 rounded-lg ${item.active ? "bg-blue-100 text-blue-600" : "bg-gray-100 text-gray-600"}`}
+                      >
+                        {item.icon}
+                      </span>
                       <span className="ml-4 font-medium">{item.text}</span>
                     </div>
-                    <FiChevronRight size={18} className={`${item.active ? "text-blue-400" : "text-gray-400"}`} />
+                    <FiChevronRight
+                      size={18}
+                      className={`${item.active ? "text-blue-400" : "text-gray-400"}`}
+                    />
                   </a>
                 </li>
               ))}
@@ -198,7 +220,11 @@ const OutsideSignedViewpdf = () => {
           </div>
           <div className="mt-auto pt-6 p-4">
             <div className="flex items-center p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-100">
-              <img src={`https://i.pravatar.cc/150?u=${invitee.email}`} alt="User Profile" className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm" />
+              <img
+                src={`https://i.pravatar.cc/150?u=${invitee.email}`}
+                alt="User Profile"
+                className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm"
+              />
               <div className="ml-3">
                 <p className="font-semibold text-gray-800">{invitee.name}</p>
                 <p className="text-xs text-gray-500">{invitee.email}</p>
@@ -207,19 +233,27 @@ const OutsideSignedViewpdf = () => {
           </div>
         </aside>
 
-        {/* --- RESTRUCTURED: Main Content --- */}
-        {/* CHANGED: flex-1 and overflow-hidden prevent this main area from scrolling itself */}
-        <main className="flex-1 p-6 overflow-hidden bg-gray-50">
-          {/* CHANGED: This card now uses flexbox to structure its content and fills the available height */}
-          <div className="max-w-5xl w-full h-full mx-auto bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col">
-            <h1 className="text-2xl font-bold mb-4 text-gray-800 flex-shrink-0">
-              Signed Document
-            </h1>
+        {/* Main Content */}
+       <main className="flex-1 p-2 md:p-3 bg-gray-50 overflow-auto">
+          <div className="max-w-5xl mx-auto p-2 sm:p-4 md:p-6 rounded-xl">
+            {/* Header section */}
+            <div className="flex flex-col sm:flex-row  sm:items-center justify-between mb-4 gap-4">
+              <h1 className="text-xl font-bold text-center text-gray-800">Signed Document</h1>
+              <button
+                onClick={handleDownload}
+                disabled={!pdfUrl}
+                className="w-full sm:w-auto text-gray-600 px-6 py-3 font-medium transition-all duration-300 active:scale-95 flex items-center justify-center space-x-2 disabled:bg-gray-400 disabled:cursor-not-allowed border rounded-lg hover:bg-gray-100"
+              >
+                <FiDownload size={18} />
+                <span>Download Document</span>
+              </button>
+            </div>
 
-            {/* --- RESTRUCTURED: PDF Viewer Section --- */}
-            {/* CHANGED: This container now grows to fill space (flex-1) and scrolls internally. */}
-            {/* The `min-h-0` is a flexbox fix to ensure it can shrink properly. */}
-            <div ref={pdfContainerRef} className="flex-1 min-h-0 border rounded-lg shadow-inner bg-gray-100 overflow-y-auto">
+            {/* PDF Container - Fixed scrolling */}
+            <div
+              ref={pdfContainerRef}
+              className="border rounded-lg shadow-inner bg-gray-100 min-h-[300px] md:max-h-[calc(100vh-350px)] xs:max-h-[calc(100vh-380px)] overflow-y-auto"
+            >
               {pdfUrl && pdfContainerWidth > 0 ? (
                 <Document
                   file={pdfUrl}
@@ -234,19 +268,19 @@ const OutsideSignedViewpdf = () => {
                       Failed to load PDF. Please check the URL.
                     </div>
                   }
-                  className="flex flex-col items-center py-4" // Centering pages
                 >
                   {Array.from(new Array(numPages), (el, index) => (
-                    <Page
-                      key={`page_${index + 1}`}
-                      pageNumber={index + 1}
-                      width={pdfContainerWidth} // <-- CHANGED: Using responsive width
-                      className="my-2 shadow-md"
-                    />
+                    <div key={`page_${index + 1}`} className="flex justify-center my-4">
+                      <Page
+                        pageNumber={index + 1}
+                        width={pdfContainerWidth}
+                        className="shadow-md"
+                      />
+                    </div>
                   ))}
                 </Document>
               ) : (
-                <div className="flex justify-center items-center h-full">
+                <div className="flex justify-center items-center h-full py-20">
                   <p className="text-gray-500">
                     {pdfUrl ? "Calculating viewer size..." : "Waiting for document URL..."}
                   </p>
@@ -254,23 +288,22 @@ const OutsideSignedViewpdf = () => {
               )}
             </div>
 
-            {/* Action Section */}
-            <div className="mt-6 pt-6 border-t border-gray-200 flex justify-between items-center flex-shrink-0">
-              <div>
-                <p className="font-semibold text-gray-700">
+            {/* Footer section */}
+            <div className="mt-6 pt-6 border-t border-gray-200 flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4">
+              <div className="text-center sm:text-left">
+                <p className="font-semibold md:text-[17px] xs:text-[12px] text-gray-700">
                   This document has been successfully signed.
                 </p>
-                <p className="text-sm text-gray-500 mt-1">
+                <p className="md:text-[13px] xs:text-[12px] text-gray-500 mt-1">
                   You can now download the final version for your records.
                 </p>
               </div>
               <button
-                onClick={handleDownload}
+                onClick={() => navigate("/")}
                 disabled={!pdfUrl}
-                className="bg-green-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-700 transition-all duration-300 shadow-md hover:shadow-lg active:scale-95 flex items-center space-x-2 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                className="bg-green-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-700 transition-all duration-300 shadow-md hover:shadow-lg active:scale-95 flex items-center justify-center space-x-2 disabled:bg-gray-400 disabled:cursor-not-allowed"
               >
-                <FiDownload size={18} />
-                <span>Download Document</span>
+                <span>Finish</span>
               </button>
             </div>
           </div>

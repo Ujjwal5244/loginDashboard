@@ -420,11 +420,11 @@ const handleVerify = async () => {
 
           {/* Main Content */}
           <main
-            className={`flex-1 md:p-10 xs:p-1 xs:pt-6 bg-gray-50 flex flex-col overflow-hidden ${
+            className={`flex-1 md:p-10 xs:p-1 xs:pt-16 bg-gray-50 flex flex-col overflow-hidden ${
               showSidebar && windowWidth < 700 ? "ml-0" : ""
             }`}
           >
-            <div className="max-w-xl mx-auto bg-white p-6 sm:p-8 xs:p-3 rounded-xl shadow-sm border border-gray-100 relative">
+            <div className="md:max-w-xl xs:max-w-full mx-auto bg-white p-6 sm:p-8 xs:p-3 rounded-xl shadow-sm border border-gray-100 relative">
               {verificationSuccess && (
                 <div className="absolute inset-0 bg-white/90 backdrop-blur-sm flex flex-col items-center justify-center rounded-xl z-10 animate-fadeIn">
                   <div className="w-16 h-16 sm:w-20 sm:h-20 bg-green-100 rounded-full flex items-center justify-center mb-4 animate-bounce">
@@ -450,21 +450,21 @@ const handleVerify = async () => {
                   </p>
                 </div>
               )}
-              <div className="text-center mb-6 sm:mb-8">
-                <div className="w-14 h-14 sm:w-16 sm:h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <ShieldCheckIcon className="text-blue-600 w-7 h-7" />
-                </div>
-                <h1 className="text-xl sm:text-2xl font-bold mb-2 bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">
+              <div className="text-center md:mb-6 xs:mb-5">
+                <div className="p-1 gap-2 bg-blue-100 rounded-full flex items-center mb-7 justify-center">
+                  <ShieldCheckIcon className="text-blue-600 w-7 h-7" /> 
+                <h1 className="text-xl sm:text-2xl font-bold  bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">
                   Verify Your Identity
                 </h1>
-                <p className="text-gray-600 text-sm sm:text-base">
+                </div>
+                <p className="text-gray-600 md:text-sm xs:text-xs sm:text-base">
                   We've sent a 6-digit verification code to your email <br />
                   <span className="font-semibold text-gray-700">{email}</span>
                 </p>
               </div>
 
-              <div className="mb-6">
-                <div className="flex justify-between items-center mb-2">
+              <div className="md:mb-6 xs:mb-1">
+                <div className="flex justify-between items-center md:mb-2 xs:mb-1">
                   <label className="block text-sm font-medium text-gray-700">
                     Enter Verification Code
                   </label>
@@ -483,7 +483,7 @@ const handleVerify = async () => {
                     )}
                   </button>
                 </div>
-                <div className="flex justify-center space-x-2 sm:space-x-3">
+                <div className="flex justify-center md:space-x-2 xs:space-x-1">
                   {otp.map((data, index) => (
                     <input
                       key={index}
@@ -493,7 +493,7 @@ const handleVerify = async () => {
                       onChange={(e) => handleOtpChange(e.target, index)}
                       onKeyDown={(e) => handleKeyDown(e, index)}
                       onFocus={(e) => e.target.select()}
-                      className="w-12 h-12 sm:w-12 sm:h-12 md:w-14 md:h-14 border border-gray-300 rounded-lg text-center text-lg sm:text-xl font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 hover:border-blue-300"
+                      className="w-12 h-12 xs:w-8 xs:h-10 md:w-14 md:h-14  border border-gray-300 rounded-lg text-center text-lg sm:text-xl font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 hover:border-blue-300"
                     />
                   ))}
                 </div>

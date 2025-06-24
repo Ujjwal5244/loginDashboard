@@ -457,35 +457,35 @@ const Requestfile = () => {
   };
 
   return (
-    <div className="font-sans py-4">
+    <div className="font-sans py-4 p-2">
       <div className="max-w-5xl mx-auto">
         {/* Progress Bar */}
         <div className="flex items-center justify-center gap-2 mb-8">
           <div className="flex items-center gap-1">
-            <span className="border border-gray-400 rounded-full w-6 h-6 flex items-center justify-center text-xs">
+            <span className="border border-gray-400 rounded-full md:w-6 md:h-6 xs:w-4 xs:h-4 flex items-center justify-center md:text-xs xs:text-[8px]">
               1
             </span>
-            <span className="text-sm text-gray-500">Generate</span>
+            <span className="md:text-sm xs:text-[12px] text-gray-500">Generate</span>
           </div>
-          <div className="w-8 h-px bg-gray-300"></div>
+          <div className="md:w-8 xs:w-4 h-px bg-gray-300"></div>
           <div className="flex items-center gap-1">
-            <span className="bg-[#2c5fa5] text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">
+            <span className="bg-[#2c5fa5] text-white rounded-full md:w-6 md:h-6 xs:w-4 xs:h-4 flex items-center justify-center md:text-xs xs:text-[8px] font-bold">
               2
             </span>
-            <span className=" font-medium text-sm text-[#2c5fa5]">Request</span>
+            <span className=" font-medium md:text-sm xs:text-[12px] text-[#2c5fa5]">Request</span>
           </div>
-          <div className="w-8 h-px bg-gray-300"></div>
+          <div className="md:w-8 xs:w-4 h-px bg-gray-300"></div>
           <div className="flex items-center gap-1">
-            <span className="border border-gray-400 rounded-full w-6 h-6 flex items-center justify-center text-xs">
+            <span className="border border-gray-400 rounded-full md:w-6 md:h-6 xs:w-4 xs:h-4 flex items-center justify-center md:text-xs xs:text-[8px]">
               3
             </span>
-            <span className="text-sm text-gray-500">Approve</span>
+            <span className="md:text-sm xs:text-[12px] text-gray-500">Approve</span>
           </div>
         </div>
 
-        <div className="shadow-md border border-gray-200 rounded-xl p-6">
+        <div className="shadow-md border border-gray-200 rounded-xl md:p-6 xs:p-3 xs:py-6">
           <div className="text-center mb-6">
-            <h1 className="text-2xl font-bold text-[#3470b2] mb-1">
+            <h1 className="md:text-2xl xs:text-xl font-bold text-[#3470b2] mb-1">
               Document Signing Invitation
             </h1>
             <p className="text-gray-500 text-sm">
@@ -494,9 +494,9 @@ const Requestfile = () => {
           </div>
 
           <div className="flex justify-center mb-6">
-            <div className="flex items-center space-x-3 bg-white shadow-sm rounded-full px-4 py-2 border border-gray-200">
-              <span className="text-xs text-gray-700 font-medium">
-                Fixed signing order
+            <div className="flex items-center space-x-3 bg-white shadow-sm rounded-full md:px-4 xs:px-4 py-2 border border-gray-200">
+              <span className="md:text-xs xs:text-[11px] text-gray-700 font-medium">
+                Fixed sign order
               </span>
               <label className="inline-flex items-center cursor-pointer">
                 <input
@@ -512,7 +512,7 @@ const Requestfile = () => {
                 </div>
               </label>
               <div className="h-4 w-px bg-gray-300"></div>
-              <span className="text-xs text-gray-700 font-medium">
+              <span className="md:text-xs xs:text-[11px] text-gray-700 font-medium">
                 I will sign this document
               </span>
               <label className="inline-flex items-center cursor-pointer">
@@ -542,7 +542,7 @@ const Requestfile = () => {
                   {isFixedOrder ? (
                     <div className="flex items-center space-x-2">
                       <span
-                        className="bg-[#3470b2] text-white rounded-full w-7 h-7 flex items-center justify-center text-xs font-bold shrink-0"
+                        className="bg-[#3470b2] text-white rounded-full md:w-7 md:h-7 xs:w-5 xs:h-5 flex items-center justify-center md:text-xs xs:text-[10px] font-bold shrink-0"
                         title={`Signing Order: ${invitee.rank}`}
                       >
                         {invitee.rank}
@@ -610,7 +610,7 @@ const Requestfile = () => {
                   )}
 
                   <h2
-                    className="text-sm font-semibold text-gray-800 flex-grow truncate"
+                    className="md:text-sm xs:text-[12px] font-semibold text-gray-800 flex-grow truncate"
                     title={invitee.name || "New Invitee"}
                   >
                     {invitee.name || "New Invitee"}
@@ -626,7 +626,7 @@ const Requestfile = () => {
                       <button
                         onClick={() => toggleOptions(invitee.id)}
                         data-toggles-options={String(invitee.id)}
-                        className="p-2 hover:bg-gray-100 rounded-full flex items-center text-sm gap-1 transition-colors"
+                        className="md:p-2 xs:p-2  hover:bg-blue-100 bg-blue-50 rounded-full flex items-center md:text-sm xs:text-[10px] gap-1 transition-colors"
                       >
                         Signature Types
                         <HiDotsVertical className="text-gray-500 hover:text-gray-700 text-sm" />
@@ -705,7 +705,7 @@ const Requestfile = () => {
                       htmlFor={`contact-${invitee.id}`}
                       className="block text-xs font-medium text-gray-700 mb-1"
                     >
-                      Contact (Email)
+                      Contact / Email
                     </label>
                     <div className="relative">
                       <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm">
