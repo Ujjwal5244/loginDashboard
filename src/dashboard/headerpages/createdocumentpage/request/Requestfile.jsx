@@ -386,8 +386,7 @@ const Requestfile = () => {
           longitude: location.longitude,
         },
       };
-
-      const payloadString = JSON.stringify(payloadData);
+      const payloadString = payloadData;
       const encryptedPayload = await encryptText(payloadString);
 
       const response = await axios.post(
@@ -640,96 +639,103 @@ const Requestfile = () => {
                         </div>
 
                         {showOptions[String(invitee.id)] && (
-                           <div
-                           ref={(el) =>
-                             (dropdownRefs.current[String(invitee.id)] = el)
-                           }
-                           className="absolute z-20 right-0 mt-1 w-64 bg-white shadow-lg border border-gray-200 rounded-lg overflow-hidden"
-                         >
-                           <div className="p-3 border-b border-gray-100 bg-gray-50">
-                             <h3 className="font-semibold text-sm text-gray-800">
-                               Select Signing Method
-                             </h3>
-                             <p className="text-xs text-gray-500 mt-1">
-                               Choose how {invitee.name || "this person"} will sign
-                             </p>
-                           </div>
-                           <div className="p-1">
-                             {methods.map((method) => (
-                               <button
-                                 key={method.id}
-                                 onClick={() => toggleMethod(method.id)}
-                                 className={`flex items-center w-full p-2 rounded-md mb-1 text-sm ${selectedMethods.includes(method.id) ? "bg-blue-50 text-blue-700" : "hover:bg-gray-50 text-gray-700"}`}
-                               >
-                                 <div
-                                   className={`flex items-center justify-center w-6 h-6 rounded-full mr-2.5 ${selectedMethods.includes(method.id) ? "bg-blue-100" : "bg-gray-100"}`}
-                                 >
-                                   {method.icon}
-                                 </div>
-                                 <span className="font-medium">{method.name}</span>
-                                 {selectedMethods.includes(method.id) && (
-                                   <FaCheck className="ml-auto text-green-500 text-xs" />
-                                 )}
-                               </button>
-                             ))}
-                           </div>
-                           <div className="p-2 bg-gray-50 border-t border-gray-200 flex justify-end">
-                             <button
-                               onClick={() => handleSubmit(invitee.id)}
-                               className="px-3 py-1.5 bg-[#3470b2] text-white rounded-md text-xs font-medium hover:bg-[#2c5fa5] transition-colors disabled:opacity-50"
-                               disabled={selectedMethods.length === 0}
-                             >
-                               Confirm Methods
-                             </button>
-                           </div>
-                         </div>
+                          <div
+                            ref={(el) =>
+                              (dropdownRefs.current[String(invitee.id)] = el)
+                            }
+                            className="absolute z-20 right-0 mt-1 w-64 bg-white shadow-lg border border-gray-200 rounded-lg overflow-hidden"
+                          >
+                            <div className="p-3 border-b border-gray-100 bg-gray-50">
+                              <h3 className="font-semibold text-sm text-gray-800">
+                                Select Signing Method
+                              </h3>
+                              <p className="text-xs text-gray-500 mt-1">
+                                Choose how {invitee.name || "this person"} will
+                                sign
+                              </p>
+                            </div>
+                            <div className="p-1">
+                              {methods.map((method) => (
+                                <button
+                                  key={method.id}
+                                  onClick={() => toggleMethod(method.id)}
+                                  className={`flex items-center w-full p-2 rounded-md mb-1 text-sm ${selectedMethods.includes(method.id) ? "bg-blue-50 text-blue-700" : "hover:bg-gray-50 text-gray-700"}`}
+                                >
+                                  <div
+                                    className={`flex items-center justify-center w-6 h-6 rounded-full mr-2.5 ${selectedMethods.includes(method.id) ? "bg-blue-100" : "bg-gray-100"}`}
+                                  >
+                                    {method.icon}
+                                  </div>
+                                  <span className="font-medium">
+                                    {method.name}
+                                  </span>
+                                  {selectedMethods.includes(method.id) && (
+                                    <FaCheck className="ml-auto text-green-500 text-xs" />
+                                  )}
+                                </button>
+                              ))}
+                            </div>
+                            <div className="p-2 bg-gray-50 border-t border-gray-200 flex justify-end">
+                              <button
+                                onClick={() => handleSubmit(invitee.id)}
+                                className="px-3 py-1.5 bg-[#3470b2] text-white rounded-md text-xs font-medium hover:bg-[#2c5fa5] transition-colors disabled:opacity-50"
+                                disabled={selectedMethods.length === 0}
+                              >
+                                Confirm Methods
+                              </button>
+                            </div>
+                          </div>
                         )}
                       </div>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                    <label
-                      htmlFor={`name-${invitee.id}`}
-                      className="block text-xs font-medium text-gray-700 mb-1"
-                    >
-                      Full Name
-                    </label>
-                    <input
-                      id={`name-${invitee.id}`}
-                      type="text"
-                      value={invitee.name}
-                      onChange={(e) =>
-                        updateInvitee(invitee.id, "name", e.target.value)
-                      }
-                      disabled={invitee.isSelf}
-                      className="block w-full px-3 py-1.5 border border-gray-300 rounded-md shadow-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm disabled:bg-gray-100 disabled:cursor-not-allowed"
-                      placeholder="Enter full name"
-                    />
-                  </div>
-                  <div>
-                    <label
-                      htmlFor={`contact-${invitee.id}`}
-                      className="block text-xs font-medium text-gray-700 mb-1"
-                    >
-                      Contact / Email
-                    </label>
-                    <div className="relative">
-                      <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm">
-                        <FaEnvelope />
-                      </span>
-                      <input
-                        id={`contact-${invitee.id}`}
-                        type="email"
-                        value={invitee.contact}
-                        onChange={(e) =>
-                          updateInvitee(invitee.id, "contact", e.target.value)
-                        }
-                        disabled={invitee.isSelf}
-                        className="pl-8 block w-full px-3 py-1.5 border border-gray-300 rounded-md shadow-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm disabled:bg-gray-100 disabled:cursor-not-allowed"
-                        placeholder="email@example.com"
-                      />
-                    </div>
-                  </div>
+                      <div>
+                        <label
+                          htmlFor={`name-${invitee.id}`}
+                          className="block text-xs font-medium text-gray-700 mb-1"
+                        >
+                          Full Name
+                        </label>
+                        <input
+                          id={`name-${invitee.id}`}
+                          type="text"
+                          value={invitee.name}
+                          onChange={(e) =>
+                            updateInvitee(invitee.id, "name", e.target.value)
+                          }
+                          disabled={invitee.isSelf}
+                          className="block w-full px-3 py-1.5 border border-gray-300 rounded-md shadow-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm disabled:bg-gray-100 disabled:cursor-not-allowed"
+                          placeholder="Enter full name"
+                        />
+                      </div>
+                      <div>
+                        <label
+                          htmlFor={`contact-${invitee.id}`}
+                          className="block text-xs font-medium text-gray-700 mb-1"
+                        >
+                          Contact / Email
+                        </label>
+                        <div className="relative">
+                          <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm">
+                            <FaEnvelope />
+                          </span>
+                          <input
+                            id={`contact-${invitee.id}`}
+                            type="email"
+                            value={invitee.contact}
+                            onChange={(e) =>
+                              updateInvitee(
+                                invitee.id,
+                                "contact",
+                                e.target.value
+                              )
+                            }
+                            disabled={invitee.isSelf}
+                            className="pl-8 block w-full px-3 py-1.5 border border-gray-300 rounded-md shadow-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm disabled:bg-gray-100 disabled:cursor-not-allowed"
+                            placeholder="email@example.com"
+                          />
+                        </div>
+                      </div>
                     </div>
                     <div className="flex justify-end  mt-3">
                       {!invitee.isSelf && (
