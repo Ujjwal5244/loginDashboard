@@ -10,13 +10,13 @@ import {
   FaIdCard,
   FaSortNumericDown,
 } from "react-icons/fa";
-import { MdDelete } from "react-icons/md";
-import { IoSettings } from "react-icons/io5";
+import { MdDelete, MdOutlineSecurity } from "react-icons/md";
 import { HiDotsVertical } from "react-icons/hi";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { baseUrl, decryptText, encryptText } from "../../../../encryptDecrypt";
 import axios from "axios";
+import SidebarRequestfile from "./SidebarRequestfile";
 
 const Requestfile = () => {
   const { documentId } = useParams();
@@ -36,6 +36,11 @@ const Requestfile = () => {
   const navigate = useNavigate();
 
   const [location, setLocation] = useState(null);
+
+  // State to control the sidebar visibility
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const openSidebar = () => setSidebarOpen(true);
+  const closeSidebar = () => setSidebarOpen(false);
 
   const methods = [
     {
@@ -114,7 +119,7 @@ const Requestfile = () => {
     };
 
     fetchProfile();
-  }, [token]);
+  }, [token, iWillSign]); // Re-fetch or re-evaluate if iWillSign changes
 
   const toggleOptions = (inviteeId) => {
     const invitee = invitees.find((inv) => inv.id === inviteeId);
@@ -324,7 +329,6 @@ const Requestfile = () => {
     return invitees;
   }, [invitees, isFixedOrder]);
 
-  // ____________________________api calling of invitees____________________________
   const handleNext = async () => {
     if (!documentId) {
       toast.error("Document ID is missing. Cannot proceed.");
@@ -364,7 +368,6 @@ const Requestfile = () => {
     setIsLoading(true);
 
     try {
-      // Create the payload object
       const payloadData = {
         invitees: invitees.map((invitee) => ({
           name: invitee.name,
@@ -384,12 +387,7 @@ const Requestfile = () => {
         },
       };
 
-      console.log("Payload data:", payloadData);
-
-      // Stringify the payload object
-      const payloadString = payloadData;
-
-      // Encrypt the stringified payload
+      const payloadString = JSON.stringify(payloadData);
       const encryptedPayload = await encryptText(payloadString);
 
       const response = await axios.post(
@@ -406,7 +404,6 @@ const Requestfile = () => {
       if (response.data) {
         try {
           const decryptedResponse = await decryptText(response.data.body);
-          console.log("Decrypted response:", decryptedResponse);
           const responseData = JSON.parse(decryptedResponse);
 
           if (response.status === 200 || response.status === 201) {
@@ -420,7 +417,7 @@ const Requestfile = () => {
         } catch (decryptError) {
           console.error("Failed to decrypt response:", decryptError);
           toast.error("Failed to process server response");
-        } 
+        }
       } else {
         toast.error("No data received from server");
       }
@@ -457,231 +454,240 @@ const Requestfile = () => {
   };
 
   return (
-    <div className="font-sans py-4 p-2">
-      <div className="max-w-5xl mx-auto">
-        {/* Progress Bar */}
-        <div className="flex items-center justify-center gap-2 mb-8">
-          <div className="flex items-center gap-1">
-            <span className="border border-gray-400 rounded-full md:w-6 md:h-6 xs:w-4 xs:h-4 flex items-center justify-center md:text-xs xs:text-[8px]">
-              1
-            </span>
-            <span className="md:text-sm xs:text-[12px] text-gray-500">Generate</span>
-          </div>
-          <div className="md:w-8 xs:w-4 h-px bg-gray-300"></div>
-          <div className="flex items-center gap-1">
-            <span className="bg-[#2c5fa5] text-white rounded-full md:w-6 md:h-6 xs:w-4 xs:h-4 flex items-center justify-center md:text-xs xs:text-[8px] font-bold">
-              2
-            </span>
-            <span className=" font-medium md:text-sm xs:text-[12px] text-[#2c5fa5]">Request</span>
-          </div>
-          <div className="md:w-8 xs:w-4 h-px bg-gray-300"></div>
-          <div className="flex items-center gap-1">
-            <span className="border border-gray-400 rounded-full md:w-6 md:h-6 xs:w-4 xs:h-4 flex items-center justify-center md:text-xs xs:text-[8px]">
-              3
-            </span>
-            <span className="md:text-sm xs:text-[12px] text-gray-500">Approve</span>
-          </div>
-        </div>
-
-        <div className="shadow-md border border-gray-200 rounded-xl md:p-6 xs:p-3 xs:py-6">
-          <div className="text-center mb-6">
-            <h1 className="md:text-2xl xs:text-xl font-bold text-[#3470b2] mb-1">
-              Document Signing Invitation
-            </h1>
-            <p className="text-gray-500 text-sm">
-              Add signers and reviewers below
-            </p>
-          </div>
-
-          <div className="flex justify-center mb-6">
-            <div className="flex items-center space-x-3 bg-white shadow-sm rounded-full md:px-4 xs:px-4 py-2 border border-gray-200">
-              <span className="md:text-xs xs:text-[11px] text-gray-700 font-medium">
-                Fixed sign order
-              </span>
-              <label className="inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  className="sr-only peer"
-                  checked={isFixedOrder}
-                  onChange={handleFixedOrderToggle}
-                />
-                <div className="relative w-9 h-5 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer peer-checked:bg-green-500 transition-all">
-                  <div
-                    className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform ${isFixedOrder ? "translate-x-4" : ""}`}
-                  ></div>
-                </div>
-              </label>
-              <div className="h-4 w-px bg-gray-300"></div>
-              <span className="md:text-xs xs:text-[11px] text-gray-700 font-medium">
-                I will sign this document
-              </span>
-              <label className="inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  className="sr-only peer"
-                  checked={iWillSign}
-                  onChange={handleIWillSignToggle}
-                  disabled={!selfSignerInfo}
-                />
-                <div className="relative w-9 h-5 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer peer-checked:bg-green-500 transition-all">
-                  <div
-                    className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform ${iWillSign ? "translate-x-4" : ""}`}
-                  ></div>
-                </div>
-              </label>
+    <div className="flex h-[100%] bg-white">
+      {/* Main Content Pane */}
+      <main className="flex-grow overflow-y-auto">
+        <div className="font-sans py-4 p-2">
+          <div className="max-w-5xl mx-auto">
+            {/* Progress Bar */}
+            <div className="flex items-center justify-center gap-2 mb-8">
+              <div className="flex items-center gap-1">
+                <span className="border border-gray-400 rounded-full md:w-6 md:h-6 xs:w-4 xs:h-4 flex items-center justify-center md:text-xs xs:text-[8px]">
+                  1
+                </span>
+                <span className="md:text-sm xs:text-[12px] text-gray-500">
+                  Generate
+                </span>
+              </div>
+              <div className="md:w-8 xs:w-4 h-px bg-gray-300"></div>
+              <div className="flex items-center gap-1">
+                <span className="bg-[#2c5fa5] text-white rounded-full md:w-6 md:h-6 xs:w-4 xs:h-4 flex items-center justify-center md:text-xs xs:text-[8px] font-bold">
+                  2
+                </span>
+                <span className=" font-medium md:text-sm xs:text-[12px] text-[#2c5fa5]">
+                  Request
+                </span>
+              </div>
+              <div className="md:w-8 xs:w-4 h-px bg-gray-300"></div>
+              <div className="flex items-center gap-1">
+                <span className="border border-gray-400 rounded-full md:w-6 md:h-6 xs:w-4 xs:h-4 flex items-center justify-center md:text-xs xs:text-[8px]">
+                  3
+                </span>
+                <span className="md:text-sm xs:text-[12px] text-gray-500">
+                  Approve
+                </span>
+              </div>
             </div>
-          </div>
 
-          <div className="space-y-3">
-            {inviteesToDisplay.map((invitee) => (
-              <div
-                key={invitee.id}
-                className="bg-white p-4 shadow-sm rounded-lg border border-gray-100 transition-all hover:shadow-md"
-              >
-                <div className="flex items-center space-x-2 mb-3">
-                  {isFixedOrder ? (
-                    <div className="flex items-center space-x-2">
-                      <span
-                        className="bg-[#3470b2] text-white rounded-full md:w-7 md:h-7 xs:w-5 xs:h-5 flex items-center justify-center md:text-xs xs:text-[10px] font-bold shrink-0"
-                        title={`Signing Order: ${invitee.rank}`}
-                      >
-                        {invitee.rank}
-                      </span>
-                      <div className="relative">
-                        <button
-                          onClick={() => toggleRankSelector(invitee.id)}
-                          data-toggles-rank-selector={String(invitee.id)}
-                          className="p-1 hover:bg-gray-100 rounded-full transition-colors"
-                          title="Change signing order"
-                          disabled={invitees.length <= 1}
-                        >
-                          <FaSortNumericDown
-                            className={`text-gray-500 hover:text-gray-700 text-sm ${invitees.length <= 1 ? "opacity-50 cursor-not-allowed" : ""}`}
-                          />
-                        </button>
+            <div className="shadow-md border border-gray-200 rounded-xl md:p-6 xs:p-3 xs:py-6 bg-white">
+              <div className="text-center mb-6">
+                <h1 className="md:text-2xl xs:text-xl font-bold text-[#3470b2] mb-1">
+                  Document Signing Invitation
+                </h1>
+                <p className="text-gray-500 text-sm">
+                  Add signers and reviewers below
+                </p>
+              </div>
 
-                        {showRankSelector[String(invitee.id)] &&
-                          invitees.length > 1 && (
-                            <div
-                              ref={(el) =>
-                                (rankSelectorContainerRefs.current[
-                                  String(invitee.id)
-                                ] = el)
-                              }
-                              className="absolute z-20 top-full left-1/2 -translate-x-1/2 mt-1 bg-white border border-gray-300 rounded-md shadow-lg p-1 w-max min-w-[50px]"
-                            >
-                              <select
-                                title={`Set signing order for ${invitee.name || "this invitee"}`}
-                                value={invitee.rank || ""}
-                                onChange={(e) => {
-                                  updateInviteeRank(
-                                    invitee.id,
-                                    parseInt(e.target.value)
-                                  );
-                                  setShowRankSelector((prev) => ({
-                                    ...prev,
-                                    [String(invitee.id)]: false,
-                                  }));
-                                }}
-                                size={Math.min(5, invitees.length)}
-                                className="block w-full text-xs bg-white rounded-sm focus:outline-none appearance-none text-center"
-                              >
-                                {Array.from(
-                                  { length: invitees.length },
-                                  (_, i) => i + 1
-                                ).map((rankValue) => (
-                                  <option
-                                    key={rankValue}
-                                    value={rankValue}
-                                    className="py-1 px-3"
-                                  >
-                                    {rankValue}
-                                  </option>
-                                ))}
-                              </select>
-                            </div>
-                          )}
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="bg-gray-300 text-gray-700 rounded-full w-7 h-7 flex items-center justify-center text-xs font-bold shrink-0">
-                      •
-                    </div>
-                  )}
-
-                  <h2
-                    className="md:text-sm xs:text-[12px] font-semibold text-gray-800 flex-grow truncate"
-                    title={invitee.name || "New Invitee"}
-                  >
-                    {invitee.name || "New Invitee"}
-                  </h2>
-                  <div className="relative inline-block text-left">
-                    <div className="flex items-center gap-1">
-                      {invitee.signatureTypes?.length > 0 && (
-                        <FaCheck
-                          title="Methods Confirmed"
-                          className="text-green-500"
-                        />
-                      )}
-                      <button
-                        onClick={() => toggleOptions(invitee.id)}
-                        data-toggles-options={String(invitee.id)}
-                        className="md:p-2 xs:p-2  hover:bg-blue-100 bg-blue-50 rounded-full flex items-center md:text-sm xs:text-[10px] gap-1 transition-colors"
-                      >
-                        Signature Types
-                        <HiDotsVertical className="text-gray-500 hover:text-gray-700 text-sm" />
-                      </button>
-                    </div>
-
-                    {showOptions[String(invitee.id)] && (
+              <div className="flex justify-center mb-6">
+                <div className="flex items-center space-x-3 bg-white shadow-sm rounded-full md:px-4 xs:px-4 py-2 border border-gray-200">
+                  <span className="md:text-xs xs:text-[11px] text-gray-700 font-medium">
+                    Fixed sign order
+                  </span>
+                  <label className="inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      className="sr-only peer"
+                      checked={isFixedOrder}
+                      onChange={handleFixedOrderToggle}
+                    />
+                    <div className="relative w-9 h-5 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer peer-checked:bg-green-500 transition-all">
                       <div
-                        ref={(el) =>
-                          (dropdownRefs.current[String(invitee.id)] = el)
-                        }
-                        className="absolute z-20 right-0 mt-1 w-64 bg-white shadow-lg border border-gray-200 rounded-lg overflow-hidden"
-                      >
-                        <div className="p-3 border-b border-gray-100 bg-gray-50">
-                          <h3 className="font-semibold text-sm text-gray-800">
-                            Select Signing Method
-                          </h3>
-                          <p className="text-xs text-gray-500 mt-1">
-                            Choose how {invitee.name || "this person"} will sign
-                          </p>
-                        </div>
-                        <div className="p-1">
-                          {methods.map((method) => (
-                            <button
-                              key={method.id}
-                              onClick={() => toggleMethod(method.id)}
-                              className={`flex items-center w-full p-2 rounded-md mb-1 text-sm ${selectedMethods.includes(method.id) ? "bg-blue-50 text-blue-700" : "hover:bg-gray-50 text-gray-700"}`}
-                            >
-                              <div
-                                className={`flex items-center justify-center w-6 h-6 rounded-full mr-2.5 ${selectedMethods.includes(method.id) ? "bg-blue-100" : "bg-gray-100"}`}
-                              >
-                                {method.icon}
-                              </div>
-                              <span className="font-medium">{method.name}</span>
-                              {selectedMethods.includes(method.id) && (
-                                <FaCheck className="ml-auto text-green-500 text-xs" />
-                              )}
-                            </button>
-                          ))}
-                        </div>
-                        <div className="p-2 bg-gray-50 border-t border-gray-200 flex justify-end">
-                          <button
-                            onClick={() => handleSubmit(invitee.id)}
-                            className="px-3 py-1.5 bg-[#3470b2] text-white rounded-md text-xs font-medium hover:bg-[#2c5fa5] transition-colors disabled:opacity-50"
-                            disabled={selectedMethods.length === 0}
+                        className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform ${isFixedOrder ? "translate-x-4" : ""}`}
+                      ></div>
+                    </div>
+                  </label>
+                  <div className="h-4 w-px bg-gray-300"></div>
+                  <span className="md:text-xs xs:text-[11px] text-gray-700 font-medium">
+                    I will sign this document
+                  </span>
+                  <label className="inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      className="sr-only peer"
+                      checked={iWillSign}
+                      onChange={handleIWillSignToggle}
+                      disabled={!selfSignerInfo}
+                    />
+                    <div className="relative w-9 h-5 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer peer-checked:bg-green-500 transition-all">
+                      <div
+                        className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform ${iWillSign ? "translate-x-4" : ""}`}
+                      ></div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                {inviteesToDisplay.map((invitee) => (
+                  <div
+                    key={invitee.id}
+                    className="bg-white p-4 shadow-sm rounded-lg border border-gray-100 transition-all hover:shadow-md"
+                  >
+                    <div className="flex items-center space-x-2 mb-3">
+                      {isFixedOrder ? (
+                        <div className="flex items-center space-x-2">
+                          <span
+                            className="bg-[#3470b2] text-white rounded-full md:w-7 md:h-7 xs:w-5 xs:h-5 flex items-center justify-center md:text-xs xs:text-[10px] font-bold shrink-0"
+                            title={`Signing Order: ${invitee.rank}`}
                           >
-                            Confirm Methods
+                            {invitee.rank}
+                          </span>
+                          <div className="relative">
+                            <button
+                              onClick={() => toggleRankSelector(invitee.id)}
+                              data-toggles-rank-selector={String(invitee.id)}
+                              className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+                              title="Change signing order"
+                              disabled={invitees.length <= 1}
+                            >
+                              <FaSortNumericDown
+                                className={`text-gray-500 hover:text-gray-700 text-sm ${invitees.length <= 1 ? "opacity-50 cursor-not-allowed" : ""}`}
+                              />
+                            </button>
+
+                            {showRankSelector[String(invitee.id)] &&
+                              invitees.length > 1 && (
+                                <div
+                                  ref={(el) =>
+                                    (rankSelectorContainerRefs.current[
+                                      String(invitee.id)
+                                    ] = el)
+                                  }
+                                  className="absolute z-20 top-full left-1/2 -translate-x-1/2 mt-1 bg-white border border-gray-300 rounded-md shadow-lg p-1 w-max min-w-[50px]"
+                                >
+                                  <select
+                                    title={`Set signing order for ${invitee.name || "this invitee"}`}
+                                    value={invitee.rank || ""}
+                                    onChange={(e) => {
+                                      updateInviteeRank(
+                                        invitee.id,
+                                        parseInt(e.target.value)
+                                      );
+                                      setShowRankSelector((prev) => ({
+                                        ...prev,
+                                        [String(invitee.id)]: false,
+                                      }));
+                                    }}
+                                    size={Math.min(5, invitees.length)}
+                                    className="block w-full text-xs bg-white rounded-sm focus:outline-none appearance-none text-center"
+                                  >
+                                    {Array.from(
+                                      { length: invitees.length },
+                                      (_, i) => i + 1
+                                    ).map((rankValue) => (
+                                      <option
+                                        key={rankValue}
+                                        value={rankValue}
+                                        className="py-1 px-3"
+                                      >
+                                        {rankValue}
+                                      </option>
+                                    ))}
+                                  </select>
+                                </div>
+                              )}
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="bg-gray-300 text-gray-700 rounded-full w-7 h-7 flex items-center justify-center text-xs font-bold shrink-0">
+                          •
+                        </div>
+                      )}
+
+                      <h2
+                        className="md:text-sm xs:text-[12px] font-semibold text-gray-800 flex-grow truncate"
+                        title={invitee.name || "New Invitee"}
+                      >
+                        {invitee.name || "New Invitee"}
+                      </h2>
+                      <div className="relative inline-block text-left">
+                        <div className="flex items-center gap-1">
+                          {invitee.signatureTypes?.length > 0 && (
+                            <FaCheck
+                              title="Methods Confirmed"
+                              className="text-green-500"
+                            />
+                          )}
+                          <button
+                            onClick={() => toggleOptions(invitee.id)}
+                            data-toggles-options={String(invitee.id)}
+                            className="md:p-2 xs:p-2  hover:bg-blue-100 bg-blue-50 rounded-full flex items-center md:text-sm xs:text-[10px] gap-1 transition-colors"
+                          >
+                            Signature Types
+                            <HiDotsVertical className="text-gray-500 hover:text-gray-700 text-sm" />
                           </button>
                         </div>
+
+                        {showOptions[String(invitee.id)] && (
+                           <div
+                           ref={(el) =>
+                             (dropdownRefs.current[String(invitee.id)] = el)
+                           }
+                           className="absolute z-20 right-0 mt-1 w-64 bg-white shadow-lg border border-gray-200 rounded-lg overflow-hidden"
+                         >
+                           <div className="p-3 border-b border-gray-100 bg-gray-50">
+                             <h3 className="font-semibold text-sm text-gray-800">
+                               Select Signing Method
+                             </h3>
+                             <p className="text-xs text-gray-500 mt-1">
+                               Choose how {invitee.name || "this person"} will sign
+                             </p>
+                           </div>
+                           <div className="p-1">
+                             {methods.map((method) => (
+                               <button
+                                 key={method.id}
+                                 onClick={() => toggleMethod(method.id)}
+                                 className={`flex items-center w-full p-2 rounded-md mb-1 text-sm ${selectedMethods.includes(method.id) ? "bg-blue-50 text-blue-700" : "hover:bg-gray-50 text-gray-700"}`}
+                               >
+                                 <div
+                                   className={`flex items-center justify-center w-6 h-6 rounded-full mr-2.5 ${selectedMethods.includes(method.id) ? "bg-blue-100" : "bg-gray-100"}`}
+                                 >
+                                   {method.icon}
+                                 </div>
+                                 <span className="font-medium">{method.name}</span>
+                                 {selectedMethods.includes(method.id) && (
+                                   <FaCheck className="ml-auto text-green-500 text-xs" />
+                                 )}
+                               </button>
+                             ))}
+                           </div>
+                           <div className="p-2 bg-gray-50 border-t border-gray-200 flex justify-end">
+                             <button
+                               onClick={() => handleSubmit(invitee.id)}
+                               className="px-3 py-1.5 bg-[#3470b2] text-white rounded-md text-xs font-medium hover:bg-[#2c5fa5] transition-colors disabled:opacity-50"
+                               disabled={selectedMethods.length === 0}
+                             >
+                               Confirm Methods
+                             </button>
+                           </div>
+                         </div>
+                        )}
                       </div>
-                    )}
-                  </div>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
                     <label
                       htmlFor={`name-${invitee.id}`}
                       className="block text-xs font-medium text-gray-700 mb-1"
@@ -724,54 +730,75 @@ const Requestfile = () => {
                       />
                     </div>
                   </div>
-                </div>
-                <div className="flex justify-end mr-[25px] mt-3">
-                  {!invitee.isSelf && (
-                    <button
-                      onClick={() => removeInvitee(invitee.id)}
-                      className="p-2 text-red-700 hover:text-red-600 hover:bg-red-50 rounded-full transition-colors"
-                      title="Remove Invitee"
-                    >
-                      <MdDelete />
-                    </button>
-                  )}
-                  <button className="p-2 text-green-700 hover:text-blue-600 hover:bg-red-50 rounded-full transition-colors">
-                    <IoSettings />
-                  </button>
+                    </div>
+                    <div className="flex justify-end  mt-3">
+                      {!invitee.isSelf && (
+                        <button
+                          onClick={() => removeInvitee(invitee.id)}
+                          className="p-2 text-red-700 hover:text-red-600 hover:bg-red-50 rounded-full transition-colors"
+                          title="Remove Invitee"
+                        >
+                          <MdDelete />
+                        </button>
+                      )}
+                      <button
+                        onClick={openSidebar}
+                        className="flex items-center gap-1 p-1 text-green-700 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
+                        aria-label="Open Invitee Settings"
+                      >
+                        <MdOutlineSecurity size={13} />
+                        <span className="text-gray-700 text-[15px]">
+                          Security Question
+                          <span className="text-red-500"> *</span>
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+                ))}
+
+                <div
+                  onClick={addInvitee}
+                  className="cursor-pointer border-2 border-dashed border-blue-300 hover:border-blue-400 rounded-lg p-3 text-center text-[#3470b2] hover:bg-blue-50 transition-all text-sm"
+                >
+                  <div className="flex items-center justify-center space-x-1.5">
+                    <FaUserPlus className="text-[#3470b2] text-base" />
+                    <span className="font-medium">Add Another Invitee</span>
+                  </div>
                 </div>
               </div>
-            ))}
 
-            <div
-              onClick={addInvitee}
-              className="cursor-pointer border-2 border-dashed border-blue-300 hover:border-blue-400 rounded-lg p-3 text-center text-[#3470b2] hover:bg-blue-50 transition-all text-sm"
-            >
-              <div className="flex items-center justify-center space-x-1.5">
-                <FaUserPlus className="text-[#3470b2] text-base" />
-                <span className="font-medium">Add Another Invitee</span>
+              <div className="mt-8 flex justify-between items-center">
+                <button
+                  className="px-5 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 text-sm font-medium shadow-sm transition-colors"
+                  onClick={() => navigate("/maindashboard/createfile")}
+                  disabled={isLoading}
+                >
+                  Back
+                </button>
+                <button
+                  className="px-5 py-2 bg-[#3470b2] text-white rounded-md font-medium shadow-sm flex items-center space-x-1.5 text-sm hover:bg-[#2c5fa5] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  onClick={handleNext}
+                  disabled={isLoading || invitees.length === 0}
+                >
+                  <span>{isLoading ? "Sending..." : "Next"}</span>
+                  {!isLoading && <FaChevronRight className="text-xs" />}
+                </button>
               </div>
             </div>
           </div>
-
-          <div className="mt-8 flex justify-between items-center">
-            <button
-              className="px-5 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 text-sm font-medium shadow-sm transition-colors"
-              onClick={() => navigate("/maindashboard/createfile")}
-              disabled={isLoading}
-            >
-              Back
-            </button>
-            <button
-              className="px-5 py-2 bg-[#3470b2] text-white rounded-md font-medium shadow-sm flex items-center space-x-1.5 text-sm hover:bg-[#2c5fa5] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              onClick={handleNext}
-              disabled={isLoading || invitees.length === 0}
-            >
-              <span>{isLoading ? "Sending..." : "Next"}</span>
-              {!isLoading && <FaChevronRight className="text-xs" />}
-            </button>
-          </div>
         </div>
-      </div>
+      </main>
+
+      {/* Sidebar Pane */}
+      <aside
+        className={`
+          flex-shrink-0 transition-all duration-300 ease-in-out border-l border-gray-200
+          ${isSidebarOpen ? "w-[350px]" : "w-0 p-0"}
+        `}
+        style={{ overflow: "hidden" }}
+      >
+        {isSidebarOpen && <SidebarRequestfile onClose={closeSidebar} />}
+      </aside>
     </div>
   );
 };
