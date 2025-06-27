@@ -18,10 +18,41 @@ import {
   FaCheck,
   FaTimes,
   FaHourglassHalf,
+  FaSpinner,
 } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
-import { baseUrl, decryptText } from "../../../../encryptDecrypt";
+import { baseUrl, decryptText, encryptText } from "../../../../encryptDecrypt";
+
+// for getting user's geolocation
+const useGeolocation = () => {
+  const getLocation = useCallback(() => {
+    return new Promise((resolve, reject) => {
+      if (!navigator.geolocation) {
+        return reject(
+          new Error("Geolocation is not supported by your browser.")
+        );
+      }
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          resolve({
+            latitude: String(position.coords.latitude),
+            longitude: String(position.coords.longitude),
+          });
+        },
+        (err) => {
+          // Default to a placeholder if user denies permission
+          console.warn(
+            "Geolocation permission denied. Using placeholder.",
+            err.message
+          );
+          resolve({ latitude: "0", longitude: "0" });
+        }
+      );
+    });
+  }, []);
+  return { getLocation };
+};
 
 // Custom hook for detecting clicks outside an element
 const useOnClickOutside = (ref, handler) => {
@@ -33,7 +64,7 @@ const useOnClickOutside = (ref, handler) => {
 
     document.addEventListener("mousedown", listener);
     document.addEventListener("touchstart", listener);
-    
+
     return () => {
       document.removeEventListener("mousedown", listener);
       document.removeEventListener("touchstart", listener);
@@ -45,7 +76,9 @@ const useOnClickOutside = (ref, handler) => {
 const getLocationString = (location) => {
   if (!location) return "Not available";
   const { city, country } = location;
-  return city && city !== "Unknown" ? `${city}, ${country}` : country || "Not available";
+  return city && city !== "Unknown"
+    ? `${city}, ${country}`
+    : country || "Not available";
 };
 
 const getDeviceString = (log) => {
@@ -68,25 +101,41 @@ const StatusBadge = ({ status }) => {
   const statusStyles = {
     Signed: { bg: "bg-green-100", text: "text-green-800", icon: <FaCheck /> },
     Declined: { bg: "bg-red-100", text: "text-red-800", icon: <FaTimes /> },
-    Pending: { bg: "bg-yellow-100", text: "text-yellow-800", icon: <FaHourglassHalf /> },
-    Active: { bg: "bg-blue-100", text: "text-blue-800", icon: <FaHourglassHalf /> },
-    Completed: { bg: "bg-green-100", text: "text-green-800", icon: <FaCheck /> }, // Added for docStatus
+    Pending: {
+      bg: "bg-yellow-100",
+      text: "text-yellow-800",
+      icon: <FaHourglassHalf />,
+    },
+    Active: {
+      bg: "bg-blue-100",
+      text: "text-blue-800",
+      icon: <FaHourglassHalf />,
+    },
+    Completed: {
+      bg: "bg-green-100",
+      text: "text-green-800",
+      icon: <FaCheck />,
+    }, // Added for docStatus
   };
-  
-  const formattedStatus = status ? 
-    status.charAt(0).toUpperCase() + status.slice(1).toLowerCase() : 
-    "Pending";
-  
-  const { bg, text, icon } = statusStyles[formattedStatus] || statusStyles.Pending;
+
+  const formattedStatus = status
+    ? status.charAt(0).toUpperCase() + status.slice(1).toLowerCase()
+    : "Pending";
+
+  const { bg, text, icon } =
+    statusStyles[formattedStatus] || statusStyles.Pending;
 
   return (
-    <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${bg} ${text}`}>
+    <span
+      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${bg} ${text}`}
+    >
       {icon} {formattedStatus}
     </span>
   );
 };
 
 const AllInvites = () => {
+  const { getLocation } = useGeolocation();
   const [searchParams] = useSearchParams();
   const documentId = searchParams.get("documentId");
   const dropdownRef = useRef(null);
@@ -99,6 +148,11 @@ const AllInvites = () => {
   const [invitees, setInvitees] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isResending, setIsResending] = useState(null);
+  const [resendStatus, setResendStatus] = useState({
+    message: null,
+    type: null,
+  });
 
   useEffect(() => {
     const token = localStorage.getItem("userToken");
@@ -117,49 +171,69 @@ const AllInvites = () => {
 
       setIsLoading(true);
       setError(null);
-      
+
       try {
         const headers = { headers: { authorization: token } };
 
         // Step 1: Fetch Document Details
-        const docResponse = await axios.get(`${baseUrl}/api/document/getdocument/${documentId}`, headers);
+        const docResponse = await axios.get(
+          `${baseUrl}/api/document/getdocument/${documentId}`,
+          headers
+        );
         const decryptedDoc = await decryptText(docResponse.data.body);
         const documentData = JSON.parse(decryptedDoc);
-        if (!documentData?.document) throw new Error("Invalid document data received");
+        if (!documentData?.document)
+          throw new Error("Invalid document data received");
         setDocumentDetails(documentData.document);
 
         // Step 2: Fetch Invitees
-        const inviteesResponse = await axios.get(`${baseUrl}/api/document/getInvitees/${documentId}`, headers);
+        const inviteesResponse = await axios.get(
+          `${baseUrl}/api/document/getInvitees/${documentId}`,
+          headers
+        );
         const decryptedInvitees = await decryptText(inviteesResponse.data.body);
         const inviteesData = JSON.parse(decryptedInvitees);
         const rawInvitees = inviteesData?.invitees || [];
-        if (!Array.isArray(rawInvitees)) throw new Error("Invalid invitees data format");
-        
+        if (!Array.isArray(rawInvitees))
+          throw new Error("Invalid invitees data format");
+
         // Step 3: Fetch Notification Logs
-        const logsResponse = await axios.get(`${baseUrl}/api/log/notiflogs/${documentId}`, headers);
+        const logsResponse = await axios.get(
+          `${baseUrl}/api/log/notiflogs/${documentId}`,
+          headers
+        );
         const decryptedLogs = await decryptText(logsResponse.data.body);
         const logsData = JSON.parse(decryptedLogs);
         const notificationLogs = logsData?.logs || [];
-        
+
         // Step 4: Process and combine invitee and log data
         const logsMap = new Map();
-        notificationLogs.forEach(log => {
+        notificationLogs.forEach((log) => {
           if (log?.inviteeId) {
             const existingLog = logsMap.get(log.inviteeId);
-            if (!existingLog || new Date(log.timestamp) > new Date(existingLog.timestamp)) {
+            if (
+              !existingLog ||
+              new Date(log.timestamp) > new Date(existingLog.timestamp)
+            ) {
               logsMap.set(log.inviteeId, log);
             }
           }
         });
 
-        const formattedInvitees = rawInvitees.map(invitee => ({
+        const formattedInvitees = rawInvitees.map((invitee) => ({
           id: invitee.id,
           name: invitee.name,
           email: invitee.email,
           status: invitee.signStatus
-            ? invitee.signStatus.charAt(0).toUpperCase() + invitee.signStatus.slice(1).toLowerCase()
-            : 'Pending',
-          avatar: invitee.name?.split(" ").map(n => n[0] || "").join("").toUpperCase() || 'NA',
+            ? invitee.signStatus.charAt(0).toUpperCase() +
+              invitee.signStatus.slice(1).toLowerCase()
+            : "Pending",
+          avatar:
+            invitee.name
+              ?.split(" ")
+              .map((n) => n[0] || "")
+              .join("")
+              .toUpperCase() || "NA",
           signingLink: invitee.verifyUrl,
           lastSent: logsMap.get(invitee.id)?.timestamp || null,
           ip: logsMap.get(invitee.id)?.ip || "Not available",
@@ -168,16 +242,18 @@ const AllInvites = () => {
         }));
 
         setInvitees(formattedInvitees);
-
       } catch (err) {
         console.error("Data loading error:", err);
-        setError(err.message || "Failed to load document data. Please check the console for details.");
+        setError(
+          err.message ||
+            "Failed to load document data. Please check the console for details."
+        );
         setInvitees([]);
       } finally {
         setIsLoading(false);
       }
     };
-    
+
     loadAllData();
   }, [documentId]);
 
@@ -186,25 +262,78 @@ const AllInvites = () => {
   const handleCopy = (id, textToCopy) => {
     if (!textToCopy) return;
     navigator.clipboard.writeText(textToCopy);
-    setCopiedStates(prev => ({ ...prev, [id]: true }));
-    setTimeout(() => setCopiedStates(prev => ({ ...prev, [id]: false })), 2000);
+    setCopiedStates((prev) => ({ ...prev, [id]: true }));
+    setTimeout(
+      () => setCopiedStates((prev) => ({ ...prev, [id]: false })),
+      2000
+    );
   };
 
-  const handleResend = (email) => {
-    console.log(`Resending invitation to ${email}`);
+
+  //handelresend api
+   const handleResend = async (inviteeId, inviteeName) => {
+    setIsResending(inviteeId);
+    setResendStatus({ message: null, type: null });
+    const token = localStorage.getItem("userToken");
+
+    if (!token) {
+      setResendStatus({ message: "Authorization failed. Please log in.", type: "error" });
+      setIsResending(null);
+      return;
+    }
+
+    try {
+      // 1. Get location
+      const location = await getLocation();
+
+      // 2. Prepare payload based on the required structure
+      const payloadToEncrypt = {
+        decrypted: { location },
+        type: "string", // As per your example
+      };
+      
+      // 3. Encrypt the payload
+      const encryptedBody = await encryptText(JSON.stringify(payloadToEncrypt));
+
+      // 4. Make API Call
+      await axios.post(
+        `${baseUrl}/api/document/resend/${inviteeId}`,
+        { body: encryptedBody }, // Assuming the API expects the encrypted string in a 'body' property
+        { headers: { authorization: token } }
+      );
+
+      // 5. Handle success
+      setResendStatus({ message: `Invitation successfully resent to ${inviteeName}.`, type: "success" });
+      
+      // Optional: Update the lastSent time in the UI immediately
+      setInvitees(prev => prev.map(p => 
+        p.id === inviteeId ? { ...p, lastSent: new Date().toISOString() } : p
+      ));
+
+    } catch (err) {
+      console.error("Resend error:", err);
+      const errorMessage = err.response?.data?.message || err.message || "An unknown error occurred.";
+      setResendStatus({ message: `Failed to resend: ${errorMessage}`, type: "error" });
+    } finally {
+      setIsResending(null);
+      // Clear the status message after 5 seconds
+      setTimeout(() => setResendStatus({ message: null, type: null }), 5000);
+    }
   };
+
 
   const handleRemove = (email) => {
     console.log(`Removing invitee ${email}`);
   };
 
   const toggleDropdown = (id) => {
-    setShowDropdown(prev => prev === id ? null : id);
+    setShowDropdown((prev) => (prev === id ? null : id));
   };
 
-  const signedCount = invitees.filter(p => p.status === "Signed").length;
+  const signedCount = invitees.filter((p) => p.status === "Signed").length;
   const totalCount = invitees.length;
-  const completionPercentage = totalCount > 0 ? Math.round((signedCount / totalCount) * 100) : 0;
+  const completionPercentage =
+    totalCount > 0 ? Math.round((signedCount / totalCount) * 100) : 0;
 
   return (
     <motion.section
@@ -222,12 +351,14 @@ const AllInvites = () => {
             </div>
             <div>
               <h2 className="text-xl font-bold text-slate-800">
-                {isLoading ? "Loading..." : documentDetails?.name || "Untitled Document"}
+                {isLoading
+                  ? "Loading..."
+                  : documentDetails?.name || "Untitled Document"}
               </h2>
               <p className="text-slate-500 text-xs mt-1">
-                {documentDetails?.createdAt ? 
-                  `Created on ${formatDate(documentDetails.createdAt)}` : 
-                  "..."}
+                {documentDetails?.createdAt
+                  ? `Created on ${formatDate(documentDetails.createdAt)}`
+                  : "..."}
               </p>
             </div>
           </div>
@@ -242,8 +373,13 @@ const AllInvites = () => {
             { label: "Doc ID", value: documentId || "N/A" },
             { label: "Reference No.", value: documentDetails?.refNo || "N/A" },
           ].map((item) => (
-            <div key={item.label} className="p-3 bg-slate-50 rounded-lg border border-slate-200">
-              <p className="text-slate-500 text-xs font-medium mb-1">{item.label}</p>
+            <div
+              key={item.label}
+              className="p-3 bg-slate-50 rounded-lg border border-slate-200"
+            >
+              <p className="text-slate-500 text-xs font-medium mb-1">
+                {item.label}
+              </p>
               <div className="flex items-center justify-between gap-2">
                 <span className="font-mono text-slate-900 text-xs truncate">
                   {isLoading ? "..." : item.value}
@@ -262,9 +398,11 @@ const AllInvites = () => {
               </div>
             </div>
           ))}
-          
+
           <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
-            <p className="text-slate-500 text-xs font-medium mb-1">Completion</p>
+            <p className="text-slate-500 text-xs font-medium mb-1">
+              Completion
+            </p>
             <div className="flex items-center gap-1.5 mb-1">
               <span className="text-slate-900 text-sm font-bold">
                 {isLoading ? "..." : signedCount}
@@ -284,6 +422,24 @@ const AllInvites = () => {
         </div>
       </div>
 
+      {/* **NEW**: Notification area for resend status */}
+      <AnimatePresence>
+        {resendStatus.message && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className={`p-3 mb-4 rounded-lg text-sm font-medium text-center ${
+              resendStatus.type === 'success' 
+                ? 'bg-green-100 text-green-800' 
+                : 'bg-red-100 text-red-800'
+            }`}
+          >
+            {resendStatus.message}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Main content area */}
       <div className="border border-slate-200 rounded-xl bg-slate-50 flex flex-col flex-grow h-[490px]">
         {/* Tab navigation */}
@@ -292,7 +448,9 @@ const AllInvites = () => {
             <button
               key={tab}
               className={`flex-1 py-3 px-4 text-sm font-semibold text-center capitalize transition-colors relative ${
-                activeTab === tab ? "text-blue-600" : "text-slate-500 hover:text-blue-600 hover:bg-slate-100"
+                activeTab === tab
+                  ? "text-blue-600"
+                  : "text-slate-500 hover:text-blue-600 hover:bg-slate-100"
               }`}
               onClick={() => setActiveTab(tab)}
             >
@@ -354,6 +512,7 @@ const AllInvites = () => {
                           handleRemove={handleRemove}
                           setShowDropdown={setShowDropdown}
                           copiedStates={copiedStates}
+                           isResending={isResending === person.id}
                         />
                       ))}
                     </div>
@@ -383,24 +542,33 @@ const InviteeCard = ({
   handleRemove,
   setShowDropdown,
   copiedStates,
+  isResending,
 }) => (
   <motion.div
     layout
-    className="p-4 bg-white rounded-lg border border-slate-200 hover:shadow-md hover:border-blue-200 transition-all duration-300"
-  >
+ className={`p-4 bg-white rounded-lg border border-slate-200 hover:shadow-md hover:border-blue-200 transition-all duration-300 ${
+      isResending ? "opacity-60 pointer-events-none" : ""
+    }`}  >
     <div className="flex items-start justify-between mb-4">
       <div className="flex items-start gap-3">
         <div className="md:w-10 md:h-10 xs:w-6 xs:h-6 xs:rounded-full md:rounded-xl bg-blue-100 flex items-center justify-center text-blue-600 md:text-sm xs:text-[8px] font-bold shadow-sm">
           {person.avatar}
         </div>
         <div className="min-w-0 md:w-full xs:w-[100px] overflow-hidden">
-          <p className="font-semibold xs:text-[14px] md:text-[20px] text-slate-800 truncate">{person.name}</p>
-          <p className="md:text-[16px] xs:text-[10px] text-slate-500 truncate">{person.email}</p>
+          <p className="font-semibold xs:text-[14px] md:text-[20px] text-slate-800 truncate">
+            {person.name}
+          </p>
+          <p className="md:text-[16px] xs:text-[10px] text-slate-500 truncate">
+            {person.email}
+          </p>
         </div>
       </div>
       <div className="flex items-center">
         <StatusBadge status={person.status} />
-        <div className="relative" ref={showDropdown === person.id ? dropdownRef : null}>
+        <div
+          className="relative"
+          ref={showDropdown === person.id ? dropdownRef : null}
+        >
           <button
             onClick={() => toggleDropdown(person.id)}
             className="ml-2 text-slate-400 hover:text-slate-600 p-1 rounded-full hover:bg-slate-100 transition-colors"
@@ -422,12 +590,14 @@ const InviteeCard = ({
                     {
                       icon: <FaLink />,
                       text: "Copy Signing Link",
-                      onClick: () => handleCopy(`link-${person.id}`, person.signingLink),
+                      onClick: () =>
+                        handleCopy(`link-${person.id}`, person.signingLink),
                     },
-                    {
-                      icon: <FaPaperPlane />,
-                      text: "Resend Invitation",
-                      onClick: () => handleResend(person.email),
+                     {
+                      icon: isResending ? <FaSpinner className="animate-spin" /> : <FaPaperPlane />,
+                      text: isResending ? "Resending..." : "Resend Invitation",
+                      onClick: () => handleResend(person.id, person.name),
+                      disabled: isResending,
                     },
                     {
                       icon: <FaTrashAlt />,
@@ -439,12 +609,13 @@ const InviteeCard = ({
                     <button
                       key={item.text}
                       onClick={() => {
-                        item.onClick();
+                        if (item.onClick) item.onClick();
                         setShowDropdown(null);
                       }}
+                      disabled={item.disabled}
                       className={`flex items-center gap-3 px-4 py-2 text-sm w-full text-left transition-colors ${
                         item.color || "text-slate-700"
-                      } hover:bg-slate-100`}
+                      } hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed`}
                     >
                       {item.icon} {item.text}
                     </button>
@@ -459,19 +630,36 @@ const InviteeCard = ({
 
     <div className="space-y-3 p-3 bg-slate-50/70 rounded-md border border-slate-200/80 mb-4">
       {[
-        { icon: <FaCalendarAlt />, label: "Last Sent", value: formatDate(person.lastSent) },
-        { icon: <FaNetworkWired />, label: "IP Address", value: person.ip, isMono: true },
-        { 
-          icon: <FaGlobe />, 
-          label: "Location & Device", 
-          value: person.device !== "Not available" ? `${person.location} (${person.device})` : person.location 
+        {
+          icon: <FaCalendarAlt />,
+          label: "Last Sent",
+          value: formatDate(person.lastSent),
+        },
+        {
+          icon: <FaNetworkWired />,
+          label: "IP Address",
+          value: person.ip,
+          isMono: true,
+        },
+        {
+          icon: <FaGlobe />,
+          label: "Location & Device",
+          value:
+            person.device !== "Not available"
+              ? `${person.location} (${person.device})`
+              : person.location,
         },
       ].map((detail) => (
-        <div key={detail.label} className="flex items-center justify-between text-xs">
+        <div
+          key={detail.label}
+          className="flex items-center justify-between text-xs"
+        >
           <p className="flex items-center gap-1.5 font-medium text-slate-500">
             {detail.icon} {detail.label}
           </p>
-          <p className={`font-medium text-slate-700 ${detail.isMono ? "font-mono" : ""}`}>
+          <p
+            className={`font-medium text-slate-700 ${detail.isMono ? "font-mono" : ""}`}
+          >
             {detail.value}
           </p>
         </div>
@@ -491,10 +679,19 @@ const InviteeCard = ({
       </div>
       {person.status !== "Signed" && (
         <button
-          onClick={() => handleResend(person.email)}
-          className="text-xs font-semibold text-blue-600 hover:text-blue-800 flex items-center gap-1.5 transition-colors"
+          onClick={() => handleResend(person.id, person.name)}
+          disabled={isResending}
+          className="text-xs font-semibold text-blue-600 hover:text-blue-800 flex items-center gap-1.5 transition-colors disabled:opacity-50 disabled:cursor-wait"
         >
-          <FaPaperPlane size={10} /> RESEND
+          {isResending ? (
+            <>
+              <FaSpinner size={10} className="animate-spin" /> RESENDING...
+            </>
+          ) : (
+            <>
+              <FaPaperPlane size={10} /> RESEND
+            </>
+          )}
         </button>
       )}
     </div>

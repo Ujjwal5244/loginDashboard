@@ -17,6 +17,8 @@ import { toast } from "react-toastify";
 import { baseUrl, decryptText, encryptText } from "../../../../encryptDecrypt";
 import axios from "axios";
 import SidebarRequestfile from "./SidebarRequestfile";
+import { useWindowWidth } from "./window_width";
+
 
 const Requestfile = () => {
   const { documentId } = useParams();
@@ -39,6 +41,8 @@ const Requestfile = () => {
 
   // State to control the sidebar visibility
   const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const width = useWindowWidth();
+  const isMobile = width < 768;
   const openSidebar = () => setSidebarOpen(true);
   const closeSidebar = () => setSidebarOpen(false);
 
@@ -796,15 +800,27 @@ const Requestfile = () => {
       </main>
 
       {/* Sidebar Pane */}
-      <aside
-        className={`
-          flex-shrink-0 transition-all duration-300 ease-in-out border-l border-gray-200
-          ${isSidebarOpen ? "w-[350px]" : "w-0 p-0"}
-        `}
-        style={{ overflow: "hidden" }}
-      >
-        {isSidebarOpen && <SidebarRequestfile onClose={closeSidebar} />}
-      </aside>
+     {isSidebarOpen && (
+  isMobile ? (
+    // ON MOBILE (< 768px): Render as a full-screen fixed overlay.
+    // `fixed inset-0` makes it cover the entire screen.
+    // `z-50` ensures it's on top of all other content.
+    <div className="fixed top-0 left-0 w-full h-[100%] z-[1000] bg-white">
+      <SidebarRequestfile onClose={closeSidebar} />
+    </div>
+  ) : (
+    // ON DESKTOP (>= 768px): Render as the original fixed-width sidebar.
+    <aside
+      className={`
+        flex-shrink-0 transition-all duration-300 ease-in-out border-l border-gray-200
+        w-[350px]
+      `}
+      style={{ overflow: 'hidden' }}
+    >
+      <SidebarRequestfile onClose={closeSidebar} />
+    </aside>
+  )
+)}
     </div>
   );
 };
