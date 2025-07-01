@@ -11,14 +11,14 @@ import {
   FiLogOut,
   FiChevronRight,
   FiDollarSign,
-  FiUser,
   FiLock,
   FiFilePlus,
-  FiClipboard,
   FiGlobe,
   FiList,
   FiArrowLeft, // Added for back button
 } from "react-icons/fi";
+import { GrDocumentVerified } from "react-icons/gr";
+import { RiDraftLine } from "react-icons/ri";
 import { FcApproval } from "react-icons/fc";
 import { SiMonkeytie } from "react-icons/si";
 import { MdDrafts } from "react-icons/md";
@@ -320,6 +320,22 @@ const MobileMenu = ({ isOpen, onClose, darkMode }) => {
                 active={isActive("/Maindashboard/signed-agreement")}
                 onClick={handleNavigation}
               />
+               <MenuItem
+                icon={< RiDraftLine />}
+                label="Draft Document"
+                path="/Maindashboard/draft-document"
+                indent
+                active={isActive("/Maindashboard/draft-document")}
+                onClick={handleNavigation}
+              />
+               <MenuItem
+                icon={<GrDocumentVerified />}
+                label="Complete Document"
+                path="/Maindashboard/complete-document"
+                indent
+                active={isActive("/Maindashboard/complete-document")}
+                onClick={handleNavigation}
+              />
             </Dropdown>
             <MenuItem
               icon={<FiLock />}
@@ -333,13 +349,6 @@ const MobileMenu = ({ isOpen, onClose, darkMode }) => {
               label="Email Box"
               path="/Maindashboard/email"
               active={isActive("/Maindashboard/email")}
-              onClick={handleNavigation}
-            />
-            <MenuItem
-              icon={<FiClipboard />}
-              label="Completed"
-              path="/Maindashboard/completed"
-              active={isActive("/Maindashboard/completed")}
               onClick={handleNavigation}
             />
           </div>

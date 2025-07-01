@@ -83,7 +83,6 @@
   color: #9ca3af;
   width: 18px;
   height: 18px;
-  margin-top: -15px;
 }
 
 .rolemanagement-container1-right-search-input {
@@ -711,6 +710,7 @@ input:checked + .slider:before {
 
   .rolemanagement-container1-right-search {
     width: 100%;
+    margin-bottom: 10px;
   }
 
   .rolemanagement-container1-right-search-input {

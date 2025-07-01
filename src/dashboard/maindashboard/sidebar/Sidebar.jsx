@@ -10,6 +10,7 @@ import {
   FaFileSignature,
   FaTimes,
 } from "react-icons/fa";
+import { GrDocumentUser,GrDocumentDownload } from "react-icons/gr";
 import { LiaUserLockSolid } from "react-icons/lia";
 import { FcApproval, FcCurrencyExchange } from "react-icons/fc";
 import { SiGooglecampaignmanager360, SiEclipsemosquitto } from "react-icons/si";
@@ -55,29 +56,33 @@ const Sidebar = ({ sidebarOpen, darkMode, toggleSidebar, isMobile }) => {
     };
   }, [openDropdown, sidebarOpen]);
 
-  // Effect to manage active dropdown on route change
+  // *** FIXED: Effect to manage active dropdown on route change ***
   useEffect(() => {
-    let activeDropdownFound = false;
-    menuSections.forEach((section) => {
-      section.items.forEach((item) => {
-        if (item.type === "dropdown") {
-          const hasActiveChild = item.items.some((subItem) =>
-            isActive(subItem.path)
-          );
-          if (hasActiveChild) {
-            // Only auto-open the dropdown if the sidebar is expanded
-            if (sidebarOpen) {
-              setOpenDropdown(item.label);
+    let activeDropdown = null;
+
+    // This effect should only auto-open a dropdown if the sidebar is expanded.
+    // If collapsed, we want dropdowns to be closed by default.
+    if (sidebarOpen) {
+      menuSections.forEach((section) => {
+        section.items.forEach((item) => {
+          if (item.type === "dropdown") {
+            const hasActiveChild = item.items.some((subItem) =>
+              isActive(subItem.path)
+            );
+            if (hasActiveChild) {
+              activeDropdown = item.label;
             }
-            activeDropdownFound = true;
           }
-        }
+        });
       });
-    });
-    if (!activeDropdownFound) {
-      setOpenDropdown(null);
     }
-  }, [location.pathname, sidebarOpen]); // Added sidebarOpen dependency
+    
+    // Set the open dropdown based on the logic above.
+    // If the sidebar is collapsed, activeDropdown will remain null, correctly closing any dropdowns.
+    // If the sidebar is expanded, it will open the dropdown with the active link.
+    setOpenDropdown(activeDropdown);
+
+  }, [location.pathname, sidebarOpen]);
 
   const isActive = (path) => {
     if (path === "/maindashboard/home") {
@@ -191,6 +196,18 @@ const Sidebar = ({ sidebarOpen, darkMode, toggleSidebar, isMobile }) => {
               label: "Signed Agreement",
               active: isActive("/maindashboard/signed-agreement"),
             },
+            {
+              path: "/maindashboard/draft-document",
+              icon: <GrDocumentUser size={18} />,
+              label: "Draft Document",
+              active: isActive("/maindashboard/draft-document"),
+            },
+            {
+              path: "/maindashboard/complete-document",
+              icon: <GrDocumentDownload size={18} />,
+              label: "Complete Document",
+              active: isActive("/maindashboard/complete-document"),
+            },
           ],
         },
         {
@@ -204,12 +221,6 @@ const Sidebar = ({ sidebarOpen, darkMode, toggleSidebar, isMobile }) => {
           icon: <MdDrafts size={20} />,
           label: "Email Box",
           active: isActive("/maindashboard/Email"),
-        },
-        {
-          path: "/maindashboard/completed",
-          icon: <GrCompliance size={20} />,
-          label: "Completed",
-          active: isActive("/maindashboard/completed"),
         },
       ],
     },
@@ -288,7 +299,6 @@ const Sidebar = ({ sidebarOpen, darkMode, toggleSidebar, isMobile }) => {
                                 <Link
                                   to={subItem.path}
                                   className="submenu-link"
-                                  // FIX: Close dropdown after clicking a submenu item
                                   onClick={() => {
                                     setOpenDropdown(null);
                                     if (isMobile) toggleSidebar();

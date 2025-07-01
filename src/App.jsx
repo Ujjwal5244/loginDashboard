@@ -13,7 +13,6 @@ import Ipwhitelist from "./dashboard/sidebarpages/menu/devtool/ipwhitelist/Ipwhi
 import Webhooks from "./dashboard/sidebarpages/menu/devtool/webhooks/Webhooks";
 import Logs from "./dashboard/sidebarpages/menu/devtool/logss/Logs";
 import Yourkyc from "./dashboard/sidebarpages/document/yourkyc/Yourkyc";
-import Completed from "./dashboard/sidebarpages/document/completed/Completed";
 import Setting from "./dashboard/sidebarpages/setting/Setting";
 import Myprofile from "./dashboard/headerpages/myprofile/Myprofile";
 import Kycstatus from "./dashboard/headerpages/kycstatus/Kycstatus";
@@ -37,6 +36,8 @@ import OutsideVerifyotp from "./outsideusersign/OutsideVerifyotp";
 import OutsideSecurity from "./outsideusersign/OutsideSecurity";
 import OutsideSignature from "./outsideusersign/OutsideSignature";
 import OutsideSignedViewpdf from "./outsideusersign/OutsideSignedViewpdf";
+import Completedocument from "./dashboard/sidebarpages/document/documentfile/completedocument/Completedocument";
+import Draftdocument from "./dashboard/sidebarpages/document/documentfile/draftdocument/Draftdocument";
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -102,6 +103,8 @@ function App() {
                 element={<Transactionhistory darkMode={darkMode} />}
               />
               <Route path="signed-agreement" element={<SignedAgreement />} />
+              <Route path="complete-document" element={<Completedocument />} />
+              <Route path="draft-document" element={<Draftdocument />} />
               <Route path="yourkyc" element={<Yourkyc />} />
               {/* ---------------------all email pagese routes--------------------------- */}
               <Route
@@ -124,7 +127,6 @@ function App() {
               <Route path="compose" element={<Compose />} />
             </Route> */}
               {/* ---------------------end email pagese routes--------------------------- */}
-              <Route path="completed" element={<Completed />} />
               <Route path="setting" element={<Setting />} />
 
               <Route
@@ -135,7 +137,10 @@ function App() {
                 path="verification"
                 element={<Verification darkMode={darkMode} />}
               />
-              <Route path="sign-agreement" element={<Agreement darkMode={darkMode}/>} />
+              <Route
+                path="sign-agreement"
+                element={<Agreement darkMode={darkMode} />}
+              />
               <Route
                 path="pdf-sign"
                 element={<PdfSign darkMode={darkMode} />}
@@ -143,10 +148,22 @@ function App() {
               <Route path="kycstatus" element={<Kycstatus />} />
               <Route path="mobilemenu" element={<MobileMenu />} />
               {/* ---------------------create header pagese routes--------------------------- */}
-              <Route path="createfile" element={<Createfile darkMode={darkMode}/>} />
-              <Route path="requestfile/:documentId" element={<Requestfile darkMode={darkMode}/>} />
-              <Route path="approve/:documentId" element={<Approve darkMode={darkMode}/>} />
-              <Route path="allinvities" element={<Allinvites darkMode={darkMode}/>} />
+              <Route
+                path="createfile"
+                element={<Createfile darkMode={darkMode} />}
+              />
+              <Route
+                path="requestfile/:documentId"
+                element={<Requestfile darkMode={darkMode} />}
+              />
+              <Route
+                path="approve/:documentId"
+                element={<Approve darkMode={darkMode} />}
+              />
+              <Route
+                path="allinvities"
+                element={<Allinvites darkMode={darkMode} />}
+              />
             </Route>
 
             {/* __________________________________Outsidepdf routes_____________________________ */}

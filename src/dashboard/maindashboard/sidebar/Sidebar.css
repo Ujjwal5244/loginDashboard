@@ -12,7 +12,7 @@
   --active-bg: #3f92eb;
   --section-title-color: rgba(255, 255, 255, 0.7);
   --icon-size: 24px;
-  --collapsed-bg-color: #3470b2;
+  --collapsed-bg-color: #3470b2; 
   --menu-item-spacing: 8px;
   --section-spacing: 24px;
 
@@ -247,7 +247,6 @@
   font-size: 0.9rem;
   font-weight: 500;
   border-radius: 6px;
-  margin: 2px 0.5rem;
 }
 
 .submenu-link:hover {
@@ -335,20 +334,19 @@
   position: absolute;
   
   /* CHANGED: Position on the left side of the tooltip box */
-  right: 0%; /* Start at the same point as the box */
+  right: 0%;
   top: 50%;
   transform: translateY(-50%);
-  margin-left: 0px; /* Position it in the gap */
+  margin-left: 0px; 
 
   pointer-events: none;
   z-index: 1000;
   
-  /* CHANGED: Create a LEFT-pointing triangle */
   width: 12px;
   height: 10px;
   border-top: 5px solid transparent;
   border-bottom: 5px solid transparent;
-  border-right: 5px solid #2d3748; /* Arrow color matches light mode bg */
+  border-right: 5px solid #2d3748; 
 
   /* Initially hidden */
   opacity: 0;
@@ -368,7 +366,7 @@
 /* Dark mode tooltip styles (overrides the light mode colors) */
 .sidebar.dark.collapsed .menu-link::after,
 .sidebar.dark.collapsed .dropdown-header::after {
-  background: #1a2236; /* Darker background */
+  background: #1a2236; 
   border: 1px solid #2d3748;
 }
 
@@ -396,7 +394,6 @@
   transition: opacity 0.2s 0.1s ease, visibility 0.2s 0.1s ease;
 }
 
-/* MODIFIED: Prevents tooltip from showing when the pop-out menu is open */
 .sidebar.collapsed .menu-item:not(.open) .menu-link:hover::after,
 .sidebar.collapsed .menu-item:not(.open) .dropdown-header:hover::after {
   opacity: 1;
