@@ -6,6 +6,19 @@ import { useNavigate } from "react-router-dom";
 const NotificationSidebar = ({ onClose, darkMode }) => {
   const navigate = useNavigate();
 
+  // Calculate width based on screen size
+  const getSidebarWidth = () => {
+    const screenWidth = window.innerWidth;
+    
+    if (screenWidth >= 768) {
+      return "350px"; // Default width for larger screens
+    } else if (screenWidth >= 760) {
+      return `${screenWidth * 1}px`; // 90% of screen width for medium screens
+    } else {
+      return `${screenWidth}px`; // Full width for small screens
+    }
+  };
+
   return (
     <>
       <div
@@ -16,9 +29,10 @@ const NotificationSidebar = ({ onClose, darkMode }) => {
       />
 
       <div
-        className={`fixed top-0 right-0 w-[350px] h-full shadow-xl z-[2000] transform transition-all duration-300 ease-in-out flex flex-col ${
+        className={`fixed top-0 right-0 h-full shadow-xl z-[2000] transform transition-all duration-300 ease-in-out flex flex-col ${
           darkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800"
         }`}
+        style={{ width: getSidebarWidth() }}
       >
         {/* Fixed Header */}
         <div
@@ -26,10 +40,14 @@ const NotificationSidebar = ({ onClose, darkMode }) => {
             darkMode ? "bg-gray-900 border-gray-700" : "bg-[#326bae] border-gray-200"
           }`}
         >
-          <h2 className="text-lg font-semibold text-white flex gap-2 items-center justify-center p-1">
-            <FaFacebookMessenger />
-            Notifications
-          </h2>
+          <h2 
+      className={`text-lg font-semibold flex gap-2 items-center justify-center p-1 ${
+        darkMode ? "text-[#ff4500]" : "text-white"
+      }`}
+    >
+      <FaFacebookMessenger />
+      Notifications
+    </h2>
           <button
             className="text-white hover:text-gray-200 transition-colors"
             onClick={onClose}
@@ -69,8 +87,8 @@ const NotificationSidebar = ({ onClose, darkMode }) => {
           }`}
         >
           <button
-            className={`p-3 rounded-md hover:bg-[#1b4b8e] transition-colors duration-300 ${
-              darkMode ? "bg-blue-700 text-white" : "bg-[#326bae] text-white"
+            className={`p-3 rounded-md ] transition-colors duration-300 ${
+              darkMode ? "bg-[#ff4500] text-white" : "bg-[#326bae] text-white"
             }`}
             onClick={() => {
               navigate("/maindashboard/Email");

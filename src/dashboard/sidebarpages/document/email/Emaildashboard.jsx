@@ -9,9 +9,11 @@ import {
   FaSearch,
   FaEllipsisV,
   FaChevronDown,
+  FaArrowLeft, // Added for back button
 } from "react-icons/fa";
 import axios from "axios";
-import {decryptText, baseUrl } from "../../../../encryptDecrypt";
+import { BsFillMenuButtonWideFill } from "react-icons/bs";
+import { decryptText, baseUrl } from "../../../../encryptDecrypt";
 import { toast } from "react-toastify";
 
 const EmailDashboard = ({ darkMode }) => {
@@ -21,7 +23,7 @@ const EmailDashboard = ({ darkMode }) => {
   const [loading, setLoading] = useState(false);
   const [userProfile, setUserProfile] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
-
+  const [isSidebarVisible, setIsSidebarVisible] = useState(false); // State for mobile sidebar
 
   const token = localStorage.getItem("userToken");
 
@@ -127,24 +129,31 @@ const EmailDashboard = ({ darkMode }) => {
   }, [fetchEmails, fetchUserProfile]);
 
   // Filter emails
-const filteredEmails = emails.filter((email) => {
-  const term = searchTerm.toLowerCase();
-  return (
-    (activeFolder === "inbox" || activeFolder === "trash") &&
-    (email.subject.toLowerCase().includes(term) ||
-     email.sender.toLowerCase().includes(term) ||
-     email.preview.toLowerCase().includes(term))
-  );
-});
-
+  const filteredEmails = emails.filter((email) => {
+    const term = searchTerm.toLowerCase();
+    return (
+      (activeFolder === "inbox" || activeFolder === "trash") &&
+      (email.subject.toLowerCase().includes(term) ||
+        email.sender.toLowerCase().includes(term) ||
+        email.preview.toLowerCase().includes(term))
+    );
+  });
 
   return (
     <div
-      className={`${darkMode ? "bg-[#111827] text-gray-200" : "bg-gray-50 text-gray-800"} font-sans flex h-full`}
+      className={`${darkMode ? "bg-[#111827] text-gray-200" : "bg-gray-50 text-gray-800"} font-sans flex h-screen max-h-screen overflow-hidden relative`}
     >
+      {/* Overlay for mobile sidebar */}
+      {isSidebarVisible && (
+        <div
+          className="fixed inset-0 bg-black/30 z-10 lg:hidden"
+          onClick={() => setIsSidebarVisible(false)}
+        ></div>
+      )}
+
       {/* Sidebar */}
       <aside
-        className={`w-64 shadow-sm flex flex-col border-r ${darkMode ? "border-gray-700 bg-[#111827]" : "border-gray-100 bg-white"}`}
+        className={`w-64 shadow-lg flex flex-col border-r ${darkMode ? "border-gray-700 bg-[#111827]" : "border-gray-100 bg-white"} absolute lg:relative inset-y-0 left-0 transform ${isSidebarVisible ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0 transition-transform duration-300 ease-in-out z-20`}
       >
         <div
           className={`p-3 text-xl font-semibold ${darkMode ? "text-[#ff9800]" : "text-[#2c5aa0]"} flex items-center gap-3 border-b ${darkMode ? "border-gray-700" : "border-gray-200"}`}
@@ -167,7 +176,10 @@ const filteredEmails = emails.filter((email) => {
                     ? "text-gray-300 hover:bg-gray-800"
                     : "text-gray-600 hover:bg-gray-50"
               }`}
-              onClick={() => setActiveFolder("inbox")}
+              onClick={() => {
+                setActiveFolder("inbox");
+                setIsSidebarVisible(false);
+              }}
             >
               <FaInbox
                 className={darkMode ? "text-[#ff9800]" : "text-[#2c5aa0]"}
@@ -189,7 +201,10 @@ const filteredEmails = emails.filter((email) => {
                     ? "text-gray-300 hover:bg-gray-800"
                     : "text-gray-600 hover:bg-gray-50"
               }`}
-              onClick={() => setActiveFolder("trash")}
+              onClick={() => {
+                setActiveFolder("trash");
+                setIsSidebarVisible(false);
+              }}
             >
               <FaTrash
                 className={darkMode ? "text-[#ff9800]" : "text-[#2c5aa0]"}
@@ -202,6 +217,7 @@ const filteredEmails = emails.filter((email) => {
         <div
           className={`p-4 border-t ${darkMode ? "border-gray-700" : "border-gray-300"} mt-auto`}
         >
+          {/* User Profile... (no changes here) */}
           <div className="flex items-center gap-3">
             {userProfile ? (
               <>
@@ -244,39 +260,44 @@ const filteredEmails = emails.filter((email) => {
 
       {/* Inbox List */}
       <section
-        className={`w-80 border-r ${darkMode ? "border-gray-700 bg-[#111827]" : "border-gray-100 bg-white"} flex flex-col`}
+        className={`w-full lg:w-80 border-r ${darkMode ? "border-gray-700 bg-[#111827]" : "border-gray-100 bg-white"} flex flex-col ${selectedEmail ? "hidden md:flex" : "flex"}`}
       >
         <div
-          className={`flex items-center justify-between px-5 py-3 border-b ${darkMode ? "border-gray-700" : "border-gray-100"}`}
+          className={`flex items-center justify-between mt-[-5px] md:px-5 xs:px-2.5 md:py-4 xs:py-0 border-b ${darkMode ? "border-gray-700" : "border-gray-200"}`}
         >
-          <div className="flex items-center gap-2">
-            <span
-              className={`font-semibold ${darkMode ? "text-[#ff9800]" : "text-[#2c5aa0]"}`}
+          <div className="flex items-center">
+            <button
+              className="lg:hidden p-2 text-gray-500"
+              onClick={() => setIsSidebarVisible(true)}
             >
-              Inbox
-            </span>
-            <FaChevronDown
-              size={12}
-              className={darkMode ? "text-gray-400" : "text-gray-500"}
-            />
+              <BsFillMenuButtonWideFill size={15} />
+            </button>
+            <div className="flex items-center gap-2">
+              <span
+                className={`font-semibold ${darkMode ? "text-[#ff9800]" : "text-[#2c5aa0]"}`}
+              >
+                Inbox
+              </span>
+              <FaChevronDown
+                size={12}
+                className={`${darkMode ? "text-gray-400" : "text-gray-500"} hidden sm:inline`}
+              />
+            </div>
           </div>
           <div className="flex items-center gap-3">
             <button
-              className={
-                darkMode
-                  ? "text-gray-400 hover:text-[#ff9800]"
-                  : "text-gray-500 hover:text-[#2c5aa0]"
-              }
+              className={`p-1 ${darkMode ? "text-gray-400 hover:text-[#ff9800]" : "text-gray-500 hover:text-[#2c5aa0]"}`}
               onClick={fetchEmails}
             >
               <FaSyncAlt size={14} />
             </button>
             <button
-              className={
-                darkMode
-                  ? "text-gray-400 hover:text-[#ff9800]"
-                  : "text-gray-500 hover:text-[#2c5aa0]"
-              }
+              className={`p-1
+                ${
+                  darkMode
+                    ? "text-gray-400 hover:text-[#ff9800]"
+                    : "text-gray-500 hover:text-[#2c5aa0]"
+                }`}
             >
               <FaEllipsisV size={14} />
             </button>
@@ -286,6 +307,7 @@ const filteredEmails = emails.filter((email) => {
         <div
           className={`border-b ${darkMode ? "border-gray-700" : "border-gray-100"}`}
         >
+          {/* Search bar... (no changes here) */}
           <div
             className={`flex items-center px-4 py-3 ${darkMode ? "bg-gray-800" : "bg-gray-50"}`}
           >
@@ -305,6 +327,7 @@ const filteredEmails = emails.filter((email) => {
         </div>
 
         <div className="flex-1 overflow-y-auto">
+          {/* Email list mapping... (no changes here) */}
           {loading ? (
             <div
               className={`p-4 text-center ${darkMode ? "text-gray-400" : "text-gray-500"}`}
@@ -406,17 +429,25 @@ const filteredEmails = emails.filter((email) => {
 
       {/* Email Detail View */}
       <main
-        className={`flex-1 flex flex-col ${darkMode ? "bg-[#111827] border-l border-gray-700" : "bg-white border-l border-gray-100"}`}
+        className={`flex-1 flex-col ${darkMode ? "bg-[#111827] border-l border-gray-700" : "bg-white border-l border-gray-100"} ${selectedEmail ? "flex" : "hidden md:flex"}`}
       >
         {selectedEmail ? (
-          <div className="flex-1 overflow-y-auto p-8">
+          <div className="flex-1 overflow-y-auto p-4 sm:p-8">
             <div className="max-w-4xl mx-auto">
               <div className="flex justify-between items-center mb-8">
-                <h2
-                  className={`text-2xl font-bold ${darkMode ? "text-gray-200" : "text-gray-800"}`}
-                >
-                  {selectedEmail.subject}
-                </h2>
+                <div className="flex items-center gap-4">
+                  <button
+                    onClick={() => setSelectedEmail(null)}
+                    className={`md:hidden ${darkMode ? "text-gray-400 hover:text-white" : "text-gray-500 hover:text-black"}`}
+                  >
+                    <FaArrowLeft size={18} />
+                  </button>
+                  <h2
+                    className={`text-xl md:text-2xl font-bold ${darkMode ? "text-gray-200" : "text-gray-800"}`}
+                  >
+                    {selectedEmail.subject}
+                  </h2>
+                </div>
                 <div className="flex gap-4">
                   <button
                     className={
@@ -439,6 +470,7 @@ const filteredEmails = emails.filter((email) => {
                 </div>
               </div>
 
+              {/* Email Detail Body... (no changes here) */}
               <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center gap-3">
                   <div
@@ -516,7 +548,7 @@ const filteredEmails = emails.filter((email) => {
           </div>
         ) : (
           <div
-            className={`flex-1 flex flex-col items-center justify-center text-center p-8 ${darkMode ? "bg-gradient-to-br from-[#111827] to-gray-900" : "bg-gradient-to-br from-white to-[#f8fafc]"}`}
+            className={`flex-1 flex-col items-center justify-center text-center p-8 ${darkMode ? "bg-gradient-to-br from-[#111827] to-gray-900" : "bg-gradient-to-br from-white to-[#f8fafc]"} hidden md:flex`}
           >
             <div
               className={`w-24 h-24 ${darkMode ? "bg-[#ff9800]/10" : "bg-[#2c5aa0]/5"} rounded-full flex items-center justify-center mb-6`}

@@ -25,7 +25,7 @@
   overflow-y: auto;
   overflow-x: hidden;
   transition: var(--transition);
-  z-index: 100;
+  z-index: 1000; /* Increased z-index */
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
@@ -53,33 +53,79 @@
 .sidebar.collapsed {
   width: var(--sidebar-collapsed-width);
   background: #3470b2;
+  overflow: visible;
 }
 
+/* --- START: ADDED & MODIFIED STYLES FOR CLICK-TO-OPEN --- */
+
 .sidebar.collapsed .dropdown-menu {
+  display: none; 
   position: absolute;
   left: 100%;
   top: 0;
   min-width: 220px;
   background-color: white; 
-  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.15);
-  z-index: 1000;
-  border-radius: 0 8px 8px 0;
-  padding: 8px 0;
+  box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1005;
+  border-radius: 8px;
+  padding: 8px;
+  border: 1px solid #9e9fa0;
 }
 
+.sidebar.collapsed .dropdown-menu a:hover,
+.sidebar.collapsed .dropdown-menu li:hover {
+  background-color: #79b4f0; 
+  border-radius: 4px;
+}
+
+.sidebar.collapsed .menu-item.open > .dropdown-menu {
+  display: block;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.sidebar.collapsed:not(.dark) .dropdown-menu .submenu-link {
+  color: #4a5568; 
+  padding: 0.65rem 1rem;
+}
+
+.sidebar.collapsed:not(.dark) .dropdown-menu .submenu-icon svg {
+  color: #4a5568 !important;
+}
+
+.sidebar.collapsed:not(.dark) .submenu-item.active .submenu-link {
+  background-color: #79b4f0;
+  color: black;
+  font-weight: 600;
+}
+
+.sidebar.collapsed:not(.dark) .submenu-item.active .submenu-icon svg {
+  color: black !important;
+}
+
+/* ADDED: Styles for pop-out submenu items (Dark Mode) */
 .sidebar.collapsed.dark .dropdown-menu {
   background-color: #1a2236;
+  border: 1px solid #2d3748;
 }
 
-.sidebar.collapsed .menu-item:hover .dropdown-menu {
-  display: block;
+.sidebar.collapsed.dark .dropdown-menu .submenu-link {
+  color: white; 
+  padding: 0.65rem 1rem;
 }
 
-.sidebar.collapsed .dropdown-menu .submenu-link {
-  padding-left: 1rem;
+.sidebar.collapsed.dark .dropdown-menu .submenu-icon svg {
+  color: white !important;
 }
 
-/* Section Styling */
+.sidebar.collapsed.dark .submenu-item.active .submenu-link {
+  background-color: rgba(59, 130, 246, 0.3);
+  color: #ffffff;
+}
+
+.sidebar.collapsed.dark .submenu-item.active .submenu-icon svg {
+  color: #ffffff !important;
+}
+
 .sidebar-section {
   margin-bottom: 0;
 }
@@ -141,6 +187,7 @@
   width: var(--icon-size);
   height: var(--icon-size);
   flex-shrink: 0;
+  color: var(--text-color);
 }
 
 .menu-item.active .menu-link .icon-wrapper svg,
@@ -170,8 +217,8 @@
   margin-left: auto;
 }
 
-/* Dropdown Menu */
-.dropdown-menu {
+/* Dropdown Menu (Expanded State) */
+.sidebar:not(.collapsed) .dropdown-menu {
   list-style: none;
   padding: 0;
   margin: 0;
@@ -181,14 +228,8 @@
 }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .submenu-item {
@@ -198,7 +239,7 @@
 .submenu-link {
   display: flex;
   align-items: center;
-  padding: 0.65rem 1rem 0.65rem 2.5rem;
+  padding: 0.65rem 1rem 0.65rem 3.5rem; /* Indent expanded sub-items */
   color: var(--text-color);
   text-decoration: none;
   transition: var(--transition);
@@ -249,16 +290,11 @@
   margin: 0 0.5rem;
 }
 
-.sidebar.collapsed .menu-item {
-  display: flex;
-  justify-content: center;
-}
-
 .sidebar.collapsed .icon-wrapper svg {
   color: white !important;
 }
 
-.sidebar.collapsed .menu-item.active .menu-link {
+.sidebar.collapsed .menu-item.active > .menu-link {
   background-color: var(--active-bg);
 }
 
@@ -273,71 +309,104 @@
   --section-title-color: rgba(255, 255, 255, 0.5);
 }
 
-.sidebar.dark.collapsed {
-  background: linear-gradient(180deg, #141a2b 0%, #0e1321 100%);
-}
-
-.sidebar.dark .icon-wrapper svg {
+.sidebar.dark .icon-wrapper {
   color: var(--text-light);
-}
-
-.sidebar.dark .dropdown-menu {
-  background-color: #1a2236;
-  border: 1px solid #2d3748;
 }
 
 /* Responsive Adjustments */
 @media (max-width: 1024px) {
-  .sidebar:not(.collapsed) {
-    width: 240px;
-  }
+  .sidebar:not(.collapsed) { width: 240px; }
 }
-
 @media (max-width: 768px) {
-  .sidebar {
-    transform: translateX(-100%);
-  }
-
-  .sidebar:not(.collapsed) {
-    width: 40px;
-  }
-
-
-  .sidebar.collapsed {
-    transform: translateX(0);
-    width: 70px;
-  }
-
-  .sidebar:not(.collapsed) {
-    width: 210px;
-    transform: translateX(0);
-  }
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.mobile { transform: translateX(-100%); }
+  .sidebar.mobile.sidebar-open { transform: translateX(0); width: 250px; }
+  .sidebar.mobile.collapsed { transform: translateX(-100%); }
 }
 
-/* Hover effects for collapsed state */
+/* Tooltip Styles */
 .sidebar.collapsed .menu-item {
   position: relative;
 }
-
-.sidebar.collapsed .menu-link:hover::after {
-  content: attr(data-tooltip);
+/* The tooltip arrow */
+.sidebar.collapsed .menu-link::before,
+.sidebar.collapsed .dropdown-header::before {
+  content: '';
   position: absolute;
-  left: 100%;
+  
+  /* CHANGED: Position on the left side of the tooltip box */
+  right: 0%; /* Start at the same point as the box */
   top: 50%;
   transform: translateY(-50%);
-  background: #2d3748;
-  color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  font-size: 0.85rem;
-  white-space: nowrap;
-  margin-left: 12px;
+  margin-left: 0px; /* Position it in the gap */
+
   pointer-events: none;
   z-index: 1000;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  
+  /* CHANGED: Create a LEFT-pointing triangle */
+  width: 12px;
+  height: 10px;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-right: 5px solid #2d3748; /* Arrow color matches light mode bg */
+
+  /* Initially hidden */
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s 0.1s ease, visibility 0.2s 0.1s ease;
 }
 
-.sidebar.dark.collapsed .menu-link:hover::after {
+/* Show tooltip and arrow on hover */
+.sidebar.collapsed .menu-link:hover::after,
+.sidebar.collapsed .menu-link:hover::before,
+.sidebar.collapsed .dropdown-header:hover::after,
+.sidebar.collapsed .dropdown-header:hover::before {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Dark mode tooltip styles (overrides the light mode colors) */
+.sidebar.dark.collapsed .menu-link::after,
+.sidebar.dark.collapsed .dropdown-header::after {
+  background: #1a2236; /* Darker background */
+  border: 1px solid #2d3748;
+}
+
+
+.sidebar.collapsed .menu-link::after,
+.sidebar.collapsed .dropdown-header::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: 85%; 
+  top: 50%;   
+  transform: translateY(-50%); 
+  margin-left: 12px;
+  background: #333; 
+  color: white;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 1010; 
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s 0.1s ease, visibility 0.2s 0.1s ease;
+}
+
+/* MODIFIED: Prevents tooltip from showing when the pop-out menu is open */
+.sidebar.collapsed .menu-item:not(.open) .menu-link:hover::after,
+.sidebar.collapsed .menu-item:not(.open) .dropdown-header:hover::after {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Dark mode tooltip styles */
+.sidebar.dark.collapsed .menu-link::after,
+.sidebar.dark.collapsed .dropdown-header::after {
   background: #1a2236;
   border: 1px solid #2d3748;
 }
+

@@ -31,7 +31,7 @@ const getColorForInvitee = (inviteeId, invitees) => {
   return colors[index % colors.length];
 };
 
-const Approve = () => {
+const Approve = ({darkMode}) => {
   const token = localStorage.getItem("userToken");
   const { documentId } = useParams();
   const navigate = useNavigate();
@@ -287,19 +287,19 @@ const Approve = () => {
       {isSidebarOpen && (
         <>
           <div
-            className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40"
+            className={`fixed inset-0 ${darkMode ? 'bg-black/40' : 'bg-black/20'} backdrop-blur-sm z-40`}
             onClick={handleCloseSidebar}
           ></div>
-          <div className="fixed top-0 right-0 h-full w-full sm:w-[300px] bg-white shadow-2xl z-[2000] p-0 transform transition-all duration-300 ease-in-out translate-x-0 overflow-hidden">
-            <div className="sticky top-0 z-10 bg-white/80 backdrop-blur-md p-5 border-b border-gray-100">
+          <div className={`fixed top-0 right-0 h-full w-full sm:w-[300px] ${darkMode ? 'bg-gray-800' : 'bg-white'} shadow-2xl z-[2000] p-0 transform transition-all duration-300 ease-in-out translate-x-0 overflow-hidden`}>
+            <div className={`sticky top-0 z-10 ${darkMode ? 'bg-gray-800/80 border-gray-700' : 'bg-white/80 border-gray-100'} backdrop-blur-md p-5 border-b`}>
               <div className="flex justify-between items-center">
                 <div className="flex items-center space-x-3">
-                  <div className="p-2 rounded-lg bg-blue-100 text-blue-600">
+                  <div className={`p-2 rounded-lg ${darkMode ? 'bg-blue-900 text-blue-200' : 'bg-blue-100 text-blue-600'}`}>
                     <FaUsers className="text-xl" />
                   </div>
                   <div>
-                    <h2 className="text-lg font-bold text-gray-900">Signers</h2>
-                    <p className="text-xs text-gray-500">
+                    <h2 className={`text-lg font-bold ${darkMode ? 'text-gray-100' : 'text-gray-900'}`}>Signers</h2>
+                    <p className={`text-xs ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>
                       {invitees.length}{" "}
                       {invitees.length === 1 ? "participant" : "participants"}
                     </p>
@@ -307,11 +307,11 @@ const Approve = () => {
                 </div>
                 <button
                   onClick={handleCloseSidebar}
-                  className="p-1 rounded-full hover:bg-gray-100 transition-colors"
+                  className={`p-1 rounded-full ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'} transition-colors`}
                   aria-label="Close sidebar"
                 >
                   <svg
-                    className="w-5 h-5 text-gray-500"
+                    className={`w-5 h-5 ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -339,7 +339,7 @@ const Approve = () => {
                   return (
                     <li
                       key={invitee.id}
-                      className="group flex items-center p-3 rounded-xl hover:bg-gray-50 transition-all duration-200 border border-gray-100 hover:border-gray-200"
+                      className={`group flex items-center p-3 rounded-xl transition-all duration-200 border ${darkMode ? 'border-gray-700 hover:bg-gray-700 hover:border-gray-600' : 'border-gray-100 hover:bg-gray-50 hover:border-gray-200'}`}
                     >
                       <div
                         className={`relative flex-shrink-0 h-11 w-11 rounded-xl flex items-center justify-center font-bold ${textColor} shadow-md`}
@@ -349,16 +349,16 @@ const Approve = () => {
                         <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></span>
                       </div>
                       <div className="ml-4 flex-1 min-w-0">
-                        <p className="font-medium text-gray-900 truncate">
+                        <p className={`font-medium ${darkMode ? 'text-gray-100' : 'text-gray-900'} truncate`}>
                           {invitee.name}
                         </p>
-                        <p className="text-xs text-gray-500 truncate">
+                        <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'} truncate`}>
                           {invitee.email}
                         </p>
                       </div>
                       <div className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity">
                         <svg
-                          className="w-5 h-5 text-gray-400"
+                          className={`w-5 h-5 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -377,7 +377,7 @@ const Approve = () => {
               </ul>
             </div>
 
-            <div className="absolute bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-white via-white to-white/80 border-t border-gray-100">
+            <div className={`absolute bottom-0 left-0 right-0 p-5 ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} border-t`}>
               <button
                 onClick={handleCloseSidebar}
                 className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl transition-all duration-200 shadow hover:shadow-md flex items-center justify-center space-x-2"
@@ -403,14 +403,14 @@ const Approve = () => {
       )}
 
       {/* Main Content Area */}
-      <div className="font-sans py-4 px-2 sm:px-4">
+      <div className={`font-sans py-4 px-2 sm:px-4 ${darkMode ? 'bg-gray-900' : ''}`}>
         <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col items-center p-4 bg-gray-50 rounded-xl shadow-lg border border-gray-200">
+          <div className={`flex flex-col items-center p-4 rounded-xl shadow-lg border ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-gray-50 border-gray-200'}`}>
             <div className="w-full text-center mb-4">
-              <h1 className="md:text-xl xs:text-[16px] font-bold text-gray-800">
+              <h1 className={`md:text-xl xs:text-[16px] font-bold ${darkMode ? 'text-gray-100' : 'text-gray-800'}`}>
                 Prepare Document for Signing
               </h1>
-              <p className="md:text-sm xs:text-[10px] text-gray-600">
+              <p className={`md:text-sm xs:text-[10px] ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                 {invitees.length > 0
                   ? "Drag a signature field to apply its position to all pages for that signer."
                   : "Loading invitees..."}
@@ -418,12 +418,12 @@ const Approve = () => {
             </div>
 
             <div
-              className="overflow-y-auto w-full bg-gray-200 p-2 sm:p-4 rounded-lg"
+              className={`overflow-y-auto w-full p-2 sm:p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gray-200'}`}
               style={{ maxHeight: "60vh" }}
             >
               {loading ? (
                 <div className="flex justify-center items-center h-[400px]">
-                  <p className="text-lg font-semibold">
+                  <p className={`text-lg font-semibold ${darkMode ? 'text-gray-200' : ''}`}>
                     Loading document, please wait...
                   </p>
                 </div>
@@ -464,10 +464,10 @@ const Approve = () => {
                                 }
                               >
                                 <div
-                                  className="absolute z-[1000] mt-4 flex flex-col justify-center items-center p-1 bg-white bg-opacity-90 backdrop-blur-sm rounded-md shadow-lg cursor-move"
+                                  className={`absolute z-[1000] mt-4 flex flex-col justify-center items-center p-1 rounded-md shadow-lg cursor-move ${darkMode ? 'bg-gray-600 bg-opacity-90' : 'bg-white bg-opacity-90'}`}
                                   style={{
-                                    width: `${Math.min(pdfWidth * 0.25, 160)}px`, // Responsive width (25% of pdf width or max 160px)
-                                    height: `${Math.min(pdfWidth * 0.08, 50)}px`, // Responsive height (8% of pdf width or max 50px)
+                                    width: `${Math.min(pdfWidth * 0.25, 160)}px`,
+                                    height: `${Math.min(pdfWidth * 0.08, 50)}px`,
                                     border: `2px dashed ${getColorForInvitee(sig.inviteeId, invitees)}`,
                                   }}
                                 >
@@ -475,7 +475,7 @@ const Approve = () => {
                                     onClick={() =>
                                       handleRemoveSignature(sig.id)
                                     }
-                                    className="absolute -top-3 -right-3 text-red-500 hover:text-red-700 bg-white p-[2px] rounded-full z-10"
+                                    className={`absolute -top-3 -right-3 ${darkMode ? 'text-red-400 hover:text-red-300 bg-gray-700' : 'text-red-500 hover:text-red-700 bg-white'} p-[2px] rounded-full z-10`}
                                     title="Remove field from this page"
                                   >
                                     <TiDelete size={Math.min(pdfWidth * 0.04, 26)} /> 
@@ -492,7 +492,7 @@ const Approve = () => {
                                   >
                                     {sig.inviteeName}
                                   </p>
-                                  <p className="text-[8px] text-gray-500">
+                                  <p className={`text-[8px] ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>
                                     Signature Field
                                   </p>
                                 </div>
@@ -502,7 +502,7 @@ const Approve = () => {
                         <Page 
                           pageNumber={pageNum} 
                           width={pdfWidth}
-                          className="border border-gray-300"
+                          className={`border ${darkMode ? 'border-gray-600' : 'border-gray-300'}`}
                         />
                       </div>
                     );
@@ -510,7 +510,7 @@ const Approve = () => {
                 </Document>
               ) : (
                 <div className="flex justify-center items-center h-[70vh]">
-                  <p className="text-xl text-red-500 font-semibold">
+                  <p className={`text-xl font-semibold ${darkMode ? 'text-red-400' : 'text-red-500'}`}>
                     Document could not be loaded.
                   </p>
                 </div>
@@ -518,17 +518,17 @@ const Approve = () => {
             </div>
 
             {!loading && (
-              <div className="mt-6 w-full flex flex-col sm:flex-row justify-center items-center gap-4 p-4 bg-white rounded-lg shadow-inner">
+              <div className={`mt-6 w-full flex flex-col sm:flex-row justify-center items-center gap-4 p-4 rounded-lg shadow-inner ${darkMode ? 'bg-gray-700' : 'bg-white'}`}>
                 <button
                   onClick={handleViewInvitees}
-                  className="w-full sm:w-auto px-6 py-3 bg-white border border-gray-300 text-gray-700 md:text-[15px] xs:text-[12px] font-semibold rounded-lg hover:bg-gray-100 transition-colors flex items-center justify-center gap-2"
+                  className={`w-full sm:w-auto px-6 py-3 md:text-[15px] xs:text-[12px] font-semibold rounded-lg transition-colors flex items-center justify-center gap-2 ${darkMode ? 'bg-gray-600 border-gray-500 text-gray-100 hover:bg-gray-500' : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-100'} border`}
                 >
                   <FaUsers /> View Invitees
                 </button>
                 <button
                   onClick={handleSendToSign}
                   disabled={signatures.length === 0}
-                  className="w-full sm:w-auto px-8 py-3 bg-[#3470b2] text-white md:text-[15px] xs:text-[12px] font-bold rounded-lg transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+                  className={`w-full sm:w-auto px-8 py-3 md:text-[15px] xs:text-[12px] font-bold rounded-lg transition-colors ${darkMode ? 'bg-[#ff4500] hover:bg-[#ff4500]' : 'bg-[#3470b2]'} text-white disabled:bg-gray-400 disabled:cursor-not-allowed`}
                 >
                   Send for Signature ({signatures.length} fields)
                 </button>

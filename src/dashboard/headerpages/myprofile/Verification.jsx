@@ -242,17 +242,20 @@ const Verification = ({ darkMode }) => {
             <p className="instruction-text">
               Enter your Aadhaar number to receive OTP.
             </p>
-            <input
-              type="text"
-              placeholder="Aadhaar Number"
-              value={aadhaar}
-              onChange={(e) => {
-                setAadhaar(e.target.value);
-                setIsAadhaarOtpSent(false);
-              }}
-              maxLength="12"
-              disabled={loading}
-            />
+            <div className="input-of-adhar-detail-bank-details">
+              <input
+                type="text"
+                placeholder="Aadhaar Number"
+                className="dark-mode-input-of-adhar-detail-bank-details"
+                value={aadhaar}
+                onChange={(e) => {
+                  setAadhaar(e.target.value);
+                  setIsAadhaarOtpSent(false);
+                }}
+                maxLength="12"
+                disabled={loading}
+              />
+            </div>
 
             {isAadhaarOtpSent && (
               <div className="transaction-info">
@@ -260,6 +263,7 @@ const Verification = ({ darkMode }) => {
                 <input
                   type="text"
                   placeholder="Enter OTP"
+                  className="dark-mode-input-of-adhar-detail-bank-details"
                   value={aadhaarOtp}
                   onChange={(e) => setAadhaarOtp(e.target.value)}
                   maxLength="6"
@@ -292,14 +296,17 @@ const Verification = ({ darkMode }) => {
           <div className="verification-section">
             <h3>PAN Verification</h3>
             <p className="instruction-text">Enter your PAN number</p>
-            <input
-              type="text"
-              placeholder="PAN Number"
-              value={pan}
-              onChange={(e) => setPan(e.target.value.toUpperCase())}
-              maxLength="10"
-              disabled={loading}
-            />
+            <div className="input-of-adhar-detail-bank-details">
+              <input
+                type="text"
+                placeholder="PAN Number"
+                className="dark-mode-input-of-adhar-detail-bank-details"
+                value={pan}
+                onChange={(e) => setPan(e.target.value.toUpperCase())}
+                maxLength="10"
+                disabled={loading}
+              />
+            </div>
             <div className="transaction-info">
               <p>Transaction ID: {panTransactionId}</p>
             </div>
@@ -317,20 +324,24 @@ const Verification = ({ darkMode }) => {
           <div className="verification-section">
             <h3>Bank Verification</h3>
             <p className="instruction-text">Enter your bank details</p>
-            <input
-              type="text"
-              placeholder="Account Number"
-              value={bankAccount}
-              onChange={(e) => setBankAccount(e.target.value)}
-              disabled={loading}
-            />
-            <input
-              type="text"
-              placeholder="IFSC Code"
-              value={ifsc}
-              onChange={(e) => setIfsc(e.target.value.toUpperCase())}
-              disabled={loading}
-            />
+            <div className="input-of-accont-detail-bank-details">
+              <input
+                type="text"
+                placeholder="Account Number"
+                className="input-of-account-number-bank-details"
+                value={bankAccount}
+                onChange={(e) => setBankAccount(e.target.value)}
+                disabled={loading}
+              />
+              <input
+                type="text"
+                placeholder="IFSC Code"
+                className="input-of-account-number-bank-details"
+                value={ifsc}
+                onChange={(e) => setIfsc(e.target.value.toUpperCase())}
+                disabled={loading}
+              />
+            </div>
             <div className="transaction-info">
               <p>Transaction ID: {bankTransactionId}</p>
             </div>
@@ -343,7 +354,6 @@ const Verification = ({ darkMode }) => {
             </button>
           </div>
         )}
-       
       </div>
     </div>
   );

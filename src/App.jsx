@@ -19,17 +19,9 @@ import Myprofile from "./dashboard/headerpages/myprofile/Myprofile";
 import Kycstatus from "./dashboard/headerpages/kycstatus/Kycstatus";
 import Apicredential from "./dashboard/sidebarpages/menu/devtool/api-credential/Apicredential";
 import Transactionhistory from "./dashboard/sidebarpages/wallettransaction/Transactionhistory";
-import Email from "./dashboard/sidebarpages/document/email/emailnotification/Email";
-import EmailDetail from "./dashboard/sidebarpages/document/email/emaildetail/Emaildetail";
 import Emaildashboard from "./dashboard/sidebarpages/document/email/Emaildashboard";
 import Verification from "./dashboard/headerpages/myprofile/Verification";
-import Trash from "./dashboard/sidebarpages/document/email/trash/Trash";
-import Sent from "./dashboard/sidebarpages/document/email/sent/Sent";
-import Starred from "./dashboard/sidebarpages/document/email/starred/Starred";
-import Drafts from "./dashboard/sidebarpages/document/email/drafts/Drafts";
-import Compose from "./dashboard/sidebarpages/document/email/compose/Compose";
 import MobileMenu from "./dashboard/sidebarpages/footer/mobilemenu/Mobilemenu";
-import { GrToast } from "react-icons/gr";
 import { ToastContainer } from "react-toastify";
 import SignedAgreement from "./dashboard/sidebarpages/document/documentfile/SignedAgreement";
 import PdfSign from "./dashboard/headerpages/myprofile/PdfSign";
@@ -143,7 +135,7 @@ function App() {
                 path="verification"
                 element={<Verification darkMode={darkMode} />}
               />
-              <Route path="sign-agreement" element={<Agreement />} />
+              <Route path="sign-agreement" element={<Agreement darkMode={darkMode}/>} />
               <Route
                 path="pdf-sign"
                 element={<PdfSign darkMode={darkMode} />}
@@ -151,10 +143,10 @@ function App() {
               <Route path="kycstatus" element={<Kycstatus />} />
               <Route path="mobilemenu" element={<MobileMenu />} />
               {/* ---------------------create header pagese routes--------------------------- */}
-              <Route path="createfile" element={<Createfile />} />
-              <Route path="requestfile/:documentId" element={<Requestfile />} />
-              <Route path="approve/:documentId" element={<Approve />} />
-              <Route path="allinvities" element={<Allinvites />} />
+              <Route path="createfile" element={<Createfile darkMode={darkMode}/>} />
+              <Route path="requestfile/:documentId" element={<Requestfile darkMode={darkMode}/>} />
+              <Route path="approve/:documentId" element={<Approve darkMode={darkMode}/>} />
+              <Route path="allinvities" element={<Allinvites darkMode={darkMode}/>} />
             </Route>
 
             {/* __________________________________Outsidepdf routes_____________________________ */}

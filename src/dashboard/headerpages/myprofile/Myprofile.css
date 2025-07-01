@@ -9,7 +9,7 @@
 }
 
 .kyc-container.dark-mode {
-    background: #2a2a2a;
+    background: #1f2937;
     color: #f0f0f0;
 }
 
@@ -57,7 +57,7 @@
 }
 
 .kyc-container.dark-mode .form-section {
-    border-bottom-color: #444;
+    border-bottom-color: #374151;
 }
 
 .form-section h2 {
@@ -93,7 +93,7 @@
 }
 
 .kyc-container.dark-mode .image-placeholder {
-    background-color: #444;
+    background-color: #374151;
     color: #aaa;
 }
 
@@ -130,8 +130,8 @@
 }
 
 .kyc-container.dark-mode .form-row input {
-    background: #3a3a3a;
-    border-color: #555;
+    background: #374151;
+    border-color: #4b5563;
     color: #f0f0f0;
 }
 

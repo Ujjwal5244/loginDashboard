@@ -2,7 +2,7 @@
 
 /* Base Styles */
 .verification-container {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   max-width: 600px;
   margin: 2rem auto;
   padding: 2rem;
@@ -60,7 +60,7 @@
 }
 
 .stepper-step.completed::after {
-  content: '✓';
+  content: "✓";
   font-size: 1.2rem;
 }
 
@@ -82,15 +82,20 @@
 
 /* Form Content Styles */
 
-
 .verification-section {
   animation: fadeIn 0.5s ease;
   padding: 10px;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .verification-section h3 {
@@ -111,12 +116,18 @@
 input {
   width: 100%;
   padding: 12px 16px;
-  margin-bottom: 1rem;
+  /* margin-bottom: 1rem; */
   border: 1px solid #ddd;
   border-radius: 8px;
   font-size: 1rem;
   transition: all 0.3s ease;
   box-sizing: border-box;
+}
+.input-of-adhar-detail-bank-details {
+  margin-bottom: 1rem;
+}
+.input-of-account-number-bank-details{
+  margin-bottom: 1rem;
 }
 
 input:focus {
@@ -168,7 +179,7 @@ input:focus {
 
 /* Verification.css - Dark Mode Styles */
 .verification-container.dark-mode {
-  background-color: #121212;
+  background-color: #1f2937;
   color: #e0e0e0;
 }
 
@@ -182,7 +193,7 @@ input:focus {
 
 /* Stepper Dark Mode */
 .dark-mode .verification-stepper {
-  background-color: #1e1e1e;
+  background-color: #1f2937;
 }
 
 .dark-mode .stepper-step {
@@ -218,8 +229,8 @@ input:focus {
 }
 
 .dark-mode .verification-section {
-  background-color: #2d2d2d;
-  border: 1px solid #3a3a3a;
+  background-color: #111827;
+  border: 1px solid #374151;
 }
 
 .dark-mode .verification-section h3 {
@@ -230,18 +241,23 @@ input:focus {
   color: #b0b0b0;
 }
 
-.dark-mode input {
-  background-color: #333;
+.dark-mode .dark-mode-input-of-adhar-detail-bank-details,
+.dark-mode .input-of-account-number-bank-details {
+  background-color: #374151;
   color: #ffffff;
   border: 1px solid #444;
 }
 
-.dark-mode input:focus {
+
+.dark-mode .dark-mode-input-of-adhar-detail-bank-details:focus,
+.dark-mode .input-of-account-number-bank-details:focus {
   border-color: #bb86fc;
   box-shadow: 0 0 0 2px rgba(187, 134, 252, 0.3);
 }
 
-.dark-mode input::placeholder {
+
+.dark-mode .dark-mode-input-of-adhar-detail-bank-details::placeholder,
+.dark-mode .input-of-account-number-bank-details::placeholder {
   color: #888;
 }
 
@@ -261,7 +277,7 @@ input:focus {
 }
 
 .dark-mode .primary-btn:disabled {
-  background-color: #3a3a3a;
+  background-color: #374151;
   color: #666;
 }
 
@@ -282,9 +298,9 @@ input:focus {
 /* Responsive adjustments for dark mode */
 @media (max-width: 768px) {
   .dark-mode .verification-container {
-    background-color: #121212;
+    background-color: #1f2937;
   }
-  
+
   .dark-mode .verification-content {
     border: none;
   }
@@ -296,16 +312,16 @@ input:focus {
     margin: 1rem;
     padding: 1.5rem;
   }
-  
+
   .verification-header h2 {
     font-size: 1.5rem;
   }
-  
+
   .stepper-step {
     width: 30px;
     height: 30px;
   }
-  
+
   .stepper-line {
     max-width: 60px;
   }
@@ -315,22 +331,23 @@ input:focus {
   .verification-container {
     padding: 1rem;
   }
-  
+
   .verification-header h2 {
     font-size: 1.3rem;
   }
-  
+
   .stepper-step {
     width: 26px;
     height: 26px;
     font-size: 0.8rem;
   }
-  
+
   .stepper-line {
     max-width: 40px;
   }
-  
-  input, .primary-btn {
+
+  input,
+  .primary-btn {
     padding: 10px 14px;
   }
 }

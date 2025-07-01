@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./Agreement.css";
 import { baseUrl } from "../../../encryptDecrypt";
 
-const Agreement = () => {
+const Agreement = ({ darkMode }) => {
   const navigate = useNavigate();
   const token = localStorage.getItem("userToken");
 
@@ -64,49 +64,55 @@ const Agreement = () => {
   };
 
   return (
-    <div className="sign-agreement-container">
+    <div className={`sign-agreement-container ${darkMode ? "dark-mode" : ""}`}>
       <div className="sign-agreement-header">
         <div className="sign-header">
-          <h1>Your Agreement Document</h1>
-          <p>Preview and download your document</p>
+          <h1 className={`sign-header-h ${darkMode ? "dark-text" : ""}`}>Your Agreement Document</h1>
+          <p className={`sign-header-p ${darkMode ? "dark-text" : ""}`}>Preview and download your document</p>
         </div>
       </div>
 
-      <div className="pdf-preview">
+      <div className={`pdf-preview ${darkMode ? "dark-pdf-container" : ""}`}>
         {!loading && pdfUrl ? (
           <iframe
             src={pdfUrl}
             title="Sign Agreement"
             width="100%"
             height="600px"
+            className={darkMode ? "dark-iframe" : ""}
           />
         ) : (
-          <p>{loading ? "Loading PDF preview..." : "No PDF available."}</p>
+          <p className={darkMode ? "dark-text" : ""}>
+            {loading ? "Loading PDF preview..." : "No PDF available."}
+          </p>
         )}
       </div>
-      <div className="terms-container">
+      <div className={`terms-container ${darkMode ? "dark-terms" : ""}`}>
         <div className="terms-content">
-          <h2>Terms and Conditions</h2>
+          <h2 className={darkMode ? "dark-text" : ""}>Terms and Conditions</h2>
         </div>
         <div className="terms-checkbox">
-          <div className="sign-terms-checkbox">
+          <div className={`sign-terms-checkbox ${darkMode ? "dark-checkbox" : ""}`}>
             <input
               type="checkbox"
               id="acceptTerms"
-              className="checkbox-margin-top"
+              className={`checkbox-margin-top ${darkMode ? "dark-checkbox-input" : ""}`}
               checked={acceptedTerms}
               onChange={(e) => setAcceptedTerms(e.target.checked)}
             />
-            <label htmlFor="acceptTerms">
+            <label htmlFor="acceptTerms" className={darkMode ? "dark-text" : ""}>
               I have read and agree to the terms and conditions above.
             </label>
           </div>
           <div className="terms-buttons">
-            <button className="decline-btn" onClick={handleDeclineTerms}>
+            <button 
+              className={`decline-btn ${darkMode ? "dark-decline-btn" : ""}`} 
+              onClick={handleDeclineTerms}
+            >
               Decline
             </button>
             <button
-              className="accept-btn"
+              className={`accept-btn ${darkMode ? "dark-accept-btn" : ""}`}
               onClick={handleAcceptTerms}
               disabled={!acceptedTerms}
             >

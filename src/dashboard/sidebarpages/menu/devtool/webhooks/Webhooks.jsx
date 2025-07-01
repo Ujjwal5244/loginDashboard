@@ -498,77 +498,7 @@ const Webhooks = ({darkMode}) => {
         </table>
       </div>
 
-      {/* Pagination controls */}
-      <div className="webhook-table-footer">
-        <div className="webhook-items-per-page">
-          <label>Items per page:</label>
-          <select
-            value={itemsPerPage}
-            onChange={handleItemsPerPageChange}
-            disabled={loading}
-          >
-            {itemsPerPageOptions.map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="webhook-pagination-info">
-          Showing {filteredWebhooks.length > 0 ? indexOfFirstItem + 1 : 0}-
-          {Math.min(indexOfLastItem, filteredWebhooks.length)} of{" "}
-          {filteredWebhooks.length} items
-        </div>
-
-        {totalPages > 1 && (
-          <div className="webhook-pagination">
-            <button
-              onClick={() => paginate(currentPage - 1)}
-              disabled={currentPage === 1 || loading}
-              className="webhook-pagination-button"
-            >
-              Previous
-            </button>
-
-            {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-              let pageNumberToShow;
-              if (totalPages <= 5) {
-                pageNumberToShow = i + 1;
-              } else if (currentPage <= 3) {
-                pageNumberToShow = i + 1;
-              } else if (currentPage >= totalPages - 2) {
-                pageNumberToShow = totalPages - 4 + i;
-              } else {
-                pageNumberToShow = currentPage - 2 + i;
-              }
-              if (pageNumberToShow > 0 && pageNumberToShow <= totalPages) {
-                return (
-                  <button
-                    key={pageNumberToShow}
-                    onClick={() => paginate(pageNumberToShow)}
-                    className={`webhook-pagination-button ${currentPage === pageNumberToShow ? "active" : ""}`}
-                    disabled={loading}
-                  >
-                    {pageNumberToShow}
-                  </button>
-                );
-              }
-              return null;
-            })}
-
-            <button
-              onClick={() => paginate(currentPage + 1)}
-              disabled={currentPage === totalPages || loading}
-              className="webhook-pagination-button"
-            >
-              Next
-            </button>
-          </div>
-        )}
-      </div>
-
-      {/* Mobile cards */}
+       {/* Mobile cards */}
       <div className="webhook-mobile-cards-container">
         {currentItems.map((item, index) => (
           <div key={`mobile-${item._id}`} className="webhook-card">
@@ -680,6 +610,76 @@ const Webhooks = ({darkMode}) => {
         ))}
          {currentItems.length === 0 && !loading && (
           <div className="webhook-no-data-mobile">No Webhooks Found</div>
+        )}
+      </div>
+
+      {/* Pagination controls */}
+      <div className="webhook-table-footer">
+        <div className="webhook-items-per-page">
+          <label>Items per page:</label>
+          <select
+            value={itemsPerPage}
+            onChange={handleItemsPerPageChange}
+            disabled={loading}
+          >
+            {itemsPerPageOptions.map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="webhook-pagination-info">
+          Showing {filteredWebhooks.length > 0 ? indexOfFirstItem + 1 : 0}-
+          {Math.min(indexOfLastItem, filteredWebhooks.length)} of{" "}
+          {filteredWebhooks.length} items
+        </div>
+
+        {totalPages > 1 && (
+          <div className="webhook-pagination">
+            <button
+              onClick={() => paginate(currentPage - 1)}
+              disabled={currentPage === 1 || loading}
+              className="webhook-pagination-button"
+            >
+              Previous
+            </button>
+
+            {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+              let pageNumberToShow;
+              if (totalPages <= 5) {
+                pageNumberToShow = i + 1;
+              } else if (currentPage <= 3) {
+                pageNumberToShow = i + 1;
+              } else if (currentPage >= totalPages - 2) {
+                pageNumberToShow = totalPages - 4 + i;
+              } else {
+                pageNumberToShow = currentPage - 2 + i;
+              }
+              if (pageNumberToShow > 0 && pageNumberToShow <= totalPages) {
+                return (
+                  <button
+                    key={pageNumberToShow}
+                    onClick={() => paginate(pageNumberToShow)}
+                    className={`webhook-pagination-button ${currentPage === pageNumberToShow ? "active" : ""}`}
+                    disabled={loading}
+                  >
+                    {pageNumberToShow}
+                  </button>
+                );
+              }
+              return null;
+            })}
+
+            <button
+              onClick={() => paginate(currentPage + 1)}
+              disabled={currentPage === totalPages || loading}
+              className="webhook-pagination-button"
+            >
+              Next
+            </button>
+          </div>
         )}
       </div>
     </div>

@@ -99,7 +99,7 @@ const Home = () => {
         Welcome {profileData.name}
       </h1>
       {profileData.kycStatus !== "verified" && (
-        <Link to="/kyc-verification">
+        <Link>
           <button
             className={`complete-Kyc-verification-btn ${isVisible ? "visible pulse" : ""}`}
           >

@@ -2,20 +2,29 @@ import React, { useState } from "react";
 import { CreditCard, Key, Plus, Check, Shield } from "lucide-react";
 import { MapPinIcon, UserCircleIcon } from "@heroicons/react/24/outline";
 
-// Reusable ToggleSwitch componentconst
-const ToggleSwitch = ({ enabled, setEnabled }) => {
+// Reusable ToggleSwitch component
+const ToggleSwitch = ({ enabled, setEnabled, darkMode }) => {
   return (
     <button
       onClick={() => setEnabled(!enabled)}
       className={`
         relative inline-flex items-center
-        h-7 w-14  /* A single, good-looking size */
+        h-5 w-9
         flex-shrink-0 cursor-pointer rounded-full 
         border-2 border-transparent 
-        p-1       /* Crucial: adds padding for the thumb to sit in */
+        p-1
         transition-colors duration-200 ease-in-out 
         focus:outline-none focus:ring-1 focus:ring-green-500 focus:ring-offset-1
-        ${enabled ? "bg-[#3470b2]" : "bg-gray-200"}
+        ${
+          enabled
+            ? darkMode
+              ? "bg-orange-600"
+              : "bg-[#3470b2]"
+            : darkMode
+              ? "bg-gray-600"
+              : "bg-gray-200"
+        }
+        ${darkMode ? "focus:ring-offset-gray-800" : ""}
       `}
       role="switch"
       aria-checked={enabled}
@@ -25,11 +34,11 @@ const ToggleSwitch = ({ enabled, setEnabled }) => {
         aria-hidden="true"
         className={`
           pointer-events-none inline-block 
-          h-5 w-5  /* Sized to fit perfectly inside the padded track */
+          h-4 w-4
           transform rounded-full bg-white shadow-lg 
-          ring-0    /* Ensures no extra rings are accidentally applied */
+          ring-0
           transition duration-200 ease-in-out
-          ${enabled ? "translate-x-7" : "translate-x-0"}
+          ${enabled ? "translate-x-3" : "translate-x-0"}
         `}
       />
     </button>
@@ -37,18 +46,22 @@ const ToggleSwitch = ({ enabled, setEnabled }) => {
 };
 
 // Security Field Component
-const SecurityField = ({ id, index, onRemove, canBeRemoved }) => {
+const SecurityField = ({ id, index, onRemove, canBeRemoved, darkMode }) => {
   const [isRequired, setIsRequired] = useState(true);
   return (
-    <div className="space-y-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+    <div
+      className={`space-y-4 rounded-lg border p-4 shadow-sm ${darkMode ? "bg-gray-700 border-gray-600" : "bg-white border-gray-200"}`}
+    >
       <div className="flex items-center justify-between">
-        <h3 className="font-semibold text-[15px] text-gray-700">
+        <h3
+          className={`font-semibold text-[15px] ${darkMode ? "text-gray-200" : "text-gray-700"}`}
+        >
           Security Field {index + 1}
         </h3>
         {canBeRemoved && (
           <button
             onClick={() => onRemove(id)}
-            className="text-[10px] font-medium text-red-500 hover:text-red-700"
+            className={`text-[10px] font-medium ${darkMode ? "text-red-400 hover:text-red-300" : "text-red-500 hover:text-red-700"}`}
           >
             Remove Field
           </button>
@@ -57,7 +70,7 @@ const SecurityField = ({ id, index, onRemove, canBeRemoved }) => {
       <div className="space-y-1">
         <label
           htmlFor={`field-label-${id}`}
-          className="block text-[12px] font-medium text-gray-700"
+          className={`block text-[12px] font-medium ${darkMode ? "text-gray-300" : "text-gray-700"}`}
         >
           Field Label <span className="text-red-500">*</span>
         </label>
@@ -65,20 +78,20 @@ const SecurityField = ({ id, index, onRemove, canBeRemoved }) => {
           type="text"
           id={`field-label-${id}`}
           placeholder="e.g. What is your mother's name"
-          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-[#3470b2] focus:ring-[#3470b2] sm:text-sm"
+          className={`block w-full rounded-md shadow-sm focus:border-[#3470b2] focus:ring-[#3470b2] sm:text-sm ${darkMode ? "bg-gray-800 border-gray-600 text-gray-200 placeholder-gray-400" : "border-gray-300"}`}
         />
       </div>
       <div className="space-y-1.5">
         <label
           htmlFor={`field-type-${id}`}
-          className="block text-sm font-medium text-gray-700 mb-1"
+          className={`block text-sm font-medium mb-1 ${darkMode ? "text-gray-300" : "text-gray-700"}`}
         >
           Field Type <span className="text-red-500">*</span>
         </label>
         <div className="relative">
           <select
             id={`field-type-${id}`}
-            className="block w-full pl-3 pr-10 py-2.5 text-base border border-gray-300 rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-[#3470b2] focus:border-[#3470b2] transition-all duration-200 appearance-none"
+            className={`block w-full pl-3 pr-10 py-2.5 text-base border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#3470b2] focus:border-[#3470b2] transition-all duration-200 appearance-none ${darkMode ? "bg-gray-800 border-gray-400 text-gray-200" : "bg-white border-gray-300"}`}
           >
             <option className="py-2">Text</option>
             <option className="py-2">Number</option>
@@ -101,103 +114,129 @@ const SecurityField = ({ id, index, onRemove, canBeRemoved }) => {
         </div>
       </div>
       <div className="flex items-center justify-between gap-4">
-        <span className="text-sm font-medium text-gray-700">
+        <span
+          className={`text-sm font-medium ${darkMode ? "text-gray-300" : "text-gray-700"}`}
+        >
           Required Field
         </span>
-        <ToggleSwitch enabled={isRequired} setEnabled={setIsRequired} />
+        <ToggleSwitch
+          enabled={isRequired}
+          setEnabled={setIsRequired}
+          darkMode={darkMode}
+        />
       </div>
     </div>
   );
 };
 
 // Aadhaar Section Component
-const AadhaarSection = () => {
+const AadhaarSection = ({ darkMode }) => {
   const [enableAadhaar, setEnableAadhaar] = useState(false);
   const [maskAadhaar, setMaskAadhaar] = useState(true);
 
+  const inputStyles = `block w-full rounded-md shadow-sm focus:border-[#3470b2] focus:ring-[#3470b2] sm:text-sm ${darkMode ? "bg-gray-800 border-gray-400 text-gray-200 placeholder-gray-400" : "border-gray-300"}`;
+  const labelStyles = `block text-sm font-medium ${darkMode ? "text-gray-300" : "text-gray-700"}`;
+  const selectStyles = `block w-full rounded-md border pl-10 shadow-sm focus:border-[#3470b2] focus:ring-[#3470b2] sm:text-sm py-2 ${darkMode ? "bg-gray-800 border-gray-600 text-gray-200 placeholder-gray-400" : "border-gray-300"}`;
+
   return (
     <div className="space-y-6">
-      <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-        <h3 className="mb-4 text-lg font-semibold text-gray-800">
+      <div
+        className={`rounded-lg border p-6 shadow-sm ${darkMode ? "bg-gray-700 border-gray-600" : "bg-white border-gray-200"}`}
+      >
+        <h3
+          className={`mb-4 text-lg font-semibold ${darkMode ? "text-gray-100" : "text-gray-800"}`}
+        >
           Aadhaar Verification
         </h3>
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-medium text-gray-700">
+            <p
+              className={`text-sm font-medium ${darkMode ? "text-gray-200" : "text-gray-700"}`}
+            >
               Enable Aadhaar Verification
             </p>
-            <p className="text-[10px] text-gray-500">
+            <p
+              className={`text-[10px] ${darkMode ? "text-gray-400" : "text-gray-500"}`}
+            >
               Require invitee to provide Aadhaar details
             </p>
           </div>
-          <ToggleSwitch enabled={enableAadhaar} setEnabled={setEnableAadhaar} />
+          <ToggleSwitch
+            enabled={enableAadhaar}
+            setEnabled={setEnableAadhaar}
+            darkMode={darkMode}
+          />
         </div>
 
         {enableAadhaar && (
           <div className="mt-6 space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-700">
+                <p
+                  className={`text-sm font-medium ${darkMode ? "text-gray-200" : "text-gray-700"}`}
+                >
                   Mask Aadhaar Number
                 </p>
-                <p className="text-xs text-gray-500">
+                <p
+                  className={`text-xs ${darkMode ? "text-gray-400" : "text-gray-500"}`}
+                >
                   Display only last 4 digits for security
                 </p>
               </div>
-              <ToggleSwitch enabled={maskAadhaar} setEnabled={setMaskAadhaar} />
+              <ToggleSwitch
+                enabled={maskAadhaar}
+                setEnabled={setMaskAadhaar}
+                darkMode={darkMode}
+              />
             </div>
             <div className="space-y-1">
-              <label className="block text-sm font-medium text-gray-700">
+              <label className={labelStyles}>
                 Aadhaar Number<span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
                 placeholder="Enter 12-digit Aadhaar number"
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-[#3470b2] focus:ring-[#3470b2] sm:text-sm"
+                className={inputStyles}
                 maxLength="12"
               />
             </div>
             <div className="space-y-1">
-              <label className="block text-sm font-medium text-gray-700">
+              <label className={labelStyles}>
                 Year of Birth<span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
                 placeholder="Enter year of birth"
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-[#3470b2] focus:ring-[#3470b2] sm:text-sm"
-                maxLength="12"
+                className={inputStyles}
+                maxLength="4"
               />
             </div>
             <div className="space-y-1">
-              <label className="block text-sm font-medium text-gray-700">
+              <label className={labelStyles}>
                 Pin Code<span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
                 placeholder="Enter pincode number"
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-[#3470b2] focus:ring-[#3470b2] sm:text-sm"
-                maxLength="12"
+                className={inputStyles}
+                maxLength="6"
               />
             </div>
             <div className="space-y-1">
-              <label className="block text-sm font-medium text-gray-700">
+              <label className={labelStyles}>
                 Last 4 Aadhaar Digit<span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
                 placeholder="Enter 4-digit Aadhaar number"
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-[#3470b2] focus:ring-[#3470b2] sm:text-sm"
-                maxLength="12"
+                className={inputStyles}
+                maxLength="4"
               />
             </div>
             <div className="max-w-lg mx-auto">
               <div className="grid grid-cols-1 gap-6">
-                {/* State Dropdown with Icon */}
                 <div>
-                  <label
-                    htmlFor="state"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
+                  <label htmlFor="state" className={`${labelStyles} mb-1`}>
                     State<span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
@@ -207,11 +246,7 @@ const AadhaarSection = () => {
                         aria-hidden="true"
                       />
                     </div>
-                    <select
-                      id="state"
-                      name="state"
-                      className="block w-full rounded-md border border-gray-300 pl-10 shadow-sm focus:border-[#3470b2] focus:ring-[#3470b2] sm:text-sm py-2"
-                    >
+                    <select id="state" name="state" className={selectStyles}>
                       <option value="" disabled selected>
                         Select a state
                       </option>
@@ -257,13 +292,8 @@ const AadhaarSection = () => {
                     </select>
                   </div>
                 </div>
-
-                {/* Gender Dropdown with Icon */}
                 <div>
-                  <label
-                    htmlFor="gender"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
+                  <label htmlFor="gender" className={`${labelStyles} mb-1`}>
                     Gender<span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
@@ -273,17 +303,12 @@ const AadhaarSection = () => {
                         aria-hidden="true"
                       />
                     </div>
-                    <select
-                      id="gender"
-                      name="gender"
-                      className="block w-full rounded-md border border-gray-300 pl-10 shadow-sm focus:border-[#3470b2] focus:ring-[#3470b2] sm:text-sm py-2"
-                    >
+                    <select id="gender" name="gender" className={selectStyles}>
                       <option value="" disabled selected>
                         Select a gender
                       </option>
                       <option value="male">Male</option>
                       <option value="female">Female</option>
-                      <option value="non-binary">Non-binary</option>
                       <option value="prefer-not-to-say">
                         Prefer not to say
                       </option>
@@ -300,76 +325,97 @@ const AadhaarSection = () => {
 };
 
 // Advanced Section Component
-const AdvancedSection = () => {
+const AdvancedSection = ({ darkMode }) => {
   const [enableExpiry, setEnableExpiry] = useState(false);
   const [enableIPRestriction, setEnableIPRestriction] = useState(false);
 
+  const labelStyles = `block text-sm font-medium ${darkMode ? "text-gray-300" : "text-gray-700"}`;
+  const inputStyles = `block w-full rounded-md shadow-sm focus:border-[#3470b2] focus:ring-[#3470b2] sm:text-sm ${darkMode ? "bg-gray-800 border-gray-600 text-gray-200 placeholder-gray-400" : "border-gray-300"}`;
+  const selectStyles = `block w-full p-2 rounded-md border shadow-sm focus:border-[#3470b2] focus:ring-[#3470b2] sm:text-sm ${darkMode ? "bg-gray-800 border-gray-600 text-gray-200" : "border-gray-300"}`;
+
   return (
     <div className="space-y-6">
-      <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-        <h3 className="mb-4 text-lg font-semibold text-gray-800">
+      <div
+        className={`rounded-lg border p-6 shadow-sm ${darkMode ? "bg-gray-700 border-gray-600" : "bg-white border-gray-200"}`}
+      >
+        <h3
+          className={`mb-4 text-lg font-semibold ${darkMode ? "text-gray-100" : "text-gray-800"}`}
+        >
           Advanced Settings
         </h3>
         <div className="space-y-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-700">
+              <p
+                className={`text-sm font-medium ${darkMode ? "text-gray-200" : "text-gray-700"}`}
+              >
                 Enable Session Expiry
               </p>
-              <p className="text-xs text-gray-500">
+              <p
+                className={`text-xs ${darkMode ? "text-gray-400" : "text-gray-500"}`}
+              >
                 Automatically log out after inactivity
               </p>
             </div>
-            <ToggleSwitch enabled={enableExpiry} setEnabled={setEnableExpiry} />
+            <ToggleSwitch
+              enabled={enableExpiry}
+              setEnabled={setEnableExpiry}
+              darkMode={darkMode}
+            />
           </div>
 
           {enableExpiry && (
             <div className="space-y-1">
-              <label className="block text-sm font-medium text-gray-700">
-                Expiry Time (minutes)
-              </label>
+              <label className={labelStyles}>Expiry Time (minutes)</label>
               <input
                 type="number"
                 min="1"
                 defaultValue="30"
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-[#3470b2] focus:ring-[#3470b2] sm:text-sm"
+                className={inputStyles}
               />
             </div>
           )}
 
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-700">
+              <p
+                className={`text-sm font-medium ${darkMode ? "text-gray-200" : "text-gray-700"}`}
+              >
                 IP Address Restriction
               </p>
-              <p className="text-xs text-gray-500">
+              <p
+                className={`text-xs ${darkMode ? "text-gray-400" : "text-gray-500"}`}
+              >
                 Limit access to specific IP addresses
               </p>
             </div>
             <ToggleSwitch
               enabled={enableIPRestriction}
               setEnabled={setEnableIPRestriction}
+              darkMode={darkMode}
             />
           </div>
 
           {enableIPRestriction && (
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">
-                Allowed IP Addresses
-              </label>
+              <label className={labelStyles}>Allowed IP Addresses</label>
               <div className="flex justify-center items-center space-x-2">
                 <input
                   type="text"
                   placeholder="e.g., 192.168.1.1"
-                  className="block items-center mt-4 px-3 py-1 rounded-md border border-gray-300 shadow-sm focus:border-[#3470b2] focus:ring-[#3470b2] text-sm"
+                  className={`block items-center mt-4 px-3 py-1 rounded-md border shadow-sm focus:border-[#3470b2] focus:ring-[#3470b2] text-sm ${darkMode ? "bg-gray-800 border-gray-600 text-gray-200 placeholder-gray-400" : "border-gray-300"}`}
                 />
-                <button className="rounded-md bg-[#3470b2] px-3 py-1 text-sm font-medium text-white shadow-sm hover:bg-[#3470b2]">
+                <button className="rounded-md bg-[#3470b2] px-3 py-1 text-sm font-medium text-white shadow-sm hover:bg-[#2c5fa5]">
                   Add
                 </button>
               </div>
 
-              <div className="mt-2 rounded-md border border-gray-200 p-2">
-                <p className="text-xs text-gray-500">
+              <div
+                className={`mt-2 rounded-md border p-2 ${darkMode ? "border-gray-600" : "border-gray-200"}`}
+              >
+                <p
+                  className={`text-xs ${darkMode ? "text-gray-400" : "text-gray-500"}`}
+                >
                   No IP addresses added yet
                 </p>
               </div>
@@ -377,10 +423,8 @@ const AdvancedSection = () => {
           )}
 
           <div className="space-y-1">
-            <label className="block text-sm font-medium text-gray-700">
-              Authentication Level
-            </label>
-            <select className="block w-full p-2 rounded-md border border-gray-300 shadow-sm focus:border-[#3470b2] focus:ring-[#3470b2] sm:text-sm">
+            <label className={labelStyles}>Authentication Level</label>
+            <select className={selectStyles}>
               <option>Standard (Password only)</option>
               <option>Two-Factor Authentication</option>
               <option>Biometric + Password</option>
@@ -392,7 +436,7 @@ const AdvancedSection = () => {
   );
 };
 
-const SidebarRequestfile = ({ onClose }) => {
+const SidebarRequestfile = ({ onClose, darkMode }) => {
   const [activeTab, setActiveTab] = useState("security");
   const [fields, setFields] = useState([{ id: 1 }]);
 
@@ -402,9 +446,7 @@ const SidebarRequestfile = ({ onClose }) => {
   };
 
   const removeField = (idToRemove) => {
-    if (fields.length <= 1) {
-      return;
-    }
+    if (fields.length <= 1) return;
     setFields(fields.filter((field) => field.id !== idToRemove));
   };
 
@@ -413,7 +455,9 @@ const SidebarRequestfile = ({ onClose }) => {
       case "security":
         return (
           <>
-            <p className="text-[12px] text-center text-green-600">
+            <p
+              className={`text-[12px] text-center ${darkMode ? "text-green-400" : "text-green-600"}`}
+            >
               Security and fields invitee must complete before signing.
             </p>
             <div className="space-y-5">
@@ -424,45 +468,50 @@ const SidebarRequestfile = ({ onClose }) => {
                   index={index}
                   onRemove={removeField}
                   canBeRemoved={fields.length > 1}
+                  darkMode={darkMode}
                 />
               ))}
             </div>
             <button
               onClick={addField}
-              className="flex w-full items-center justify-center gap-2 rounded-md border-2 border-dashed border-gray-300 bg-white py-2.5 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#3470b2] focus:ring-offset-2"
+              className={`flex w-full items-center justify-center gap-2 rounded-md border-2 border-dashed py-2.5 text-sm font-semibold shadow-sm focus:outline-none focus:ring-2 focus:ring-[#3470b2] focus:ring-offset-2 ${darkMode ? "border-gray-600 bg-gray-700 text-gray-300 hover:bg-gray-600 focus:ring-offset-gray-800" : "border-gray-300 bg-white text-gray-700 hover:bg-gray-50"}`}
             >
               <Plus size={16} /> Add Another Security Field
             </button>
           </>
         );
       case "aadhaar":
-        return <AadhaarSection />;
+        return <AadhaarSection darkMode={darkMode} />;
       case "advanced":
-        return <AdvancedSection />;
+        return <AdvancedSection darkMode={darkMode} />;
       default:
         return null;
     }
   };
 
   return (
-    <div className="flex h-full w-full flex-col bg-white">
+    <div
+      className={`flex h-full w-full flex-col ${darkMode ? "bg-gray-800" : "bg-white"}`}
+    >
       {/* Tabs */}
-      <nav className="flex border-b border-gray-200 bg-white flex-shrink-0">
+      <nav
+        className={`flex border-b flex-shrink-0 ${darkMode ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"}`}
+      >
         <button
           onClick={() => setActiveTab("security")}
-          className={`flex flex-1 items-center justify-center gap-2 border-b-2 px-4 py-3 text-sm font-medium ${activeTab === "security" ? "border-[#3470b2] text-[#3470b2]" : "border-transparent text-gray-500 hover:text-gray-700"}`}
+          className={`flex flex-1 items-center justify-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors duration-200 ${activeTab === "security" ? (darkMode ? "border-blue-400 text-blue-400" : "border-[#3470b2] text-[#3470b2]") : darkMode ? "border-transparent text-gray-400 hover:text-gray-200" : "border-transparent text-gray-500 hover:text-gray-700"}`}
         >
           <Shield size={16} /> Security
         </button>
         <button
           onClick={() => setActiveTab("aadhaar")}
-          className={`flex flex-1 items-center justify-center gap-2 border-b-2 px-4 py-3 text-sm font-medium ${activeTab === "aadhaar" ? "border-orange-600 text-orange-600" : "border-transparent text-gray-500 hover:text-gray-700"}`}
+          className={`flex flex-1 items-center justify-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors duration-200 ${activeTab === "aadhaar" ? (darkMode ? "border-orange-400 text-orange-400" : "border-orange-600 text-orange-600") : darkMode ? "border-transparent text-gray-400 hover:text-gray-200" : "border-transparent text-gray-500 hover:text-gray-700"}`}
         >
           <CreditCard size={16} /> Aadhaar
         </button>
         <button
           onClick={() => setActiveTab("advanced")}
-          className={`flex flex-1 items-center justify-center gap-2 border-b-2 px-4 py-3 text-sm font-medium ${activeTab === "advanced" ? "border-green-600 text-green-600" : "border-transparent text-gray-500 hover:text-gray-700"}`}
+          className={`flex flex-1 items-center justify-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors duration-200 ${activeTab === "advanced" ? (darkMode ? "border-green-400 text-green-400" : "border-green-600 text-green-600") : darkMode ? "border-transparent text-gray-400 hover:text-gray-200" : "border-transparent text-gray-500 hover:text-gray-700"}`}
         >
           <Key size={16} /> Advanced
         </button>
@@ -474,15 +523,23 @@ const SidebarRequestfile = ({ onClose }) => {
       </main>
 
       {/* Footer */}
-      <footer className="flex border-t border-gray-200 justify-center z-[10000] bg-white px-6 py-4 flex-shrink-0">
+      <footer
+        className={`flex border-t justify-center md:mb-0 xs:mb-12 px-6 py-4 flex-shrink-0 ${darkMode ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"}`}
+      >
         <div className="flex justify-end space-x-3">
           <button
             onClick={onClose}
-            className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-[#3470b2] focus:ring-offset-2"
+            className={`rounded-md border px-4 py-2 text-sm font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-[#3470b2] focus:ring-offset-2 ${darkMode ? "border-gray-600 text-gray-300 hover:bg-gray-700 focus:ring-offset-gray-800" : "border-gray-300 text-gray-700 hover:bg-gray-100"}`}
           >
             Cancel
           </button>
-          <button className="flex items-center justify-center gap-2 rounded-md bg-[#3470b2] px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-[#2c5fa5] focus:outline-none focus:ring-2 focus:ring-[#3470b2] focus:ring-offset-2">
+          <button
+            className={`flex items-center justify-center gap-2 rounded-md 
+    ${darkMode ? "bg-[#ff4500] hover:bg-[#ff4500]" : "bg-[#3470b2] hover:bg-[#2c5fa5]"} 
+    px-4 py-2 text-sm font-medium text-white shadow-sm 
+    focus:outline-none focus:ring-2 focus:ring-[#3470b2] focus:ring-offset-2 
+    ${darkMode ? "focus:ring-offset-gray-800" : ""}`}
+          >
             <Check size={16} /> Save
           </button>
         </div>

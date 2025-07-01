@@ -23,12 +23,13 @@
   padding: 8px 12px 8px 30px;
   border: 1px solid #ccc;
   border-radius: 5px;
+  margin-top: 10px;
 }
 
 .webhook-search-icon {
   position: absolute;
   left: 8px;
-  top: 38%;
+  top: 58%;
   transform: translateY(-50%);
   font-size: 16px;
   color: #888;
@@ -204,6 +205,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
+  border-bottom: 1px solid rgb(148, 138, 138);
 }
 
 .webhook-card-title {
@@ -311,7 +313,6 @@
   font-weight: bold;
 }
 
-
 /* Dark Mode Styles */
 .webhook-management-container .dark-mode {
   background-color: #2d3748;
@@ -328,7 +329,7 @@
 }
 
 .dark-mode .webhook-search-input {
-  background-color: #333;
+  background-color: #374151;
   color: #e0e0e0;
   border: 1px solid #444;
 }
@@ -338,19 +339,18 @@
   color: white;
 }
 
-
 .dark-mode .webhook-search-input::placeholder {
   color: #aaa;
 }
 
 .dark-mode .webhook-add-btn {
-  background-color: #3a3a3a;
+  background-color: #374151;
   color: #e0e0e0;
   border: 1px solid #555;
 }
 
 .dark-mode .webhook-add-btn:hover {
-  background-color: #4a4a4a;
+  background-color: #374151;
 }
 
 .dark-mode .webhook-add-form {
@@ -368,7 +368,7 @@
 
 .dark-mode .webhook-form-group input,
 .dark-mode .webhook-form-group select {
-  background-color: #333;
+  background-color: #374151;
   color: #e0e0e0;
   border: 1px solid #444;
 }
@@ -390,7 +390,7 @@
 
 .dark-mode .webhook-table th {
   background-color: #2d3748;
-  color: rgb(20, 114, 208);
+  color: orangered;
 }
 .dark-mode .webhook-items-per-page label {
   font-size: 14px;
@@ -398,11 +398,11 @@
 }
 
 .dark-mode .webhook-pagination-info {
-    color: #ff9800;
-  }
+  color: #ff9800;
+}
 
 .dark-mode .webhook-table-footer {
-  background-color: #2d3748;
+  background-color: #3470b2;
   border-top: 1px solid #444;
   padding: 10px;
 }
@@ -434,11 +434,11 @@
 }
 
 .dark-mode .webhook-card-title {
-  color: #ca1919;
+  color: #3470b2;
 }
 
 .dark-mode .webhook-card-label {
-  color: #e0e0e0;
+  color: orangered;
 }
 
 .dark-mode .webhook-card-value {
@@ -451,7 +451,7 @@
 
 /* Dropdown styles for dark mode */
 .dark-mode select {
-  background-color: #333;
+  background-color: #374151;
   color: #e0e0e0;
   border: 1px solid #555;
 }
@@ -466,30 +466,30 @@
   .webhook-table-wrapper {
     height: auto;
   }
-  
+
   .webhook-table-container {
     display: none;
     max-height: none;
   }
-  
+
   .webhook-mobile-cards-container {
     display: block;
   }
-  
+
   .webhook-table-footer {
     position: static;
     flex-direction: column;
     align-items: stretch;
   }
-  
+
   .webhook-items-per-page {
     justify-content: center;
   }
-  
+
   .webhook-pagination-info {
     text-align: center;
   }
-  
+
   .webhook-pagination {
     justify-content: center;
   }
@@ -500,11 +500,11 @@
   .webhook-management-container {
     padding: 10px;
   }
-  
+
   .webhook-search-container {
     width: 100%;
   }
-  
+
   .webhook-top-bar {
     flex-direction: column;
     align-items: center;
@@ -516,11 +516,11 @@
   .webhook-card-title {
     font-size: 16px;
   }
-  
+
   .webhook-card-label {
     font-size: 13px;
   }
-  
+
   .webhook-card-value {
     font-size: 13px;
   }
@@ -531,7 +531,7 @@
   .webhook-card {
     padding: 10px;
   }
-  
+
   .webhook-card-title {
     font-size: 14px;
   }

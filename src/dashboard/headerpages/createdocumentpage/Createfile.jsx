@@ -1,10 +1,10 @@
 import React from 'react'
 import Generatefile from './generate/Generatefile'
 
-const Createfile = () => {
+const Createfile = ({darkMode}) => {
   return (
     <div>
-        <Generatefile />
+        <Generatefile darkMode={darkMode}/>
     </div>
   )
 }

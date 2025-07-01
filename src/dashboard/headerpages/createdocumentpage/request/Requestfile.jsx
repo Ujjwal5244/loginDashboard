@@ -19,8 +19,7 @@ import axios from "axios";
 import SidebarRequestfile from "./SidebarRequestfile";
 import { useWindowWidth } from "./window_width";
 
-
-const Requestfile = () => {
+const Requestfile = ({ darkMode }) => {
   const { documentId } = useParams();
   const token = localStorage.getItem("userToken");
 
@@ -457,54 +456,54 @@ const Requestfile = () => {
   };
 
   return (
-    <div className="flex h-[100%] bg-white">
+    <div className={`flex h-[100%] ${darkMode ? "bg-gray-900" : "bg-white"}`}>
       {/* Main Content Pane */}
       <main className="flex-grow overflow-y-auto">
-        <div className="font-sans py-4 p-2">
+        <div className={`font-sans py-4 p-2 ${darkMode ? "text-gray-200" : ""}`}>
           <div className="max-w-5xl mx-auto">
             {/* Progress Bar */}
             <div className="flex items-center justify-center gap-2 mb-8">
               <div className="flex items-center gap-1">
-                <span className="border border-gray-400 rounded-full md:w-6 md:h-6 xs:w-4 xs:h-4 flex items-center justify-center md:text-xs xs:text-[8px]">
+                <span className={`border ${darkMode ? "border-gray-600" : "border-gray-400"} rounded-full md:w-6 md:h-6 xs:w-4 xs:h-4 flex items-center justify-center md:text-xs xs:text-[8px] ${darkMode ? "text-gray-300" : ""}`}>
                   1
                 </span>
-                <span className="md:text-sm xs:text-[12px] text-gray-500">
+                <span className={`md:text-sm xs:text-[12px] ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
                   Generate
                 </span>
               </div>
-              <div className="md:w-8 xs:w-4 h-px bg-gray-300"></div>
+              <div className={`md:w-8 xs:w-4 h-px ${darkMode ? "bg-gray-700" : "bg-gray-300"}`}></div>
               <div className="flex items-center gap-1">
-                <span className="bg-[#2c5fa5] text-white rounded-full md:w-6 md:h-6 xs:w-4 xs:h-4 flex items-center justify-center md:text-xs xs:text-[8px] font-bold">
+                <span className={`${darkMode ? "bg-blue-600" : "bg-[#2c5fa5]"} text-white rounded-full md:w-6 md:h-6 xs:w-4 xs:h-4 flex items-center justify-center md:text-xs xs:text-[8px] font-bold`}>
                   2
                 </span>
-                <span className=" font-medium md:text-sm xs:text-[12px] text-[#2c5fa5]">
+                <span className={`font-medium md:text-sm xs:text-[12px] ${darkMode ? "text-blue-400" : "text-[#2c5fa5]"}`}>
                   Request
                 </span>
               </div>
-              <div className="md:w-8 xs:w-4 h-px bg-gray-300"></div>
+              <div className={`md:w-8 xs:w-4 h-px ${darkMode ? "bg-gray-700" : "bg-gray-300"}`}></div>
               <div className="flex items-center gap-1">
-                <span className="border border-gray-400 rounded-full md:w-6 md:h-6 xs:w-4 xs:h-4 flex items-center justify-center md:text-xs xs:text-[8px]">
+                <span className={`border ${darkMode ? "border-gray-600" : "border-gray-400"} rounded-full md:w-6 md:h-6 xs:w-4 xs:h-4 flex items-center justify-center md:text-xs xs:text-[8px] ${darkMode ? "text-gray-300" : ""}`}>
                   3
                 </span>
-                <span className="md:text-sm xs:text-[12px] text-gray-500">
+                <span className={`md:text-sm xs:text-[12px] ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
                   Approve
                 </span>
               </div>
             </div>
 
-            <div className="shadow-md border border-gray-200 rounded-xl md:p-6 xs:p-3 xs:py-6 bg-white">
+            <div className={`shadow-md border ${darkMode ? "border-gray-700 bg-gray-800" : "border-gray-200 bg-white"} rounded-xl md:p-6 xs:p-3 xs:py-6`}>
               <div className="text-center mb-6">
-                <h1 className="md:text-2xl xs:text-xl font-bold text-[#3470b2] mb-1">
+                <h1 className={`md:text-2xl xs:text-xl font-bold ${darkMode ? "text-blue-400" : "text-[#3470b2]"}`} mb-1>
                   Document Signing Invitation
                 </h1>
-                <p className="text-gray-500 text-sm">
+                <p className={`${darkMode ? "text-gray-400" : "text-gray-500"} text-sm`}>
                   Add signers and reviewers below
                 </p>
               </div>
 
               <div className="flex justify-center mb-6">
-                <div className="flex items-center space-x-3 bg-white shadow-sm rounded-full md:px-4 xs:px-4 py-2 border border-gray-200">
-                  <span className="md:text-xs xs:text-[11px] text-gray-700 font-medium">
+                <div className={`flex items-center space-x-3 ${darkMode ? "bg-gray-700 border-gray-600" : "bg-white border-gray-200"} shadow-sm rounded-full md:px-4 xs:px-4 py-2 border`}>
+                  <span className={`md:text-xs xs:text-[11px] ${darkMode ? "text-gray-300" : "text-gray-700"} font-medium`}>
                     Fixed sign order
                   </span>
                   <label className="inline-flex items-center cursor-pointer">
@@ -514,14 +513,14 @@ const Requestfile = () => {
                       checked={isFixedOrder}
                       onChange={handleFixedOrderToggle}
                     />
-                    <div className="relative w-9 h-5 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer peer-checked:bg-green-500 transition-all">
+                    <div className={`relative w-9 h-5 ${darkMode ? "peer-focus:ring-orange-800" : "peer-focus:ring-blue-300"} ${darkMode ? "bg-gray-600" : "bg-gray-300"} peer-focus:outline-none peer-focus:ring-2 rounded-full peer ${isFixedOrder ? (darkMode ? "peer-checked:bg-orange-700" : "peer-checked:bg-green-500") : ""} transition-all`}>
                       <div
-                        className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform ${isFixedOrder ? "translate-x-4" : ""}`}
+                        className={`absolute top-0.5 left-0.5 w-4 h-4 ${darkMode ? "bg-gray-300" : "bg-white"} rounded-full transition-transform ${isFixedOrder ? "translate-x-4" : ""}`}
                       ></div>
                     </div>
                   </label>
-                  <div className="h-4 w-px bg-gray-300"></div>
-                  <span className="md:text-xs xs:text-[11px] text-gray-700 font-medium">
+                  <div className={`h-4 w-px ${darkMode ? "bg-gray-600" : "bg-gray-300"}`}></div>
+                  <span className={`md:text-xs xs:text-[11px] ${darkMode ? "text-gray-300" : "text-gray-700"} font-medium`}>
                     I will sign this document
                   </span>
                   <label className="inline-flex items-center cursor-pointer">
@@ -532,9 +531,9 @@ const Requestfile = () => {
                       onChange={handleIWillSignToggle}
                       disabled={!selfSignerInfo}
                     />
-                    <div className="relative w-9 h-5 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer peer-checked:bg-green-500 transition-all">
+                    <div className={`relative w-9 h-5 ${darkMode ? "peer-focus:ring-orange-800" : "peer-focus:ring-blue-300"} ${darkMode ? "bg-gray-600" : "bg-gray-300"} peer-focus:outline-none peer-focus:ring-2 rounded-full peer ${iWillSign ? (darkMode ? "peer-checked:bg-orange-700" : "peer-checked:bg-green-500") : ""} transition-all`}>
                       <div
-                        className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform ${iWillSign ? "translate-x-4" : ""}`}
+                        className={`absolute top-0.5 left-0.5 w-4 h-4 ${darkMode ? "bg-gray-300" : "bg-white"} rounded-full transition-transform ${iWillSign ? "translate-x-4" : ""}`}
                       ></div>
                     </div>
                   </label>
@@ -545,13 +544,13 @@ const Requestfile = () => {
                 {inviteesToDisplay.map((invitee) => (
                   <div
                     key={invitee.id}
-                    className="bg-white p-4 shadow-sm rounded-lg border border-gray-100 transition-all hover:shadow-md"
+                    className={`${darkMode ? "bg-gray-800 border-gray-700 hover:shadow-gray-800" : "bg-white border-gray-100 hover:shadow-md"} p-4 shadow-sm rounded-lg border transition-all`}
                   >
                     <div className="flex items-center space-x-2 mb-3">
                       {isFixedOrder ? (
                         <div className="flex items-center space-x-2">
                           <span
-                            className="bg-[#3470b2] text-white rounded-full md:w-7 md:h-7 xs:w-5 xs:h-5 flex items-center justify-center md:text-xs xs:text-[10px] font-bold shrink-0"
+                            className={`${darkMode ? "bg-blue-600" : "bg-[#3470b2]"} text-white rounded-full md:w-7 md:h-7 xs:w-5 xs:h-5 flex items-center justify-center md:text-xs xs:text-[10px] font-bold shrink-0`}
                             title={`Signing Order: ${invitee.rank}`}
                           >
                             {invitee.rank}
@@ -560,12 +559,12 @@ const Requestfile = () => {
                             <button
                               onClick={() => toggleRankSelector(invitee.id)}
                               data-toggles-rank-selector={String(invitee.id)}
-                              className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+                              className={`p-1 ${darkMode ? "hover:bg-gray-700" : "hover:bg-gray-100"} rounded-full transition-colors`}
                               title="Change signing order"
                               disabled={invitees.length <= 1}
                             >
                               <FaSortNumericDown
-                                className={`text-gray-500 hover:text-gray-700 text-sm ${invitees.length <= 1 ? "opacity-50 cursor-not-allowed" : ""}`}
+                                className={`${darkMode ? "text-gray-400 hover:text-gray-300" : "text-gray-500 hover:text-gray-700"} text-sm ${invitees.length <= 1 ? "opacity-50 cursor-not-allowed" : ""}`}
                               />
                             </button>
 
@@ -577,7 +576,7 @@ const Requestfile = () => {
                                       String(invitee.id)
                                     ] = el)
                                   }
-                                  className="absolute z-20 top-full left-1/2 -translate-x-1/2 mt-1 bg-white border border-gray-300 rounded-md shadow-lg p-1 w-max min-w-[50px]"
+                                  className={`absolute z-20 top-full left-1/2 -translate-x-1/2 mt-1 ${darkMode ? "bg-gray-700 border-gray-600" : "bg-white border-gray-300"} border rounded-md shadow-lg p-1 w-max min-w-[50px]`}
                                 >
                                   <select
                                     title={`Set signing order for ${invitee.name || "this invitee"}`}
@@ -593,7 +592,7 @@ const Requestfile = () => {
                                       }));
                                     }}
                                     size={Math.min(5, invitees.length)}
-                                    className="block w-full text-xs bg-white rounded-sm focus:outline-none appearance-none text-center"
+                                    className={`block w-full text-xs ${darkMode ? "bg-gray-700 text-gray-200" : "bg-white"} rounded-sm focus:outline-none appearance-none text-center`}
                                   >
                                     {Array.from(
                                       { length: invitees.length },
@@ -602,7 +601,7 @@ const Requestfile = () => {
                                       <option
                                         key={rankValue}
                                         value={rankValue}
-                                        className="py-1 px-3"
+                                        className={`py-1 px-3 ${darkMode ? "hover:bg-gray-600" : "hover:bg-gray-100"}`}
                                       >
                                         {rankValue}
                                       </option>
@@ -613,13 +612,13 @@ const Requestfile = () => {
                           </div>
                         </div>
                       ) : (
-                        <div className="bg-gray-300 text-gray-700 rounded-full w-7 h-7 flex items-center justify-center text-xs font-bold shrink-0">
+                        <div className={`${darkMode ? "bg-gray-600 text-gray-300" : "bg-gray-300 text-gray-700"} rounded-full w-7 h-7 flex items-center justify-center text-xs font-bold shrink-0`}>
                           •
                         </div>
                       )}
 
                       <h2
-                        className="md:text-sm xs:text-[12px] font-semibold text-gray-800 flex-grow truncate"
+                        className={`md:text-sm xs:text-[12px] font-semibold ${darkMode ? "text-gray-200" : "text-gray-800"} flex-grow truncate`}
                         title={invitee.name || "New Invitee"}
                       >
                         {invitee.name || "New Invitee"}
@@ -635,10 +634,10 @@ const Requestfile = () => {
                           <button
                             onClick={() => toggleOptions(invitee.id)}
                             data-toggles-options={String(invitee.id)}
-                            className="md:p-2 xs:p-2  hover:bg-blue-100 bg-blue-50 rounded-full flex items-center md:text-sm xs:text-[10px] gap-1 transition-colors"
+                            className={`md:p-2 xs:p-2 ${darkMode ? "hover:bg-blue-900 bg-blue-800" : "hover:bg-blue-100 bg-blue-50"} rounded-full flex items-center md:text-sm xs:text-[10px] gap-1 transition-colors`}
                           >
-                            Signature Types
-                            <HiDotsVertical className="text-gray-500 hover:text-gray-700 text-sm" />
+                            <span className={darkMode ? "text-gray-200" : ""}>Signature Types</span>
+                            <HiDotsVertical className={`${darkMode ? "text-gray-300" : "text-gray-500"} text-sm`} />
                           </button>
                         </div>
 
@@ -647,13 +646,13 @@ const Requestfile = () => {
                             ref={(el) =>
                               (dropdownRefs.current[String(invitee.id)] = el)
                             }
-                            className="absolute z-20 right-0 mt-1 w-64 bg-white shadow-lg border border-gray-200 rounded-lg overflow-hidden"
+                            className={`absolute z-20 right-0 mt-1 w-64 ${darkMode ? "bg-gray-700 border-gray-600" : "bg-white border-gray-200"} shadow-lg border rounded-lg overflow-hidden`}
                           >
-                            <div className="p-3 border-b border-gray-100 bg-gray-50">
-                              <h3 className="font-semibold text-sm text-gray-800">
+                            <div className={`p-3 border-b ${darkMode ? "border-gray-600 bg-gray-800" : "border-gray-100 bg-gray-50"}`}>
+                              <h3 className={`font-semibold text-sm ${darkMode ? "text-gray-200" : "text-gray-800"}`}>
                                 Select Signing Method
                               </h3>
-                              <p className="text-xs text-gray-500 mt-1">
+                              <p className={`text-xs ${darkMode ? "text-gray-400" : "text-gray-500"} mt-1`}>
                                 Choose how {invitee.name || "this person"} will
                                 sign
                               </p>
@@ -663,10 +662,10 @@ const Requestfile = () => {
                                 <button
                                   key={method.id}
                                   onClick={() => toggleMethod(method.id)}
-                                  className={`flex items-center w-full p-2 rounded-md mb-1 text-sm ${selectedMethods.includes(method.id) ? "bg-blue-50 text-blue-700" : "hover:bg-gray-50 text-gray-700"}`}
+                                  className={`flex items-center w-full p-2 rounded-md mb-1 text-sm ${selectedMethods.includes(method.id) ? (darkMode ? "bg-blue-900 text-blue-300" : "bg-blue-50 text-blue-700") : (darkMode ? "hover:bg-gray-600 text-gray-200" : "hover:bg-gray-50 text-gray-700")}`}
                                 >
                                   <div
-                                    className={`flex items-center justify-center w-6 h-6 rounded-full mr-2.5 ${selectedMethods.includes(method.id) ? "bg-blue-100" : "bg-gray-100"}`}
+                                    className={`flex items-center justify-center w-6 h-6 rounded-full mr-2.5 ${selectedMethods.includes(method.id) ? (darkMode ? "bg-blue-800" : "bg-blue-100") : (darkMode ? "bg-gray-600" : "bg-gray-100")}`}
                                   >
                                     {method.icon}
                                   </div>
@@ -679,10 +678,10 @@ const Requestfile = () => {
                                 </button>
                               ))}
                             </div>
-                            <div className="p-2 bg-gray-50 border-t border-gray-200 flex justify-end">
+                            <div className={`p-2 ${darkMode ? "bg-gray-800 border-gray-700" : "bg-gray-50 border-gray-200"} border-t flex justify-end`}>
                               <button
                                 onClick={() => handleSubmit(invitee.id)}
-                                className="px-3 py-1.5 bg-[#3470b2] text-white rounded-md text-xs font-medium hover:bg-[#2c5fa5] transition-colors disabled:opacity-50"
+                                className={`px-3 py-1.5 ${darkMode ? "bg-blue-700 hover:bg-blue-600" : "bg-[#3470b2] hover:bg-[#2c5fa5]"} text-white rounded-md text-xs font-medium transition-colors disabled:opacity-50`}
                                 disabled={selectedMethods.length === 0}
                               >
                                 Confirm Methods
@@ -696,7 +695,7 @@ const Requestfile = () => {
                       <div>
                         <label
                           htmlFor={`name-${invitee.id}`}
-                          className="block text-xs font-medium text-gray-700 mb-1"
+                          className={`block text-xs font-medium ${darkMode ? "text-gray-300" : "text-gray-700"} mb-1`}
                         >
                           Full Name
                         </label>
@@ -708,19 +707,19 @@ const Requestfile = () => {
                             updateInvitee(invitee.id, "name", e.target.value)
                           }
                           disabled={invitee.isSelf}
-                          className="block w-full px-3 py-1.5 border border-gray-300 rounded-md shadow-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm disabled:bg-gray-100 disabled:cursor-not-allowed"
+                          className={`block w-full px-3 py-1.5 border ${darkMode ? "border-gray-600 bg-gray-700 text-gray-200 focus:ring-blue-500 focus:border-blue-500" : "border-gray-300 focus:ring-blue-500 focus:border-blue-500"} rounded-md shadow-sm focus:ring-1 text-sm disabled:${darkMode ? "bg-gray-600" : "bg-gray-100"} disabled:cursor-not-allowed`}
                           placeholder="Enter full name"
                         />
                       </div>
                       <div>
                         <label
                           htmlFor={`contact-${invitee.id}`}
-                          className="block text-xs font-medium text-gray-700 mb-1"
+                          className={`block text-xs font-medium ${darkMode ? "text-gray-300" : "text-gray-700"} mb-1`}
                         >
                           Contact / Email
                         </label>
                         <div className="relative">
-                          <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm">
+                          <span className={`absolute left-2.5 top-1/2 -translate-y-1/2 ${darkMode ? "text-gray-400" : "text-gray-400"} text-sm`}>
                             <FaEnvelope />
                           </span>
                           <input
@@ -735,17 +734,17 @@ const Requestfile = () => {
                               )
                             }
                             disabled={invitee.isSelf}
-                            className="pl-8 block w-full px-3 py-1.5 border border-gray-300 rounded-md shadow-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm disabled:bg-gray-100 disabled:cursor-not-allowed"
+                            className={`pl-8 block w-full px-3 py-1.5 border ${darkMode ? "border-gray-600 bg-gray-700 text-gray-200 focus:ring-blue-500 focus:border-blue-500" : "border-gray-300 focus:ring-blue-500 focus:border-blue-500"} rounded-md shadow-sm focus:ring-1 text-sm disabled:${darkMode ? "bg-gray-600" : "bg-gray-100"} disabled:cursor-not-allowed`}
                             placeholder="email@example.com"
                           />
                         </div>
                       </div>
                     </div>
-                    <div className="flex justify-end  mt-3">
+                    <div className="flex justify-end mt-3">
                       {!invitee.isSelf && (
                         <button
                           onClick={() => removeInvitee(invitee.id)}
-                          className="p-2 text-red-700 hover:text-red-600 hover:bg-red-50 rounded-full transition-colors"
+                          className={`p-2 ${darkMode ? "text-red-400 hover:text-red-300 hover:bg-red-900" : "text-red-700 hover:text-red-600 hover:bg-red-50"} rounded-full transition-colors`}
                           title="Remove Invitee"
                         >
                           <MdDelete />
@@ -753,11 +752,11 @@ const Requestfile = () => {
                       )}
                       <button
                         onClick={openSidebar}
-                        className="flex items-center gap-1 p-1 text-green-700 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
+                        className={`flex items-center gap-1 p-1 ${darkMode ? "text-blue-400 hover:text-blue-300 hover:bg-blue-900" : "text-green-700 hover:text-blue-600 hover:bg-blue-50"} rounded-full transition-colors`}
                         aria-label="Open Invitee Settings"
                       >
                         <MdOutlineSecurity size={13} />
-                        <span className="text-gray-700 text-[15px]">
+                        <span className={`${darkMode ? "text-gray-300" : "text-gray-700"} text-[15px]`}>
                           Security Question
                           <span className="text-red-500"> *</span>
                         </span>
@@ -768,10 +767,10 @@ const Requestfile = () => {
 
                 <div
                   onClick={addInvitee}
-                  className="cursor-pointer border-2 border-dashed border-blue-300 hover:border-blue-400 rounded-lg p-3 text-center text-[#3470b2] hover:bg-blue-50 transition-all text-sm"
+                  className={`cursor-pointer border-2 border-dashed ${darkMode ? "border-blue-500 hover:border-blue-400 hover:bg-blue-900" : "border-blue-300 hover:border-blue-400 hover:bg-blue-50"} rounded-lg p-3 text-center ${darkMode ? "text-blue-400" : "text-[#3470b2]"} transition-all text-sm`}
                 >
                   <div className="flex items-center justify-center space-x-1.5">
-                    <FaUserPlus className="text-[#3470b2] text-base" />
+                    <FaUserPlus className={`${darkMode ? "text-blue-400" : "text-[#3470b2]"} text-base`} />
                     <span className="font-medium">Add Another Invitee</span>
                   </div>
                 </div>
@@ -779,14 +778,14 @@ const Requestfile = () => {
 
               <div className="mt-8 flex justify-between items-center">
                 <button
-                  className="px-5 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 text-sm font-medium shadow-sm transition-colors"
+                  className={`px-5 py-2 ${darkMode ? "bg-gray-700 text-gray-200 hover:bg-gray-600" : "bg-gray-100 text-gray-700 hover:bg-gray-200"} rounded-md text-sm font-medium shadow-sm transition-colors`}
                   onClick={() => navigate("/maindashboard/createfile")}
                   disabled={isLoading}
                 >
                   Back
                 </button>
                 <button
-                  className="px-5 py-2 bg-[#3470b2] text-white rounded-md font-medium shadow-sm flex items-center space-x-1.5 text-sm hover:bg-[#2c5fa5] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className={`px-5 py-2 ${darkMode ? "bg-blue-700 hover:bg-blue-600" : "bg-[#3470b2] hover:bg-[#2c5fa5]"} text-white rounded-md font-medium shadow-sm flex items-center space-x-1.5 text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed`}
                   onClick={handleNext}
                   disabled={isLoading || invitees.length === 0}
                 >
@@ -800,27 +799,23 @@ const Requestfile = () => {
       </main>
 
       {/* Sidebar Pane */}
-     {isSidebarOpen && (
-  isMobile ? (
-    // ON MOBILE (< 768px): Render as a full-screen fixed overlay.
-    // `fixed inset-0` makes it cover the entire screen.
-    // `z-50` ensures it's on top of all other content.
-    <div className="fixed top-0 left-0 w-full h-[100%] z-[1000] bg-white">
-      <SidebarRequestfile onClose={closeSidebar} />
-    </div>
-  ) : (
-    // ON DESKTOP (>= 768px): Render as the original fixed-width sidebar.
-    <aside
-      className={`
-        flex-shrink-0 transition-all duration-300 ease-in-out border-l border-gray-200
-        w-[350px]
-      `}
-      style={{ overflow: 'hidden' }}
-    >
-      <SidebarRequestfile onClose={closeSidebar} />
-    </aside>
-  )
-)}
+      {isSidebarOpen && (
+        isMobile ? (
+          <div className="fixed inset-0 z-[1000] bg-gray-900">
+            <SidebarRequestfile onClose={closeSidebar} darkMode={darkMode} />
+          </div>
+        ) : (
+          <aside
+            className={`
+              flex-shrink-0 transition-all duration-300 border-l ease-in-out ${darkMode ? "border-gray-700" : "border-gray-200"}
+              w-[350px] ${darkMode ? "bg-gray-800" : "bg-white"}
+            `}
+            style={{ overflow: 'hidden' }}
+          >
+            <SidebarRequestfile onClose={closeSidebar} darkMode={darkMode} />
+          </aside>
+        )
+      )}
     </div>
   );
 };
