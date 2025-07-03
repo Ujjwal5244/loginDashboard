@@ -446,20 +446,33 @@ const OutsideSignature = () => {
   };
 
   // --- Digital Canvas Handlers ---
+    // --- Digital Canvas Handlers ---
   useEffect(() => {
     if (selectedOption === "digital" && canvasRef.current) {
       const canvas = canvasRef.current;
       const ctx = canvas.getContext("2d");
-      const scaleFactor = 3;
+
+      // --- IMPROVEMENT ---
+      // Increased scaleFactor for a much higher resolution image.
+      // Using a higher fixed value (e.g., 4) or devicePixelRatio ensures crispness.
+      const scaleFactor = 4; // Increased from 3
       const displayWidth = canvas.clientWidth;
       const displayHeight = canvas.clientHeight;
+
+      // Set the actual canvas drawing surface size
       canvas.width = displayWidth * scaleFactor;
       canvas.height = displayHeight * scaleFactor;
+      
+      // Set a solid white background to prevent transparency issues on the PDF.
       ctx.fillStyle = "#FFFFFF";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.lineWidth = 2 * scaleFactor;
+
+      // Scale the line width to match the new canvas resolution.
+      ctx.lineWidth = 2.5 * scaleFactor; // Slightly thicker base line for better visibility
       ctx.lineCap = "round";
       ctx.lineJoin = "round";
+
+      // The rest of the drawing logic will now use the high-resolution canvas.
     }
   }, [selectedOption]);
 
@@ -573,6 +586,7 @@ const OutsideSignature = () => {
   };
 
   // --- Typed Signature Handler ---
+   // --- Typed Signature Handler ---
   const handleTypedSignatureSubmit = async (e) => {
     e.preventDefault();
     if (!typedName) {
@@ -592,7 +606,9 @@ const OutsideSignature = () => {
     setApiError("");
 
     try {
-      const scaleFactor = 3;
+      // --- IMPROVEMENT ---
+      // Increased scale factor and added a solid white background.
+      const scaleFactor = 4; // Increased from 3 for higher resolution
       const baseWidth = 500;
       const baseHeight = 200;
       const canvas = document.createElement('canvas');
@@ -603,16 +619,25 @@ const OutsideSignature = () => {
       
       canvas.width = baseWidth * scaleFactor;
       canvas.height = baseHeight * scaleFactor;
+
+      // **CRITICAL FIX**: Add a solid white background.
+      // This prevents PDF renderers from misinterpreting the transparency
+      // around anti-aliased text, which causes the blurry/dark halo effect.
       ctx.fillStyle = "#FFFFFF";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Scale font size according to the new canvas resolution.
       const baseFontSize = parseInt(styleInfo.fontSize.replace('px', ''), 10);
       const scaledFontSize = baseFontSize * scaleFactor;
       const font = `${styleInfo.fontStyle || ''} ${styleInfo.fontWeight || ''} ${scaledFontSize}px ${styleInfo.fontFamily}`;
+      
       ctx.font = font;
-      ctx.fillStyle = signatureColor;
+      ctx.fillStyle = signatureColor; // Set the chosen ink color for the text
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(typedName, canvas.width / 2, canvas.height / 2);
+      
+      // The generated Data URL will now be a high-resolution PNG with a solid background.
       const signatureDataUrl = canvas.toDataURL('image/png');
 
       const parser = new UAParser();

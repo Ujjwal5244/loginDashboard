@@ -24,7 +24,6 @@ const EmailDashboard = ({ darkMode }) => {
   const [userProfile, setUserProfile] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [isSidebarVisible, setIsSidebarVisible] = useState(false); // State for mobile sidebar
-
   const token = localStorage.getItem("userToken");
 
   // Fetch user profile

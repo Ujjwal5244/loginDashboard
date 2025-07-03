@@ -24,9 +24,13 @@
 }
 
 /* Tablet View: Shrink sidebar */
-@media (max-width: 1000px) and (min-width: 740px) {
+@media (max-width: 1000px) and (min-width: 701px) {
   .sidebar-open {
     width: 108px;
+  }
+   .main-content-of-dashboard.sidebar-closed {
+    padding-left: 80px;
+    padding-right: 1rem;
   }
 }
 
@@ -40,8 +44,10 @@
   }
 }
 
+
+
 /* Adjust padding for main content when sidebar is closed on desktop */
-@media (min-width: 700px) {
+@media (min-width: 705px) {
   .main-content-of-dashboard.sidebar-closed {
     padding-left: 90px;
     padding-right: 1rem;
@@ -49,8 +55,8 @@
 }
 
 /* Tablet content padding */
-@media (min-width: 700px) and (max-width: 1000px) {
+@media (min-width: 701px) and (max-width: 1000px) {
   .main-content-of-dashboard {
-    padding-left: 7rem;
+    padding-left: 8rem;
   }
 }
