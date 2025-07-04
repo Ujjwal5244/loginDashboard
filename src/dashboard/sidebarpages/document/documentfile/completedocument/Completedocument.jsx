@@ -570,7 +570,7 @@ const Completedocument = () => {
     return <div className="p-4 text-center text-red-600">Error: {error}</div>;
 
   return (
-    <div className="p-2 sm:p-4 bg-gray-50 h-[100%]">
+    <div className="p-2 sm:p-4 md:h-[100%] sm:h-[100%]">
       {/* Header Section */}
       <div className="mb-8 flex flex-col sm:flex-row justify-between items-start gap-4">
         <div className="flex-shrink-0">
@@ -670,7 +670,7 @@ const Completedocument = () => {
 
       {/* Documents Table */}
       <div
-        className="hidden md:block bg-white rounded-lg shadow-sm overflow-auto"
+        className="hidden md:block bg-white rounded-lg shadow-sm  overflow-auto"
         style={{ maxHeight: "calc(100vh - 14rem)" }}
       >
         <table className="min-w-full divide-y divide-gray-200">
@@ -841,7 +841,7 @@ const Completedocument = () => {
       </div>
 
       {/* mobile view */}
-      <div className="md:hidden space-y-3">
+      <div className="md:hidden space-y-3 ">
         {paginatedDocuments.length > 0 ? (
           paginatedDocuments.map((doc, index) => (
             <div key={doc.id} className="bg-white rounded-lg shadow-sm p-4">

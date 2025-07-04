@@ -9,76 +9,23 @@ import {
   RiDeleteBinLine,
   RiInformationLine,
   RiMoreFill,
+  RiCloseLine,
 } from "react-icons/ri";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-
-// --- (Your allDocuments array and helper functions remain the same) ---
-const allDocuments = [
-  {
-    id: "158458h4ty54355h4t3847a",
-    name: "Annual Report",
-    createdOn: "24/06/2025, 18:29:33",
-  },
-  {
-    id: "158458h4ty54355h4t3847b", // Made ID unique for demo
-    name: "Project Proposal",
-    createdOn: "24/06/2025, 15:36:45",
-  },
-  {
-    id: "158458h4ty54355h4t3847c", // Made ID unique for demo
-    name: "frontend.pdf",
-    createdOn: "24/06/2025, 15:29:55",
-  },
-  {
-    id: "158458h4ty54355h4t3847d", // Made ID unique for demo
-    name: "User Manual",
-    createdOn: "24/06/2025, 14:57:34",
-  },
-  {
-    id: "158458h4ty54355h4t3847e", // Made ID unique for demo
-    name: "Meeting Minutes",
-    createdOn: "24/06/2025, 14:33:26",
-    status: "Completed",
-  },
-  {
-    id: "158458h4ty54355h4t3847f",
-    name: "Budget Plan",
-    createdOn: "24/06/2025, 10:34:28",
-  },
-  {
-    id: "158458h4ty54355h4t3847g",
-    name: "Marketing Strategy",
-    createdOn: "23/06/2025, 14:55:34",
-  },
-  {
-    id: "158458h4ty54355h4t3847h",
-    name: "frontend.pdf",
-    createdOn: "23/06/2025, 14:39:44",
-  },
-  {
-    id: "158458h4ty54355h4t3847i",
-    name: "Contract Draft",
-    createdOn: "23/06/2025, 14:16:25",
-  },
-  {
-    id: "158458h4ty54355h4t3847j",
-    name: "Survey Results",
-    createdOn: "23/06/2025, 13:54:07",
-  },
-  {
-    id: "158458h4ty54355h4t3847k",
-    name: "Performance Review",
-    createdOn: "23/06/2025, 13:47:17",
-  },
-  {
-    id: "158458h4ty54355h4t3847l",
-    name: "Training Material",
-    createdOn: "23/06/2025, 13:15:53",
-  },
-];
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { decryptText, baseUrl } from "../../../../../encryptDecrypt";
 
 const Draftdocument = () => {
+  // --- STATE MANAGEMENT ---
+  const navigate = useNavigate();
+  const token = localStorage.getItem("userToken");
+  const [documents, setDocuments] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [dropdownPosition, setDropdownPosition] = useState("down");
+
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [selectedOption, setSelectedOption] = useState("all");
@@ -87,12 +34,78 @@ const Draftdocument = () => {
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [activeDropdown, setActiveDropdown] = useState(null);
-  const [dropdownPosition, setDropdownPosition] = useState("down");
+
   const tableBodyRef = useRef(null);
   const dateFilterRef = useRef(null);
   const actionDropdownRefs = useRef({});
 
-  // Close dropdowns when clicking outside
+  const [previewDocument, setPreviewDocument] = useState(null);
+
+  // --- DATA FETCHING ---
+  useEffect(() => {
+    const fetchDocuments = async () => {
+      setIsLoading(true);
+      setError(null);
+
+      if (!token) {
+        setError("Authentication error. Please log in again.");
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        const response = await axios.get(
+          `${baseUrl}/api/document/get-draft-doc`,
+          {
+            headers: {
+              authorization: token,
+            },
+          }
+        );
+
+        const dcrypt = await decryptText(response.data.body);
+        const parsed = JSON.parse(dcrypt);
+
+        const documentsData = parsed.doucument.map((doc) => ({
+          id: doc._id,
+          name: doc.name,
+          createdOn: formatApiDate(doc.createdAt),
+          rawStatus: doc.status,
+
+          status: "Draft",
+          url: doc.documentUrl,
+        }));
+
+        const activeDocuments = documentsData.filter(
+          (doc) => doc.rawStatus?.toUpperCase() !== "DELETED"
+        );
+        +setDocuments(activeDocuments);
+      } catch (e) {
+        console.error("Failed to fetch draft documents:", e);
+        setError(
+          e.message || "Could not load documents. Please try again later."
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchDocuments();
+  }, [token]);
+
+  // --- UTILITY FUNCTIONS ---
+  const formatApiDate = (isoString) => {
+    if (!isoString) return "N/A";
+    const date = new Date(isoString);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    const seconds = String(date.getSeconds()).padStart(2, "0");
+    return `${day}/${month}/${year}, ${hours}:${minutes}:${seconds}`;
+  };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -101,7 +114,6 @@ const Draftdocument = () => {
       ) {
         setShowDateFilters(false);
       }
-
       let isClickInsideActionDropdown = false;
       for (const id in actionDropdownRefs.current) {
         if (
@@ -116,16 +128,15 @@ const Draftdocument = () => {
         setActiveDropdown(null);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
+  // --- FILTER & PAGINATION LOGIC ---
   const handleOptionChange = (option) => {
     setSelectedOption(option);
-
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -211,23 +222,22 @@ const Draftdocument = () => {
   };
 
   const parseDocumentDate = (dateStr) => {
+    if (!dateStr || !dateStr.includes(",")) return new Date(0);
     const [datePart, timePart] = dateStr.split(", ");
     const [day, month, year] = datePart.split("/");
     const [hours, minutes, seconds] = timePart.split(":");
     return new Date(year, month - 1, day, hours, minutes, seconds);
   };
 
-  const filteredDocuments = allDocuments.filter((doc) => {
+  const filteredDocuments = documents.filter((doc) => {
     const matchesSearch = doc.name
       .toLowerCase()
       .includes(searchQuery.toLowerCase());
-
     let matchesDate = true;
     if (startDate && endDate) {
       const docDate = parseDocumentDate(doc.createdOn);
       matchesDate = docDate >= startDate && docDate <= endDate;
     }
-
     return matchesSearch && matchesDate;
   });
 
@@ -241,68 +251,152 @@ const Draftdocument = () => {
   const paginatedDocuments = filteredDocuments.slice(startIndex, endIndex);
   const totalPages = Math.ceil(filteredDocuments.length / itemsPerPage);
 
-  // Replace your existing toggleActionDropdown function with this one
-
   const toggleActionDropdown = (docId, event) => {
-    // If we are closing the dropdown, just reset and return
     if (activeDropdown === docId) {
       setActiveDropdown(null);
       return;
     }
-
-    // Define the approximate height of the dropdown menu
-    const DROPDOWN_HEIGHT = 180; // Adjust if you change the menu items
-
-    // Get the scroll container and the clicked button elements
+    const DROPDOWN_HEIGHT = 180;
     const container = tableBodyRef.current;
     const button = event.currentTarget;
-
     if (container && button) {
-      // Get the positions relative to the viewport
       const containerRect = container.getBoundingClientRect();
       const buttonRect = button.getBoundingClientRect();
-
-      // Calculate space below the button *within the scrollable container*
       const spaceBelow = containerRect.bottom - buttonRect.bottom;
-
-      // Decide the direction
       if (spaceBelow < DROPDOWN_HEIGHT) {
-        setDropdownPosition("up"); // Not enough space below, open upwards
+        setDropdownPosition("up");
       } else {
-        setDropdownPosition("down"); // Enough space, open downwards
+        setDropdownPosition("down");
       }
     }
-
-    // Set the active dropdown
     setActiveDropdown(docId);
   };
 
-  const handleAction = (action, docId) => {
-    console.log(`${action} document with id ${docId}`);
+  // --- MODIFIED & NEW CODE: Action Handler ---
+  const handleAction = async (action, docId) => {
+    // Close the dropdown after any action
     setActiveDropdown(null);
-    // Here you would implement the actual action logic
+
+    const doc = documents.find((d) => d.id === docId);
+    if (!doc) {
+      console.error("Document not found for action:", action, docId);
+      alert("Could not find the selected document.");
+      return;
+    }
+
+    if (action === "preview") {
+      if (doc && doc.url) {
+        setPreviewDocument(doc);
+      } else {
+        console.error("Document or document URL not found for preview.");
+        alert("Sorry, the document could not be loaded for preview.");
+      }
+    } else if (action === "download") {
+      // --- START OF REPLACEMENT CODE ---
+      alert("Preparing your download...");
+
+      try {
+        // 1. Fetch the document as a blob
+        const response = await axios.get(doc.url, {
+          responseType: "blob",
+        });
+
+        // 2. Determine the correct filename with extension
+        let filename = doc.name;
+        // Check if the name from the API already has an extension
+        const hasExtension = /\.[^/.]+$/.test(filename);
+
+        if (!hasExtension) {
+          // If not, try to get it from the URL
+          const urlFilename = doc.url.split("/").pop().split("?")[0]; // e.g., "file.pdf" from ".../file.pdf?query=1"
+          const extensionMatch = urlFilename.match(/\.[^/.]+$/); // Find the extension in the URL's filename
+          if (extensionMatch) {
+            filename += extensionMatch[0]; // Append the extension (e.g., ".pdf")
+          }
+        }
+
+        // 3. Get the file's MIME type from the response headers
+        const contentType = response.headers["content-type"];
+
+        // 4. Create a Blob with the correct data AND type
+        const blob = new Blob([response.data], { type: contentType });
+        const blobUrl = window.URL.createObjectURL(blob);
+
+        // 5. Create a temporary link to trigger the download
+        const link = document.createElement("a");
+        link.href = blobUrl;
+        link.setAttribute("download", filename); // Use the corrected filename
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        // 6. Clean up the blob URL
+        window.URL.revokeObjectURL(blobUrl);
+      } catch (error) {
+        console.error("Download failed:", error);
+        alert(
+          "Could not download the file. The file may not be accessible or a network error occurred."
+        );
+      }
+      // --- END OF REPLACEMENT CODE ---
+    } else if (action === "delete") {
+      // (Your delete logic remains the same)
+      if (
+        window.confirm(
+          `Are you sure you want to delete "${doc.name}"? This action cannot be undone.`
+        )
+      ) {
+        try {
+          await axios.delete(
+            `${baseUrl}/api/document/delete?documentId=${doc.id}`,
+            {
+              headers: {
+                authorization: token,
+              },
+            }
+          );
+          setDocuments((prevDocs) => prevDocs.filter((d) => d.id !== doc.id));
+          alert("Document deleted successfully.");
+        } catch (e) {
+          console.error("Failed to delete document:", e);
+          alert(
+            "An error occurred while deleting the document. Please try again."
+          );
+        }
+      }
+    } else if (action === "share") {
+      // (Your share logic remains the same)
+      alert("Share functionality is not yet implemented.");
+      console.log(`Action: ${action} on docId: ${docId}`);
+    }
   };
 
-  // Helper function to truncate long IDs for better mobile display
+  const closePreview = () => {
+    setPreviewDocument(null);
+  };
+
   const truncateId = (id, startLength = 6, endLength = 6) => {
     const strId = String(id);
     if (strId.length <= startLength + endLength + 3) {
-      // +3 for "..."
       return strId;
     }
     return `${strId.substring(0, startLength)}...${strId.substring(strId.length - endLength)}`;
   };
 
+  if (isLoading)
+    return <div className="p-4 text-center">Loading documents...</div>;
+  if (error)
+    return <div className="p-4 text-center text-red-600">Error: {error}</div>;
+
   return (
     <div className="p-2 sm:p-4 bg-gray-50 h-[100%] flex flex-col">
-      {/* Header Section */}
+      {/* Header and Filters... (No changes here) */}
       <div className="flex-shrink-0 mb-8 flex flex-col sm:flex-row justify-between items-start gap-4">
         <div className="flex-shrink-0">
           <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-[#3470b2]">
             Draft Documents
           </h1>
         </div>
-
         <div className="w-full flex sm:flex-col md:flex-row sm:justify-end sm:items-end gap-3">
           <form
             onSubmit={handleSearch}
@@ -319,7 +413,6 @@ const Draftdocument = () => {
               className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3470b2] focus:border-transparent"
             />
           </form>
-
           <div className="relative w-full sm:w-auto" ref={dateFilterRef}>
             <button
               onClick={() => setShowDateFilters(!showDateFilters)}
@@ -340,7 +433,6 @@ const Draftdocument = () => {
               </div>
               <RiFilterLine className="text-gray-500 text-xs" />
             </button>
-
             {showDateFilters && (
               <div className="absolute right-0 z-20 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 p-2">
                 <div className="space-y-1">
@@ -371,42 +463,31 @@ const Draftdocument = () => {
                     </button>
                   ))}
                 </div>
-
                 {selectedOption === "custom" && (
                   <div className="mt-2 pt-2 border-t border-gray-200">
-                    <div className="mb-2">
-                      <label className="block text-xs font-medium text-gray-500 mb-1">
-                        From
-                      </label>
-                      <DatePicker
-                        selected={startDate}
-                        onChange={(date) => setStartDate(date)}
-                        selectsStart
-                        startDate={startDate}
-                        endDate={endDate}
-                        maxDate={endDate || new Date()}
-                        className="w-full px-3 py-1 text-sm border border-gray-300 rounded-md"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-medium text-gray-500 mb-1">
-                        To
-                      </label>
-                      <DatePicker
-                        selected={endDate}
-                        onChange={(date) => {
-                          const newEndDate = new Date(date);
-                          newEndDate.setHours(23, 59, 59, 999);
-                          setEndDate(newEndDate);
-                        }}
-                        selectsEnd
-                        startDate={startDate}
-                        endDate={endDate}
-                        minDate={startDate}
-                        maxDate={new Date()}
-                        className="w-full px-3 py-1 text-sm border border-gray-300 rounded-md"
-                      />
-                    </div>
+                    <DatePicker
+                      selected={startDate}
+                      onChange={(date) => setStartDate(date)}
+                      selectsStart
+                      startDate={startDate}
+                      endDate={endDate}
+                      maxDate={endDate || new Date()}
+                      className="w-full px-3 py-1 text-sm border border-gray-300 rounded-md"
+                    />
+                    <DatePicker
+                      selected={endDate}
+                      onChange={(date) => {
+                        const newEndDate = new Date(date);
+                        newEndDate.setHours(23, 59, 59, 999);
+                        setEndDate(newEndDate);
+                      }}
+                      selectsEnd
+                      startDate={startDate}
+                      endDate={endDate}
+                      minDate={startDate}
+                      maxDate={new Date()}
+                      className="w-full px-3 py-1 text-sm border border-gray-300 rounded-md mt-2"
+                    />
                     <button
                       onClick={() => setShowDateFilters(false)}
                       className="mt-2 w-full py-1 bg-[#3470b2] text-white text-sm rounded-md hover:bg-[#2c5d9a]"
@@ -420,13 +501,10 @@ const Draftdocument = () => {
           </div>
         </div>
       </div>
-
-      {/* Main content area */}
       <div className="flex-1 overflow-hidden">
+        {/* --- DESKTOP TABLE VIEW --- */}
         <div className="hidden md:flex flex-col h-full bg-white rounded-lg shadow-sm">
-          {/* Table container with fixed header and footer */}
           <div className="flex flex-col h-full">
-            {/* Table header - sticky at the top */}
             <div className="sticky top-0 z-10">
               <table className="min-w-full">
                 <thead className="bg-[#3470b2]">
@@ -450,11 +528,7 @@ const Draftdocument = () => {
                 </thead>
               </table>
             </div>
-
-            {/* Scrollable table body */}
             <div className="flex-1 overflow-y-auto" ref={tableBodyRef}>
-              {" "}
-              {/* <<< ATTACH REF HERE */}
               <table className="min-w-full divide-y divide-gray-200">
                 <tbody className="bg-white divide-y divide-gray-200">
                   {paginatedDocuments.length > 0 ? (
@@ -486,34 +560,18 @@ const Draftdocument = () => {
                             }
                           >
                             <button
-                              // Pass the event to our updated handler
                               onClick={(e) => toggleActionDropdown(doc.id, e)}
                               className="flex items-center gap-1 text-[#3470b2] hover:text-[#2c5d9a] p-1 rounded hover:bg-gray-100"
                               title="Actions"
                             >
                               <RiMoreFill className="w-5 h-5" />
                             </button>
-
                             {activeDropdown === doc.id && (
-                              // Conditionally apply classes based on the dropdownPosition state
                               <div
-                                className={`absolute right-0 w-48 bg-white rounded-md shadow-lg z-30 border border-gray-200 ${
-                                  dropdownPosition === "up"
-                                    ? "bottom-full mb-2" // Opens Up
-                                    : "top-full mt-2" // Opens Down
-                                }`}
+                                className={`absolute right-0 w-48 bg-white rounded-md shadow-lg z-30 border border-gray-200 ${dropdownPosition === "up" ? "bottom-full mb-2" : "top-full mt-2"}`}
                               >
                                 <div className="py-1">
-                                  {/* ... your button actions remain the same ... */}
-                                  <button
-                                    onClick={() =>
-                                      handleAction("details", doc.id)
-                                    }
-                                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
-                                  >
-                                    <RiInformationLine className="mr-2" />{" "}
-                                    Details
-                                  </button>
+                                  {/* --- All actions call handleAction --- */}
                                   <button
                                     onClick={() =>
                                       handleAction("preview", doc.id)
@@ -566,219 +624,224 @@ const Draftdocument = () => {
                 </tbody>
               </table>
             </div>
-
-            {/* Table footer - sticky at the bottom */}
+            {/* Pagination... (No changes here) */}
             <div className="sticky bottom-0 bg-white border-t border-gray-200">
-              {/* --- FIX #3: Changed `sm:flex-row` to `md:flex-row` for consistency --- */}
               <div className="px-4 py-3 flex flex-col md:flex-row items-center justify-between gap-2 md:gap-0 rounded-b-lg">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-gray-500">Show</span>
-                  <select
-                    value={itemsPerPage}
-                    onChange={handleItemsPerPageChange}
-                    className="text-xs border border-gray-300 rounded-md px-2 py-1"
-                  >
-                    {[10, 20, 30, 50, 80, 100].map((size) => (
-                      <option key={size} value={size}>
-                        {size}
-                      </option>
-                    ))}
-                  </select>
-                  <span className="text-xs text-gray-500">entries</span>
-                </div>
-
-                <div className="text-xs text-gray-500">
-                  Showing{" "}
-                  <span className="font-medium">
-                    {filteredDocuments.length > 0 ? startIndex + 1 : 0}
-                  </span>{" "}
-                  to{" "}
-                  <span className="font-medium">
-                    {Math.min(endIndex, filteredDocuments.length)}
-                  </span>{" "}
-                  of{" "}
-                  <span className="font-medium">
-                    {filteredDocuments.length}
-                  </span>{" "}
-                  entries
-                </div>
-
-                <div className="flex space-x-2">
-                  <button
-                    onClick={() =>
-                      setCurrentPage((prev) => Math.max(prev - 1, 1))
-                    }
-                    disabled={currentPage === 1}
-                    className={`px-3 py-1 text-xs border border-gray-300 rounded-md font-medium ${currentPage === 1 ? "text-gray-400 cursor-not-allowed" : "text-gray-700 hover:bg-gray-50"}`}
-                  >
-                    Previous
-                  </button>
-                  <button
-                    onClick={() =>
-                      setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-                    }
-                    disabled={currentPage === totalPages || totalPages === 0}
-                    className={`px-3 py-1 text-xs border border-gray-300 rounded-md font-medium ${currentPage === totalPages || totalPages === 0 ? "text-gray-400 cursor-not-allowed" : "text-gray-700 hover:bg-gray-50"}`}
-                  >
-                    Next
-                  </button>
+                <div className="flex items-center justify-between w-full">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-gray-700">
+                      Items per page:
+                    </span>
+                    <select
+                      value={itemsPerPage}
+                      onChange={handleItemsPerPageChange}
+                      className="text-sm border border-gray-300 rounded px-2 py-1"
+                    >
+                      {[5, 10, 20, 50].map((size) => (
+                        <option key={size} value={size}>
+                          {size}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() =>
+                        setCurrentPage((prev) => Math.max(prev - 1, 1))
+                      }
+                      disabled={currentPage === 1}
+                      className={`px-3 py-1 rounded border ${currentPage === 1 ? "bg-gray-100 text-gray-400 cursor-not-allowed" : "bg-white text-gray-700 hover:bg-gray-50"}`}
+                    >
+                      Previous
+                    </button>
+                    <span className="text-sm text-gray-700">
+                      Page {currentPage} of {totalPages}
+                    </span>
+                    <button
+                      onClick={() =>
+                        setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                      }
+                      disabled={currentPage === totalPages || totalPages === 0}
+                      className={`px-3 py-1 rounded border ${currentPage === totalPages || totalPages === 0 ? "bg-gray-100 text-gray-400 cursor-not-allowed" : "bg-white text-gray-700 hover:bg-gray-50"}`}
+                    >
+                      Next
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Mobile Card Layout (visible on screens smaller than 768px) */}
-        <div className="md:hidden space-y-3 h-full overflow-y-auto pb-4">
+        {/* --- MOBILE CARD VIEW --- */}
+        <div className="md:hidden space-y-4 h-full overflow-y-auto pb-4">
           {paginatedDocuments.length > 0 ? (
-            paginatedDocuments.map((doc, index) => (
+            paginatedDocuments.map((doc) => (
               <div
                 key={doc.id}
-                className="bg-white rounded-lg shadow-sm p-4 flex flex-col gap-3"
+                className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 flex flex-col gap-3"
               >
-                {/* Top row: Main Title and Actions Menu */}
-                <div className="flex justify-between items-start">
-                  <div className="flex-1 pr-2">
-                    <p className="text-xs font-semibold text-gray-400">
-                      #{startIndex + index + 1}
-                    </p>
-                    <h3 className="font-semibold text-gray-800 break-words mt-1">
-                      {doc.name}
-                    </h3>
-                  </div>
-                  <div
-                    className="relative flex-shrink-0"
-                    ref={(el) => (actionDropdownRefs.current[doc.id] = el)}
-                  >
-                    <button
-                      onClick={() => toggleActionDropdown(doc.id)}
-                      className="text-[#3470b2] hover:text-[#2c5d9a] p-1 -mr-1"
-                      title="Actions"
-                    >
-                      <RiMoreFill className="w-5 h-5" />
-                    </button>
-                    {activeDropdown === doc.id && (
-                      <div className="absolute right-0 mt-1 w-48 bg-white rounded-md shadow-lg z-20 border border-gray-200">
-                        <div className="py-1">
-                          <button
-                            onClick={() => handleAction("details", doc.id)}
-                            className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
-                          >
-                            <RiInformationLine className="mr-2" /> Details
-                          </button>
-                          <button
-                            onClick={() => handleAction("preview", doc.id)}
-                            className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
-                          >
-                            <RiEyeLine className="mr-2" /> Preview
-                          </button>
-                          <button
-                            onClick={() => handleAction("share", doc.id)}
-                            className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
-                          >
-                            <RiShareLine className="mr-2" /> Share
-                          </button>
-                          <button
-                            onClick={() => handleAction("download", doc.id)}
-                            className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
-                          >
-                            <RiDownloadLine className="mr-2" /> Download
-                          </button>
-                          <button
-                            onClick={() => handleAction("delete", doc.id)}
-                            className="flex items-center px-4 py-2 text-sm text-red-600 hover:bg-gray-100 w-full text-left"
-                          >
-                            <RiDeleteBinLine className="mr-2" /> Delete
-                          </button>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
+                {/* Card Header: Document Name & Actions */}
+                <div className="flex justify-between items-start w-full">
+                  <h3 className="font-bold text-gray-800 text-base pr-2 break-words">
+                    {doc.name}
+                  </h3>
+ <div
+    className="relative flex-shrink-0"
+    ref={(el) => (actionDropdownRefs.current[doc.id] = el)}
+  >
+    <button
+      onClick={(e) => toggleActionDropdown(doc.id, e)}
+      className="text-[#3470b2] hover:text-[#2c5d9a] p-1"
+    >
+      <RiMoreFill className="w-5 h-5" />
+    </button>
+    {activeDropdown === doc.id && (
+      <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 border border-gray-200">
+        <div className="py-1">
+          {/* --- All actions call handleAction --- */}
+          <button
+            onClick={() => handleAction("preview", doc.id)}
+            className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+          >
+            <RiEyeLine className="mr-2" /> Preview
+          </button>
+          <button
+            onClick={() => handleAction("share", doc.id)}
+            className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+          >
+            <RiShareLine className="mr-2" /> Share
+          </button>
+          <button
+            onClick={() => handleAction("download", doc.id)}
+            className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+          >
+            <RiDownloadLine className="mr-2" /> Download
+          </button>
+          <button
+            onClick={() => handleAction("delete", doc.id)}
+            className="flex items-center px-4 py-2 text-sm text-red-600 hover:bg-gray-100 w-full text-left"
+          >
+            <RiDeleteBinLine className="mr-2" /> Delete
+          </button>
+        </div>
+      </div>
+    )}
+  </div>
+</div>
 
-                {/* Details Section */}
-                <div className="text-xs text-gray-600 border-t border-gray-100 pt-3 space-y-2">
+                {/* Card Body: Table-like data */}
+                <div className="space-y-2 text-sm border-t border-gray-100 pt-3">
                   <div className="flex justify-between items-center">
-                    <span className="font-medium text-gray-500">
+                    <span className="font-semibold text-gray-500">
                       Created On:
                     </span>
-                    <span className="text-right">{doc.createdOn}</span>
+                    <span className="text-gray-700 text-right">
+                      {doc.createdOn}
+                    </span>
                   </div>
-                  <div className="flex justify-between items-center gap-2">
-                    <span className="font-medium text-gray-500 flex-shrink-0">
+                  <div className="flex justify-between items-center">
+                    <span className="font-semibold text-gray-500">
                       Document ID:
                     </span>
                     <span
-                      className="font-mono bg-gray-100 px-1.5 py-0.5 rounded text-gray-700 text-right truncate"
-                      title={String(doc.id)}
+                      className="font-mono text-gray-700 text-right"
+                      title={doc.id}
                     >
-                      {truncateId(doc.id)}
+                      {truncateId(doc.id, 6, 6)}
                     </span>
                   </div>
                 </div>
               </div>
             ))
           ) : (
-            <div className="bg-white rounded-lg shadow-sm p-6 text-center text-sm text-gray-500">
+            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 text-center text-sm text-gray-500">
               No documents found matching your criteria
-            </div>
-          )}
-
-          {/* Mobile Pagination */}
-          {paginatedDocuments.length > 0 && (
-            <div className="bg-white rounded-lg shadow-sm p-4 flex flex-col items-center gap-3 mt-3">
-              <div className="flex items-center gap-2">
-                <span className="text-xs text-gray-500">Show</span>
-                <select
-                  value={itemsPerPage}
-                  onChange={handleItemsPerPageChange}
-                  className="text-xs border border-gray-300 rounded-md px-2 py-1"
-                >
-                  {[5, 10, 20].map((size) => (
-                    <option key={size} value={size}>
-                      {size}
-                    </option>
-                  ))}
-                </select>
-                <span className="text-xs text-gray-500">entries</span>
-              </div>
-              <div className="text-xs text-gray-500 text-center">
-                Showing{" "}
-                <span className="font-medium">
-                  {filteredDocuments.length > 0 ? startIndex + 1 : 0}
-                </span>{" "}
-                to{" "}
-                <span className="font-medium">
-                  {Math.min(endIndex, filteredDocuments.length)}
-                </span>{" "}
-                of{" "}
-                <span className="font-medium">{filteredDocuments.length}</span>{" "}
-                entries
-              </div>
-              <div className="flex space-x-2">
-                <button
-                  onClick={() =>
-                    setCurrentPage((prev) => Math.max(prev - 1, 1))
-                  }
-                  disabled={currentPage === 1}
-                  className={`px-3 py-1 text-xs border border-gray-300 rounded-md font-medium ${currentPage === 1 ? "text-gray-400 cursor-not-allowed" : "text-gray-700 hover:bg-gray-50"}`}
-                >
-                  Previous
-                </button>
-                <button
-                  onClick={() =>
-                    setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-                  }
-                  disabled={currentPage === totalPages || totalPages === 0}
-                  className={`px-3 py-1 text-xs border border-gray-300 rounded-md font-medium ${currentPage === totalPages || totalPages === 0 ? "text-gray-400 cursor-not-allowed" : "text-gray-700 hover:bg-gray-50"}`}
-                >
-                  Next
-                </button>
-              </div>
             </div>
           )}
         </div>
       </div>
+      {/* Mobile Pagination Controls... (No changes here) */}
+      {paginatedDocuments.length > 0 && (
+        <div className="md:hidden mt-4 bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-700">Items:</span>
+              <select
+                value={itemsPerPage}
+                onChange={handleItemsPerPageChange}
+                className="text-sm border border-gray-300 rounded px-2 py-1"
+              >
+                {[5, 10, 20, 50].map((size) => (
+                  <option key={size} value={size}>
+                    {size}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+                className={`px-3 py-1 rounded border ${currentPage === 1 ? "bg-gray-100 text-gray-400 cursor-not-allowed" : "bg-white text-gray-700 hover:bg-gray-50"}`}
+              >
+                Prev
+              </button>
+              <span className="text-sm text-gray-700">
+                {currentPage}/{totalPages}
+              </span>
+              <button
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                }
+                disabled={currentPage === totalPages || totalPages === 0}
+                className={`px-3 py-1 rounded border ${currentPage === totalPages || totalPages === 0 ? "bg-gray-100 text-gray-400 cursor-not-allowed" : "bg-white text-gray-700 hover:bg-gray-50"}`}
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* --- PREVIEW MODAL --- (No changes here) */}
+      {previewDocument && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4"
+          onClick={closePreview}
+        >
+          <div
+            className="bg-white rounded-lg xs:ml-0 md:ml-[130px] shadow-xl w-[500px] max-w-4xl md:h-[60vh] xs:h-[75vh] flex flex-col"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex justify-between items-center p-4 border-b">
+              <h3 className="text-lg font-bold truncate">
+                {previewDocument.name}
+              </h3>
+              <button
+                onClick={closePreview}
+                className="text-gray-500 hover:text-gray-900 p-1 rounded-full hover:bg-gray-200 transition-colors"
+              >
+                <RiCloseLine size={24} />
+              </button>
+            </div>
+            <div className="flex-grow p-1 bg-gray-200">
+              <iframe
+                src={previewDocument.url}
+                title={previewDocument.name}
+                className="w-full h-full border-0"
+                allowFullScreen
+                onError={() => {
+                  alert(
+                    "Failed to load document preview. This can happen due to security policies on the document's server. Please try downloading the file instead."
+                  );
+                  closePreview();
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
