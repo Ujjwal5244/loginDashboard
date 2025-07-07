@@ -5,9 +5,8 @@ import {
   RiCalendarLine,
   RiFilterLine,
   RiEyeLine,
-  RiShareLine,
-  RiDeleteBinLine,
   RiInformationLine,
+  RiDeleteBinLine,
   RiMoreFill,
   RiCloseLine,
 } from "react-icons/ri";
@@ -79,7 +78,7 @@ const Draftdocument = () => {
         const activeDocuments = documentsData.filter(
           (doc) => doc.rawStatus?.toUpperCase() !== "DELETED"
         );
-        +setDocuments(activeDocuments);
+        setDocuments(activeDocuments);
       } catch (e) {
         console.error("Failed to fetch draft documents:", e);
         setError(
@@ -272,9 +271,8 @@ const Draftdocument = () => {
     setActiveDropdown(docId);
   };
 
-  // --- MODIFIED & NEW CODE: Action Handler ---
+  // --- ACTION HANDLER ---
   const handleAction = async (action, docId) => {
-    // Close the dropdown after any action
     setActiveDropdown(null);
 
     const doc = documents.find((d) => d.id === docId);
@@ -292,7 +290,7 @@ const Draftdocument = () => {
         alert("Sorry, the document could not be loaded for preview.");
       }
     } else if (action === "download") {
-      // --- START OF REPLACEMENT CODE ---
+      // --- START: CORRECTED AND ROBUST DOWNLOAD LOGIC ---
       alert("Preparing your download...");
 
       try {
@@ -308,10 +306,10 @@ const Draftdocument = () => {
 
         if (!hasExtension) {
           // If not, try to get it from the URL
-          const urlFilename = doc.url.split("/").pop().split("?")[0]; // e.g., "file.pdf" from ".../file.pdf?query=1"
-          const extensionMatch = urlFilename.match(/\.[^/.]+$/); // Find the extension in the URL's filename
+          const urlFilename = doc.url.split("/").pop().split("?")[0]; 
+          const extensionMatch = urlFilename.match(/\.[^/.]+$/); 
           if (extensionMatch) {
-            filename += extensionMatch[0]; // Append the extension (e.g., ".pdf")
+            filename += extensionMatch[0]; 
           }
         }
 
@@ -338,9 +336,8 @@ const Draftdocument = () => {
           "Could not download the file. The file may not be accessible or a network error occurred."
         );
       }
-      // --- END OF REPLACEMENT CODE ---
+      // --- END: CORRECTED AND ROBUST DOWNLOAD LOGIC ---
     } else if (action === "delete") {
-      // (Your delete logic remains the same)
       if (
         window.confirm(
           `Are you sure you want to delete "${doc.name}"? This action cannot be undone.`
@@ -364,9 +361,8 @@ const Draftdocument = () => {
           );
         }
       }
-    } else if (action === "share") {
-      // (Your share logic remains the same)
-      alert("Share functionality is not yet implemented.");
+    } else if (action === "details") {
+      alert("Details functionality is not yet implemented.");
       console.log(`Action: ${action} on docId: ${docId}`);
     }
   };
@@ -380,7 +376,9 @@ const Draftdocument = () => {
     if (strId.length <= startLength + endLength + 3) {
       return strId;
     }
-    return `${strId.substring(0, startLength)}...${strId.substring(strId.length - endLength)}`;
+    return `${strId.substring(0, startLength)}...${strId.substring(
+      strId.length - endLength
+    )}`;
   };
 
   if (isLoading)
@@ -389,7 +387,7 @@ const Draftdocument = () => {
     return <div className="p-4 text-center text-red-600">Error: {error}</div>;
 
   return (
-    <div className="p-2 sm:p-4 bg-gray-50 h-[100%] flex flex-col">
+    <div className="p-2 sm:p-4 bg-white h-[100%] flex flex-col">
       {/* Header and Filters... (No changes here) */}
       <div className="flex-shrink-0 mb-8 flex flex-col sm:flex-row justify-between items-start gap-4">
         <div className="flex-shrink-0">
@@ -515,113 +513,122 @@ const Draftdocument = () => {
                     <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                       Document Name
                     </th>
-                    <th className="px-1 py-3 text-left text-xs  font-medium text-white uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs  font-medium text-white uppercase tracking-wider">
                       Created On
                     </th>
                     <th className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
                       Document ID
                     </th>
-                    <th className="px-8 py-3 text-right text-xs font-medium text-white uppercase tracking-wider">
+                    <th className="px-8 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
                       Actions
                     </th>
                   </tr>
                 </thead>
               </table>
             </div>
+            {/* NOTE: The overflow-y-auto here is what causes the dropdown clipping issue on desktop */}
             <div className="flex-1 overflow-y-auto" ref={tableBodyRef}>
               <table className="min-w-full divide-y divide-gray-200">
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {paginatedDocuments.length > 0 ? (
-                    paginatedDocuments.map((doc, index) => (
-                      <tr
-                        key={doc.id}
-                        className="hover:bg-gray-50 transition-colors"
-                      >
-                        <td className="px-5 py-3 whitespace-nowrap text-sm text-gray-500">
-                          {startIndex + index + 1}
-                        </td>
-                        <td className="px-4 py-3 whitespace-nowrap text-left text-sm font-medium text-gray-900">
-                          {doc.name}
-                        </td>
-                        <td className="px-6 py-3 whitespace-nowrap text-sm text-center text-gray-500">
-                          {doc.createdOn}
-                        </td>
-                        <td
-                          className="px-6 py-3 whitespace-nowrap text-sm  text-gray-500 font-mono"
-                          title={doc.id}
-                        >
-                          {truncateId(doc.id, 10, 10)}
-                        </td>
-                        <td className="px-6 py-3 whitespace-nowrap text-sm text-gray-500">
-                          <div
-                            className="relative flex justify-center"
-                            ref={(el) =>
-                              (actionDropdownRefs.current[doc.id] = el)
-                            }
-                          >
-                            <button
-                              onClick={(e) => toggleActionDropdown(doc.id, e)}
-                              className="flex items-center gap-1 text-[#3470b2] hover:text-[#2c5d9a] p-1 rounded hover:bg-gray-100"
-                              title="Actions"
-                            >
-                              <RiMoreFill className="w-5 h-5" />
-                            </button>
-                            {activeDropdown === doc.id && (
-                              <div
-                                className={`absolute right-0 w-48 bg-white rounded-md shadow-lg z-30 border border-gray-200 ${dropdownPosition === "up" ? "bottom-full mb-2" : "top-full mt-2"}`}
-                              >
-                                <div className="py-1">
-                                  {/* --- All actions call handleAction --- */}
-                                  <button
-                                    onClick={() =>
-                                      handleAction("preview", doc.id)
-                                    }
-                                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
-                                  >
-                                    <RiEyeLine className="mr-2" /> Preview
-                                  </button>
-                                  <button
-                                    onClick={() =>
-                                      handleAction("share", doc.id)
-                                    }
-                                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
-                                  >
-                                    <RiShareLine className="mr-2" /> Share
-                                  </button>
-                                  <button
-                                    onClick={() =>
-                                      handleAction("download", doc.id)
-                                    }
-                                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
-                                  >
-                                    <RiDownloadLine className="mr-2" /> Download
-                                  </button>
-                                  <button
-                                    onClick={() =>
-                                      handleAction("delete", doc.id)
-                                    }
-                                    className="flex items-center px-4 py-2 text-sm text-red-600 hover:bg-gray-100 w-full text-left"
-                                  >
-                                    <RiDeleteBinLine className="mr-2" /> Delete
-                                  </button>
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td
-                        colSpan="5"
-                        className="px-4 py-6 text-center text-sm text-gray-500"
-                      >
-                        No documents found matching your criteria
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
+               <tbody className="bg-white divide-y divide-gray-200">
+  {paginatedDocuments.length > 0 ? (
+    paginatedDocuments.map((doc, index) => (
+      <tr
+        key={doc.id}
+        className="hover:bg-gray-100 transition-colors cursor-pointer"
+        title="Click to continue"
+        onClick={() => navigate(`/Maindashboard/requestfile/${doc.id}`)}
+      >
+        <td className="px-5 py-3 whitespace-nowrap text-sm text-gray-500">
+          {startIndex + index + 1}
+        </td>
+        <td className="px-6 py-3 whitespace-nowrap text-left text-sm font-medium text-gray-900">
+          {doc.name}
+        </td>
+        <td className="px-6 py-3 whitespace-nowrap text-sm text-left text-gray-500">
+          {doc.createdOn}
+        </td>
+        <td
+          className="px-6 py-3 whitespace-nowrap text-sm text-center text-gray-500 font-mono"
+          title={doc.id}
+        >
+          {truncateId(doc.id, 10, 10)}
+        </td>
+        <td
+          className="px-6 py-3 whitespace-nowrap text-sm text-gray-500"
+          onClick={(e) => e.stopPropagation()} // Prevent row navigation when clicking on actions
+        >
+          <div
+            className="relative flex justify-center"
+            ref={(el) =>
+              (actionDropdownRefs.current[doc.id] = el)
+            }
+          >
+            <button
+              onClick={(e) => toggleActionDropdown(doc.id, e)}
+              className="flex items-center gap-1 text-[#3470b2] hover:text-[#2c5d9a] p-1 rounded hover:bg-gray-100"
+              title="Actions"
+            >
+              <RiMoreFill className="w-5 h-5" />
+            </button>
+            {activeDropdown === doc.id && (
+              <div
+                className={`absolute right-0 w-48 bg-white rounded-md shadow-lg z-30 border border-gray-200 ${
+                  dropdownPosition === "up"
+                    ? "bottom-full mb-2"
+                    : "top-full mt-2"
+                }`}
+              >
+                <div className="py-1">
+                  <button
+                    onMouseDown={() =>
+                      handleAction("preview", doc.id)
+                    }
+                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                  >
+                    <RiEyeLine className="mr-2" /> Preview
+                  </button>
+                  <button
+                    onMouseDown={() =>
+                      handleAction("details", doc.id)
+                    }
+                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                  >
+                    <RiInformationLine className="mr-2" /> Details
+                  </button>
+                  <button
+                    onMouseDown={() =>
+                      handleAction("download", doc.id)
+                    }
+                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                  >
+                    <RiDownloadLine className="mr-2" /> Download
+                  </button>
+                  <button
+                    onMouseDown={() =>
+                      handleAction("delete", doc.id)
+                    }
+                    className="flex items-center px-4 py-2 text-sm text-red-600 hover:bg-gray-100 w-full text-left"
+                  >
+                    <RiDeleteBinLine className="mr-2" /> Delete
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </td>
+      </tr>
+    ))
+  ) : (
+    <tr>
+      <td
+        colSpan="5"
+        className="px-4 py-6 text-center text-sm text-gray-500"
+      >
+        No documents found matching your criteria
+      </td>
+    </tr>
+  )}
+</tbody>
               </table>
             </div>
             {/* Pagination... (No changes here) */}
@@ -650,7 +657,11 @@ const Draftdocument = () => {
                         setCurrentPage((prev) => Math.max(prev - 1, 1))
                       }
                       disabled={currentPage === 1}
-                      className={`px-3 py-1 rounded border ${currentPage === 1 ? "bg-gray-100 text-gray-400 cursor-not-allowed" : "bg-white text-gray-700 hover:bg-gray-50"}`}
+                      className={`px-3 py-1 rounded border ${
+                        currentPage === 1
+                          ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                          : "bg-white text-gray-700 hover:bg-gray-50"
+                      }`}
                     >
                       Previous
                     </button>
@@ -662,7 +673,11 @@ const Draftdocument = () => {
                         setCurrentPage((prev) => Math.min(prev + 1, totalPages))
                       }
                       disabled={currentPage === totalPages || totalPages === 0}
-                      className={`px-3 py-1 rounded border ${currentPage === totalPages || totalPages === 0 ? "bg-gray-100 text-gray-400 cursor-not-allowed" : "bg-white text-gray-700 hover:bg-gray-50"}`}
+                      className={`px-3 py-1 rounded border ${
+                        currentPage === totalPages || totalPages === 0
+                          ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                          : "bg-white text-gray-700 hover:bg-gray-50"
+                      }`}
                     >
                       Next
                     </button>
@@ -674,92 +689,94 @@ const Draftdocument = () => {
         </div>
 
         {/* --- MOBILE CARD VIEW --- */}
-        <div className="md:hidden space-y-4 h-full overflow-y-auto pb-4">
-          {paginatedDocuments.length > 0 ? (
-            paginatedDocuments.map((doc) => (
-              <div
-                key={doc.id}
-                className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 flex flex-col gap-3"
-              >
-                {/* Card Header: Document Name & Actions */}
-                <div className="flex justify-between items-start w-full">
-                  <h3 className="font-bold text-gray-800 text-base pr-2 break-words">
-                    {doc.name}
-                  </h3>
- <div
-    className="relative flex-shrink-0"
-    ref={(el) => (actionDropdownRefs.current[doc.id] = el)}
-  >
-    <button
-      onClick={(e) => toggleActionDropdown(doc.id, e)}
-      className="text-[#3470b2] hover:text-[#2c5d9a] p-1"
-    >
-      <RiMoreFill className="w-5 h-5" />
-    </button>
-    {activeDropdown === doc.id && (
-      <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 border border-gray-200">
-        <div className="py-1">
-          {/* --- All actions call handleAction --- */}
-          <button
-            onClick={() => handleAction("preview", doc.id)}
-            className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+       <div className="md:hidden space-y-4 h-full overflow-y-auto pb-4">
+  {paginatedDocuments.length > 0 ? (
+    paginatedDocuments.map((doc) => (
+      <div
+        key={doc.id}
+        className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 flex flex-col gap-3 cursor-pointer hover:shadow-md transition-shadow"
+        title="Click to continue"
+        onClick={() => navigate(`/Maindashboard/requestfile/${doc.id}`)}
+      >
+        {/* Card Header: Document Name & Actions */}
+        <div className="flex justify-between items-start w-full">
+          <h3 className="font-bold text-gray-800 text-base pr-2 break-words">
+            {doc.name}
+          </h3>
+          <div
+            className="relative flex-shrink-0"
+            ref={(el) => (actionDropdownRefs.current[doc.id] = el)}
+            onClick={(e) => e.stopPropagation()} // Prevent card navigation when clicking on actions
           >
-            <RiEyeLine className="mr-2" /> Preview
-          </button>
-          <button
-            onClick={() => handleAction("share", doc.id)}
-            className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
-          >
-            <RiShareLine className="mr-2" /> Share
-          </button>
-          <button
-            onClick={() => handleAction("download", doc.id)}
-            className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
-          >
-            <RiDownloadLine className="mr-2" /> Download
-          </button>
-          <button
-            onClick={() => handleAction("delete", doc.id)}
-            className="flex items-center px-4 py-2 text-sm text-red-600 hover:bg-gray-100 w-full text-left"
-          >
-            <RiDeleteBinLine className="mr-2" /> Delete
-          </button>
-        </div>
-      </div>
-    )}
-  </div>
-</div>
-
-                {/* Card Body: Table-like data */}
-                <div className="space-y-2 text-sm border-t border-gray-100 pt-3">
-                  <div className="flex justify-between items-center">
-                    <span className="font-semibold text-gray-500">
-                      Created On:
-                    </span>
-                    <span className="text-gray-700 text-right">
-                      {doc.createdOn}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="font-semibold text-gray-500">
-                      Document ID:
-                    </span>
-                    <span
-                      className="font-mono text-gray-700 text-right"
-                      title={doc.id}
-                    >
-                      {truncateId(doc.id, 6, 6)}
-                    </span>
-                  </div>
+            <button
+              onClick={(e) => toggleActionDropdown(doc.id, e)}
+              className="text-[#3470b2] hover:text-[#2c5d9a] p-1"
+            >
+              <RiMoreFill className="w-5 h-5" />
+            </button>
+            {activeDropdown === doc.id && (
+              <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 border border-gray-200">
+                <div className="py-1">
+                  <button
+                    onClick={() => handleAction("preview", doc.id)}
+                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                  >
+                    <RiEyeLine className="mr-2" /> Preview
+                  </button>
+                  <button
+                    onClick={() => handleAction("details", doc.id)}
+                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                  >
+                    <RiInformationLine className="mr-2" /> Details
+                  </button>
+                  <button
+                    onClick={() => handleAction("download", doc.id)}
+                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                  >
+                    <RiDownloadLine className="mr-2" /> Download
+                  </button>
+                  <button
+                    onClick={() => handleAction("delete", doc.id)}
+                    className="flex items-center px-4 py-2 text-sm text-red-600 hover:bg-gray-100 w-full text-left"
+                  >
+                    <RiDeleteBinLine className="mr-2" /> Delete
+                  </button>
                 </div>
               </div>
-            ))
-          ) : (
-            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 text-center text-sm text-gray-500">
-              No documents found matching your criteria
-            </div>
-          )}
+            )}
+          </div>
         </div>
+
+        {/* Card Body: Table-like data */}
+        <div className="space-y-2 text-sm border-t border-gray-100 pt-3">
+          <div className="flex justify-between items-center">
+            <span className="font-semibold text-gray-500">
+              Created On:
+            </span>
+            <span className="text-gray-700 text-right">
+              {doc.createdOn}
+            </span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="font-semibold text-gray-500">
+              Document ID:
+            </span>
+            <span
+              className="font-mono text-gray-700 text-right"
+              title={doc.id}
+            >
+              {truncateId(doc.id, 6, 6)}
+            </span>
+          </div>
+        </div>
+      </div>
+    ))
+  ) : (
+    <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 text-center text-sm text-gray-500">
+      No documents found matching your criteria
+    </div>
+  )}
+</div>
       </div>
       {/* Mobile Pagination Controls... (No changes here) */}
       {paginatedDocuments.length > 0 && (
@@ -783,7 +800,11 @@ const Draftdocument = () => {
               <button
                 onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}
-                className={`px-3 py-1 rounded border ${currentPage === 1 ? "bg-gray-100 text-gray-400 cursor-not-allowed" : "bg-white text-gray-700 hover:bg-gray-50"}`}
+                className={`px-3 py-1 rounded border ${
+                  currentPage === 1
+                    ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                    : "bg-white text-gray-700 hover:bg-gray-50"
+                }`}
               >
                 Prev
               </button>
@@ -795,7 +816,11 @@ const Draftdocument = () => {
                   setCurrentPage((prev) => Math.min(prev + 1, totalPages))
                 }
                 disabled={currentPage === totalPages || totalPages === 0}
-                className={`px-3 py-1 rounded border ${currentPage === totalPages || totalPages === 0 ? "bg-gray-100 text-gray-400 cursor-not-allowed" : "bg-white text-gray-700 hover:bg-gray-50"}`}
+                className={`px-3 py-1 rounded border ${
+                  currentPage === totalPages || totalPages === 0
+                    ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                    : "bg-white text-gray-700 hover:bg-gray-50"
+                }`}
               >
                 Next
               </button>
@@ -811,7 +836,7 @@ const Draftdocument = () => {
           onClick={closePreview}
         >
           <div
-            className="bg-white rounded-lg xs:ml-0 md:ml-[130px] shadow-xl w-[500px] max-w-4xl md:h-[60vh] xs:h-[75vh] flex flex-col"
+            className="bg-white rounded-lg ml-0 md:ml-[200px]  w-[500px] md:h-[600px] xs:h-[520px] flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex justify-between items-center p-4 border-b">
