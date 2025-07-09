@@ -102,9 +102,18 @@ function App() {
                 path="transactionhistory"
                 element={<Transactionhistory darkMode={darkMode} />}
               />
-              <Route path="signed-agreement" element={<SignedAgreement />} />
-              <Route path="complete-document" element={<Completedocument />} />
-              <Route path="draft-document" element={<Draftdocument />} />
+              <Route
+                path="signed-agreement"
+                element={<SignedAgreement darkMode={darkMode} />}
+              />
+              <Route
+                path="complete-document"
+                element={<Completedocument darkMode={darkMode} />}
+              />
+              <Route
+                path="draft-document"
+                element={<Draftdocument darkMode={darkMode} />}
+              />
               <Route path="yourkyc" element={<Yourkyc />} />
               {/* ---------------------all email pagese routes--------------------------- */}
               <Route

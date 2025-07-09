@@ -25,14 +25,9 @@ const Generatefile = ({ darkMode }) => {
 const handlePDFUpload = (e) => {
   const file = e.target.files[0];
   if (file) {
-    // 1. Set the file state for upload
     setPdfFile(file);
-
-    // 2. Get the filename and remove the .pdf extension (case-insensitive)
     const documentName = file.name.replace(/\.pdf$/i, "");
-    
-    // 3. Update the documentDetails state to auto-fill the name input
-    setDocumentDetails((prev) => ({
+        setDocumentDetails((prev) => ({
       ...prev,
       name: documentName,
     }));

@@ -295,8 +295,8 @@ const Myprofile = ({ darkMode }) => {
           </div>
         </div>
 
-        <div className="form-section">
-          <h2>Billing Information</h2>
+        <div className="my-profile-form-section">
+          <h2 className='my-profile-form-section-h2'>Billing Information</h2>
           <div className="form-row">
             <input
               type="text"

@@ -50,23 +50,23 @@
     padding-right: 10px;
 }
 
-.form-section {
+.my-profile-form-section {
     margin-bottom: 25px;
     padding-bottom: 15px;
     border-bottom: 1px solid #eee;
 }
 
-.kyc-container.dark-mode .form-section {
+.kyc-container.dark-mode .my-profile-form-section {
     border-bottom-color: #374151;
 }
 
-.form-section h2 {
+.my-profile-form-section-h2 {
     font-size: 18px;
     color: #3470b2;
     margin-bottom: 15px;
 }
 
-.kyc-container.dark-mode .form-section h2 {
+.kyc-container.dark-mode .my-profile-form-section-h2 {
     color: #5a9ae6;
 }
 
