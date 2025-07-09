@@ -3,7 +3,7 @@ import "./Login.css";
 import neralog from "../assets/nerasoft-logo.jpg";
 import loginimg1 from "../assets/kyc-img1.jpg";
 import loginimg2 from "../assets/kyc-img2.jpg";
-import loginimg3 from "../assets/kyc-img3.jpg"; // Updated import path
+// import loginimg3 from "../assets/kyc-img3.jpg"; // Updated import path÷÷
 import loginimg4 from "../assets/kyc-img4.webp";
 import { FaApple, FaArrowRight, FaArrowLeft } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
@@ -44,12 +44,12 @@ const Login = () => {
       description: "Send money anywhere in seconds, not days.",
       color: "rgba(108, 92, 231, 0.9)",
     },
-    {
-      image: loginimg3,
-      title: "Smart Analytics",
-      description: "Track spending with beautiful visual reports.",
-      color: "rgba(0, 184, 148, 0.9)",
-    },
+    // {
+    //   image: loginimg3,
+    //   title: "Smart Analytics",
+    //   description: "Track spending with beautiful visual reports.",
+    //   color: "rgba(0, 184, 148, 0.9)",
+    // },
     {
       image: loginimg4,
       title: "Global Access",
