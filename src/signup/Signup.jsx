@@ -53,6 +53,9 @@ const Signup = () => {
     //   buttonColor: "#00b894",
     // },
     {
+
+
+      
       image: loginimg4,
       title: "Global Access",
       description: "Manage your money from anywhere in the world",
