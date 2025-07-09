@@ -3,7 +3,7 @@ import "./Login.css";
 import neralog from "../assets/nerasoft-logo.jpg";
 import loginimg1 from "../assets/kyc-img1.jpg";
 import loginimg2 from "../assets/kyc-img2.jpg";
-import loginimg3 from "../assets/kyc-img3.jpg";
+import loginimg3 from "../assets/KYC-img3.jpg";
 import loginimg4 from "../assets/kyc-img4.webp";
 import { FaApple, FaArrowRight, FaArrowLeft } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
@@ -212,13 +212,13 @@ const Login = () => {
     return (
       <div className="mobile-onboarding-screen">
         <div className="mobile-onboarding-logo-container">
-            <img
-              src={neralog}
-              alt="Nera Logo"
-              className="mobile-onboarding-logo"
-            />
-            <p className="nifipayment-login-name">NifiPayment</p>
-          </div>
+          <img
+            src={neralog}
+            alt="Nera Logo"
+            className="mobile-onboarding-logo"
+          />
+          <p className="nifipayment-login-name">NifiPayment</p>
+        </div>
         <div className="mobile-onboarding-slider">
           <AnimatePresence mode="wait">
             <motion.div
@@ -352,14 +352,18 @@ const Login = () => {
           </div>
         )}
 
-{isMobile && (
-        <div className="mobile-login-header">
-          <div className="mobile-login-logo-container">
-            <img src={neralog} alt="Nera Logo" className="mobile-login-logo" />
-            <p className="mobile-login-name">NifiPayment</p>
+        {isMobile && (
+          <div className="mobile-login-header">
+            <div className="mobile-login-logo-container">
+              <img
+                src={neralog}
+                alt="Nera Logo"
+                className="mobile-login-logo"
+              />
+              <p className="mobile-login-name">NifiPayment</p>
+            </div>
           </div>
-        </div>
-      )}
+        )}
         <div className="form-section">
           <motion.div
             className="login-form"
