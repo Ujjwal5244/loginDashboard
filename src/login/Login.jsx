@@ -3,7 +3,7 @@ import "./Login.css";
 import neralog from "../assets/nerasoft-logo.jpg";
 import loginimg1 from "../assets/kyc-img1.jpg";
 import loginimg2 from "../assets/kyc-img2.jpg";
-import loginimg3 from "../assets/KYC-img3.jpg";
+import loginimg3 from "../assets/kyc-img3.jpg";
 import loginimg4 from "../assets/kyc-img4.webp";
 import { FaApple, FaArrowRight, FaArrowLeft } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
