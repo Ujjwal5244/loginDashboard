@@ -10,23 +10,28 @@ import {
   FaFileSignature,
   FaTimes,
 } from "react-icons/fa";
-import { GrDocumentUser,GrDocumentDownload } from "react-icons/gr";
+import { GrDocumentUser, GrDocumentDownload } from "react-icons/gr";
 import { LiaUserLockSolid } from "react-icons/lia";
-import { FcApproval, FcCurrencyExchange } from "react-icons/fc";
+import { FcApproval, FcCurrencyExchange, FcTemplate } from "react-icons/fc";
 import { SiGooglecampaignmanager360, SiEclipsemosquitto } from "react-icons/si";
+import { FcRules } from "react-icons/fc";
 import {
   MdAnalytics,
   MdDrafts,
   MdOutlineSettings,
   MdOutlineImportantDevices,
+  MdOutlineNextWeek,
 } from "react-icons/md";
 import {
   GrInternetExplorer,
   GrDocumentText,
   GrCompliance,
 } from "react-icons/gr";
+import { ImInsertTemplate } from "react-icons/im";
+import { PiCertificateDuotone } from "react-icons/pi";
 import { HiClipboardDocumentList } from "react-icons/hi2";
 import { SiMonkeytie } from "react-icons/si";
+import { CgAttribution } from "react-icons/cg";
 
 const Sidebar = ({ sidebarOpen, darkMode, toggleSidebar, isMobile }) => {
   const location = useLocation();
@@ -56,12 +61,8 @@ const Sidebar = ({ sidebarOpen, darkMode, toggleSidebar, isMobile }) => {
     };
   }, [openDropdown, sidebarOpen]);
 
-  // *** FIXED: Effect to manage active dropdown on route change ***
   useEffect(() => {
     let activeDropdown = null;
-
-    // This effect should only auto-open a dropdown if the sidebar is expanded.
-    // If collapsed, we want dropdowns to be closed by default.
     if (sidebarOpen) {
       menuSections.forEach((section) => {
         section.items.forEach((item) => {
@@ -76,12 +77,7 @@ const Sidebar = ({ sidebarOpen, darkMode, toggleSidebar, isMobile }) => {
         });
       });
     }
-    
-    // Set the open dropdown based on the logic above.
-    // If the sidebar is collapsed, activeDropdown will remain null, correctly closing any dropdowns.
-    // If the sidebar is expanded, it will open the dropdown with the active link.
     setOpenDropdown(activeDropdown);
-
   }, [location.pathname, sidebarOpen]);
 
   const isActive = (path) => {
@@ -163,6 +159,44 @@ const Sidebar = ({ sidebarOpen, darkMode, toggleSidebar, isMobile }) => {
             },
           ],
         },
+        {
+          type: "dropdown",
+          icon: <PiCertificateDuotone size={20} />,
+          label: "KYC_Suites",
+          items: [
+            {
+              path: "/maindashboard/branding",
+              icon: <MdOutlineNextWeek size={18} />,
+              label: "Branding",
+              active: isActive("/maindashboard/branding"),
+            },
+            {
+              path: "/maindashboard/templates",
+              icon: <FcTemplate size={18} />,
+              label: "Templates",
+              active: isActive("/maindashboard/templates"),
+            },
+            {
+              path: "/maindashboard/templatelists",
+              icon: <ImInsertTemplate size={18} />,
+              label: "Template Lists",
+              active: isActive("/maindashboard/templatelists"),
+            },
+            {
+              path: "/maindashboard/rules",
+              icon: <FcRules size={18} />,
+              label: "Rules",
+              active: isActive("/maindashboard/rules"),
+            },
+            {
+              path: "/maindashboard/links",
+              icon: <CgAttribution size={18} />,
+              label: "Links",
+              active: isActive("/maindashboard/links"),
+            },
+          ],
+        },
+
         {
           path: "/maindashboard/kycstudio",
           icon: <FcApproval size={23} />,

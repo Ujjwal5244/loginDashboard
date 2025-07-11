@@ -17,12 +17,16 @@ import {
   FiList,
   FiArrowLeft, // Added for back button
 } from "react-icons/fi";
+import { CgAttribution } from "react-icons/cg";
+import { FcRules } from "react-icons/fc";
 import { GrDocumentVerified } from "react-icons/gr";
 import { RiDraftLine } from "react-icons/ri";
-import { FcApproval } from "react-icons/fc";
+import { FcApproval, FcTemplate } from "react-icons/fc";
 import { SiMonkeytie } from "react-icons/si";
-import { MdDrafts } from "react-icons/md";
+import { MdDrafts, MdOutlineNextWeek } from "react-icons/md";
+import { PiCertificateDuotone } from "react-icons/pi";
 import { VscGitPullRequestCreate } from "react-icons/vsc";
+import { ImInsertTemplate } from "react-icons/im";
 import axios from "axios";
 import { encryptText, decryptText, baseUrl } from "../../../../encryptDecrypt";
 
@@ -241,7 +245,6 @@ const MobileMenu = ({ isOpen, onClose, darkMode }) => {
                 onClick={handleNavigation}
               />
             </Dropdown>
-
             <Dropdown
               name="dev-tools"
               icon={<FiTool />}
@@ -283,6 +286,55 @@ const MobileMenu = ({ isOpen, onClose, darkMode }) => {
               />
             </Dropdown>
 
+            <Dropdown
+              name="KYC_Suites"
+              icon={<PiCertificateDuotone />}
+              label="KYC Suites"
+              isOpen={openDropdown === "KYC_Suites"}
+              onToggle={toggleDropdown}
+            >
+              <MenuItem
+                icon={<MdOutlineNextWeek />}
+                label="Branding"
+                path="/Maindashboard/branding"
+                indent
+                active={isActive("/Maindashboard/branding")}
+                onClick={handleNavigation}
+              />
+              <MenuItem
+                icon={<FcTemplate />}
+                label="Templates"
+                path="/Maindashboard/templates"
+                indent
+                active={isActive("/Maindashboard/templates")}
+                onClick={handleNavigation}
+              />
+              <MenuItem
+                icon={<ImInsertTemplate />}
+                label="Template Lists"
+                path="/Maindashboard/templatelists"
+                indent
+                active={isActive("/Maindashboard/templatelists")}
+                onClick={handleNavigation}
+              />
+              <MenuItem
+                icon={<FcRules />}
+                label="Rules"
+                path="/Maindashboard/rules"
+                indent
+                active={isActive("/Maindashboard/rules")}
+                onClick={handleNavigation}
+              />
+              <MenuItem
+                icon={<CgAttribution />}
+                label="Links"
+                path="/Maindashboard/links"
+                indent
+                active={isActive("/Maindashboard/links")}
+                onClick={handleNavigation}
+              />
+            </Dropdown>
+
             <MenuItem
               icon={<FcApproval />}
               label="Kycstudio"
@@ -320,15 +372,15 @@ const MobileMenu = ({ isOpen, onClose, darkMode }) => {
                 active={isActive("/Maindashboard/signed-agreement")}
                 onClick={handleNavigation}
               />
-               <MenuItem
-                icon={< RiDraftLine />}
+              <MenuItem
+                icon={<RiDraftLine />}
                 label="Draft Document"
                 path="/Maindashboard/draft-document"
                 indent
                 active={isActive("/Maindashboard/draft-document")}
                 onClick={handleNavigation}
               />
-               <MenuItem
+              <MenuItem
                 icon={<GrDocumentVerified />}
                 label="Complete Document"
                 path="/Maindashboard/complete-document"

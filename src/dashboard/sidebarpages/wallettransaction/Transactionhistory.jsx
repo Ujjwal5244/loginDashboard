@@ -35,8 +35,8 @@ const Transactionhistory = ({ darkMode }) => {
       setIsMobile(window.innerWidth <= 768);
     };
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   // Fetch transactions from API
@@ -173,31 +173,41 @@ const Transactionhistory = ({ darkMode }) => {
   const MobileTransactionCard = ({ tx, index }) => (
     <div className={`tm-mobile-card ${darkMode ? "dark-mode" : ""}`}>
       <div className="tm-mobile-card-header">
-        <span className="tm-mobile-card-srno">{indexOfFirstItem + index + 1}</span>
+        <span className="tm-mobile-card-srno">
+          {indexOfFirstItem + index + 1}
+        </span>
         <span className={`tm-status ${tx.status.toLowerCase()}`}>
           {tx.status}
         </span>
       </div>
       <div className="tm-mobile-card-body">
         <div className="tm-mobile-card-row">
-          <span className='text-gray-500'>Date & Time:</span>
+          <span className="text-gray-500">Date & Time:</span>
           <span>{tx.date}</span>
         </div>
         <div className="tm-mobile-card-row flex flex-wrap">
-  <span className="font-medium flex-shrink-0 text-gray-500">Service ID:</span>
-  <span className="font-medium break-all">{tx.serviceId}</span>
-</div>
+          <span className="font-medium flex-shrink-0 text-gray-500">
+            Service ID:
+          </span>
+          <span className="font-medium break-all">{tx.serviceId}</span>
+        </div>
 
         <div className="tm-mobile-card-row">
-          <span  className="font-medium flex-shrink-0 text-gray-500">Reference No:</span>
+          <span className="font-medium flex-shrink-0 text-gray-500">
+            Reference No:
+          </span>
           <span>{tx.referenceNo}</span>
         </div>
         <div className="tm-mobile-card-row">
-          <span  className="font-medium flex-shrink-0 text-gray-500">Remark:</span>
+          <span className="font-medium flex-shrink-0 text-gray-500">
+            Remark:
+          </span>
           <span>{tx.remark}</span>
         </div>
         <div className="tm-mobile-card-row">
-          <span  className="font-medium flex-shrink-0 text-gray-500">Amount:</span>
+          <span className="font-medium flex-shrink-0 text-gray-500">
+            Amount:
+          </span>
           <span style={{ color: tx.amount >= 0 ? "#2e7d32" : "#c62828" }}>
             {tx.amount >= 0
               ? `+₹${tx.amount.toFixed(2)}`
@@ -205,7 +215,9 @@ const Transactionhistory = ({ darkMode }) => {
           </span>
         </div>
         <div className="tm-mobile-card-row">
-          <span  className="font-medium flex-shrink-0 text-gray-500">Balance:</span>
+          <span className="font-medium flex-shrink-0 text-gray-500">
+            Balance:
+          </span>
           <div className="tm-mobile-balance">
             <div>Open: ₹{tx.openingBalance.toFixed(2)}</div>
             <div>Close: ₹{tx.closingBalance.toFixed(2)}</div>
@@ -520,7 +532,9 @@ const Transactionhistory = ({ darkMode }) => {
                             <td>
                               <div className="tm-balance">
                                 <div>Open: ₹{tx.openingBalance.toFixed(2)}</div>
-                                <div>Close: ₹{tx.closingBalance.toFixed(2)}</div>
+                                <div>
+                                  Close: ₹{tx.closingBalance.toFixed(2)}
+                                </div>
                               </div>
                             </td>
                           </tr>
@@ -540,54 +554,218 @@ const Transactionhistory = ({ darkMode }) => {
               </div>
             )}
 
-            {/* Pagination Controls */}
             {totalPages > 1 && (
-              <div className="tm-pagination">
+  <div
+    className={`flex items-center justify-between mt-4 px-4 py-3 border-t sm:px-6 rounded-b-lg ${
+      darkMode
+        ? 'dark:bg-gray-800 dark:border-gray-700'
+        : 'bg-white border-gray-200'
+    }`}
+  >
+    {/* Mobile view */}
+    <div className="flex-1 flex justify-between sm:hidden">
+      <button
+        onClick={() => goToPage(currentPage - 1)}
+        disabled={currentPage === 1 || loading}
+        className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium rounded-md ${
+          currentPage === 1 || loading
+            ? `${darkMode ? 'dark:bg-gray-500 dark:border-gray-700 cursor-not-allowed' : 'bg-gray-100 text-gray-400 cursor-not-allowed'}`
+            : `${darkMode ? 'bg-[#3470b2] text-gray-100 hover:bg-blue-700' : 'bg-white text-gray-700 hover:bg-gray-50'}`
+        } border-gray-300`}
+      >
+        Prev
+      </button>
+      <div className={`flex items-center px-4 ${darkMode ? 'text-gray-100' : 'text-gray-700'}`}>
+        Page {currentPage} of {totalPages}
+      </div>
+      <button
+        onClick={() => goToPage(currentPage + 1)}
+        disabled={currentPage === totalPages || loading}
+        className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium rounded-md ${
+          currentPage === totalPages || loading
+            ? `${darkMode ? 'dark:bg-gray-500 dark:border-gray-700 cursor-not-allowed' : 'bg-gray-100 text-gray-400 cursor-not-allowed'}`
+            : `${darkMode ? 'dark:bg-gray-500 dark:border-gray-700' : 'bg-white text-gray-700 hover:bg-gray-50'}`
+        } border-gray-300`}
+      >
+        Next
+      </button>
+    </div>
+
+    {/* Desktop view */}
+    <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+      <div>
+        <p className={`text-sm ${darkMode ? 'text-gray-100' : 'text-gray-700'}`}>
+          Showing <span className="font-medium">{indexOfFirstItem + 1}</span> to{' '}
+          <span className="font-medium">{Math.min(indexOfLastItem, totalItems)}</span> of{' '}
+          <span className="font-medium">{totalItems}</span> results
+        </p>
+      </div>
+      <div>
+        <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+          {/* First */}
+          <button
+            onClick={() => goToPage(1)}
+            disabled={currentPage === 1 || loading}
+            className={`relative inline-flex items-center px-2 py-2 rounded-l-md border text-sm font-medium ${
+              currentPage === 1 || loading
+                ? `${darkMode ? 'bg-[#3470b2] text-gray-500 cursor-not-allowed' : 'bg-gray-100 text-gray-400 cursor-not-allowed'}`
+                : `${darkMode ? 'bg-[#3470b2] text-gray-100 hover:bg-blue-700' : 'bg-white text-gray-500 hover:bg-gray-50'}`
+            } border-gray-300`}
+          >
+            <span className="sr-only">First</span>
+            <FaAngleDoubleLeft className="h-4 w-4" />
+          </button>
+
+          {/* Previous */}
+          <button
+            onClick={() => goToPage(currentPage - 1)}
+            disabled={currentPage === 1 || loading}
+            className={`relative inline-flex items-center px-2 py-2 border text-sm font-medium ${
+              currentPage === 1 || loading
+                ? `${darkMode ? 'bg-[#3470b2] text-gray-500 cursor-not-allowed' : 'bg-gray-100 text-gray-400 cursor-not-allowed'}`
+                : `${darkMode ? 'bg-[#3470b2] text-gray-100 hover:bg-blue-700' : 'bg-white text-gray-500 hover:bg-gray-50'}`
+            } border-gray-300`}
+          >
+            <span className="sr-only">Previous</span>
+            <FaAngleLeft className="h-4 w-4" />
+          </button>
+
+          {/* Page Numbers */}
+          {(() => {
+            const pages = [];
+            const maxVisiblePages = 5;
+            let startPage, endPage;
+
+            if (totalPages <= maxVisiblePages) {
+              startPage = 1;
+              endPage = totalPages;
+            } else {
+              const maxPagesBeforeCurrent = Math.floor(maxVisiblePages / 2);
+              const maxPagesAfterCurrent = Math.ceil(maxVisiblePages / 2) - 1;
+
+              if (currentPage <= maxPagesBeforeCurrent) {
+                startPage = 1;
+                endPage = maxVisiblePages;
+              } else if (currentPage + maxPagesAfterCurrent >= totalPages) {
+                startPage = totalPages - maxVisiblePages + 1;
+                endPage = totalPages;
+              } else {
+                startPage = currentPage - maxPagesBeforeCurrent;
+                endPage = currentPage + maxPagesAfterCurrent;
+              }
+            }
+
+            if (startPage > 1) {
+              pages.push(
                 <button
+                  key={1}
                   onClick={() => goToPage(1)}
-                  disabled={currentPage === 1 || loading}
-                  className="tm-page-btn"
+                  disabled={loading}
+                  className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
+                    1 === currentPage
+                      ? `${darkMode ? 'z-10 bg-blue-900 text-blue-100 border-blue-700' : 'z-10 bg-blue-50 border-blue-500 text-blue-600'}`
+                      : `${darkMode ? 'bg-[#3470b2] text-gray-100 hover:bg-blue-700' : 'bg-white text-gray-500 hover:bg-gray-50'}`
+                  } border-gray-300`}
                 >
-                  <FaAngleDoubleLeft />
+                  1
                 </button>
-                <button
-                  onClick={() => goToPage(currentPage - 1)}
-                  disabled={currentPage === 1 || loading}
-                  className="tm-page-btn"
-                >
-                  <FaAngleLeft />
-                </button>
+              );
+              if (startPage > 2) {
+                pages.push(
+                  <span
+                    key="start-ellipsis"
+                    className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
+                      darkMode ? 'bg-[#3470b2] text-gray-100' : 'bg-white text-gray-700'
+                    } border-gray-300`}
+                  >
+                    ...
+                  </span>
+                );
+              }
+            }
 
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                  (page) => (
-                    <button
-                      key={page}
-                      onClick={() => goToPage(page)}
-                      disabled={loading}
-                      className={`tm-page-btn ${currentPage === page ? "active" : ""}`}
-                    >
-                      {page}
-                    </button>
-                  )
-                )}
-
+            for (let i = startPage; i <= endPage; i++) {
+              pages.push(
                 <button
-                  onClick={() => goToPage(currentPage + 1)}
-                  disabled={currentPage === totalPages || loading}
-                  className="tm-page-btn"
+                  key={i}
+                  onClick={() => goToPage(i)}
+                  disabled={loading}
+                  className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
+                    i === currentPage
+                      ? `${darkMode ? 'z-10 bg-blue-900 text-blue-100 border-blue-700' : 'z-10 bg-blue-50 border-blue-500 text-blue-600'}`
+                      : `${darkMode ? 'bg-[#3470b2] text-gray-100 hover:bg-blue-700' : 'bg-white text-gray-500 hover:bg-gray-50'}`
+                  } border-gray-300`}
                 >
-                  <FaAngleRight />
+                  {i}
                 </button>
+              );
+            }
+
+            if (endPage < totalPages) {
+              if (endPage < totalPages - 1) {
+                pages.push(
+                  <span
+                    key="end-ellipsis"
+                    className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
+                      darkMode ? 'bg-[#3470b2] text-gray-100' : 'bg-white text-gray-700'
+                    } border-gray-300`}
+                  >
+                    ...
+                  </span>
+                );
+              }
+              pages.push(
                 <button
+                  key={totalPages}
                   onClick={() => goToPage(totalPages)}
-                  disabled={currentPage === totalPages || loading}
-                  className="tm-page-btn"
+                  disabled={loading}
+                  className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
+                    totalPages === currentPage
+                      ? `${darkMode ? 'z-10 bg-blue-900 text-blue-100 border-blue-700' : 'z-10 bg-blue-50 border-blue-500 text-blue-600'}`
+                      : `${darkMode ? 'bg-[#3470b2] text-gray-100 hover:bg-blue-700' : 'bg-white text-gray-500 hover:bg-gray-50'}`
+                  } border-gray-300`}
                 >
-                  <FaAngleDoubleRight />
+                  {totalPages}
                 </button>
-              </div>
-            )}
-          </div>
+              );
+            }
+
+            return pages;
+          })()}
+
+          {/* Next */}
+          <button
+            onClick={() => goToPage(currentPage + 1)}
+            disabled={currentPage === totalPages || loading}
+            className={`relative inline-flex items-center px-2 py-2 border text-sm font-medium ${
+              currentPage === totalPages || loading
+                ? `${darkMode ? 'bg-[#3470b2] text-gray-500 cursor-not-allowed' : 'bg-gray-100 text-gray-400 cursor-not-allowed'}`
+                : `${darkMode ? 'bg-[#3470b2] text-gray-100 hover:bg-blue-700' : 'bg-white text-gray-500 hover:bg-gray-50'}`
+            } border-gray-300`}
+          >
+            <span className="sr-only">Next</span>
+            <FaAngleRight className="h-4 w-4" />
+          </button>
+
+          {/* Last */}
+          <button
+            onClick={() => goToPage(totalPages)}
+            disabled={currentPage === totalPages || loading}
+            className={`relative inline-flex items-center px-2 py-2 rounded-r-md border text-sm font-medium ${
+              currentPage === totalPages || loading
+                ? `${darkMode ? 'bg-[#3470b2] text-gray-500 cursor-not-allowed' : 'bg-gray-100 text-gray-400 cursor-not-allowed'}`
+                : `${darkMode ? 'bg-[#3470b2] text-gray-100 hover:bg-blue-700' : 'bg-white text-gray-500 hover:bg-gray-50'}`
+            } border-gray-300`}
+          >
+            <span className="sr-only">Last</span>
+            <FaAngleDoubleRight className="h-4 w-4" />
+          </button>
+        </nav>
+      </div>
+    </div>
+  </div>
+)}
+      </div>
         </>
       )}
     </div>

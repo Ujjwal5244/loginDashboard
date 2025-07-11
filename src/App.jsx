@@ -38,6 +38,11 @@ import OutsideSignature from "./outsideusersign/OutsideSignature";
 import OutsideSignedViewpdf from "./outsideusersign/OutsideSignedViewpdf";
 import Completedocument from "./dashboard/sidebarpages/document/documentfile/completedocument/Completedocument";
 import Draftdocument from "./dashboard/sidebarpages/document/documentfile/draftdocument/Draftdocument";
+import Branding from "./dashboard/sidebarpages/menu/kycsuite/branding/Branding";
+import Template from "./dashboard/sidebarpages/menu/kycsuite/template/Template";
+import TemplateList from "./dashboard/sidebarpages/menu/kycsuite/template/TemplateList";
+import Rules from "./dashboard/sidebarpages/menu/kycsuite/rules/Rules";
+import Links from "./dashboard/sidebarpages/menu/kycsuite/Links/Links";
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -93,6 +98,22 @@ function App() {
                 path="api-credential"
                 element={<Apicredential darkMode={darkMode} />}
               />
+
+              <Route
+                path="branding"
+                element={<Branding darkMode={darkMode} />}
+              />
+              <Route
+                path="templates"
+                element={<Template darkMode={darkMode} />}
+              />
+              <Route
+                path="templatelists"
+                element={<TemplateList darkMode={darkMode} />}
+              />
+              <Route path="rules" element={<Rules darkMode={darkMode} />} />
+              <Route path="links" element={<Links darkMode={darkMode} />} />
+
               <Route
                 path="kycstudio"
                 element={<KycStudio darkMode={darkMode} />}
