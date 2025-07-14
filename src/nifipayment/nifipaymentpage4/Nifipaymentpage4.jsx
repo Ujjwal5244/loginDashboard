@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { FiKey, FiCheckCircle } from "react-icons/fi";
-import textSignature from "../../assets/text-Signature.png";
+import textSignature from "../../assets/textSignature.png";
 import adharSignature from "../../assets/Aadhaar eSign.webp"; 
 import digitalSignature from "../../assets/digital-sign.png"; 
-import biometricSignature from "../../assets/text-Signature.png"; 
+import biometricSignature from "../../assets/textSignature.png"; 
 
 // --- Data for each tab ---
 const tabsData = [
