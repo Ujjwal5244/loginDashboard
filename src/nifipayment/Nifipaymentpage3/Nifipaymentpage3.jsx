@@ -24,9 +24,9 @@ const Nifipaymentpage3 = () => {
   const doubleLogos = [...logos, ...logos];
 
   return (
-    <div className="pb-10 overflow-hidden">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-10 lg:py-10 pb-10 overflow-hidden">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-8 text-gray-800">
+        <h2 className="md:text-3xl xs:text-2xl font-bold text-center mb-8 text-gray-800">
           Our Trusted Partners
         </h2>
         

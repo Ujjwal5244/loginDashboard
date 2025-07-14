@@ -63,10 +63,10 @@ function App() {
         <ToastContainer />
         <div className={`app ${darkMode ? "dark-mode" : ""}`}>
           <Routes>
-            <Route path="/" element={<Login />} />
+            <Route path="/" element={< Nifipaymentmain/>} />
             <Route path="/signup" element={<Signup />} />
-            <Route path="/Nifipayment" element={<Nifipaymentmain />} />
-            <Route
+            <Route path="/login" element={<Login />} />
+            <Route 
               path="/Maindashboard"
               element={
                 <Maindashboard

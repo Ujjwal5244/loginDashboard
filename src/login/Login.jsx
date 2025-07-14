@@ -3,7 +3,6 @@ import "./Login.css";
 import neralog from "../assets/nerasoft-logo.jpg";
 import loginimg1 from "../assets/kyc-img1.jpg";
 import loginimg2 from "../assets/kyc-img2.jpg";
-// import loginimg3 from "../assets/kyc-img3.jpg"; // Updated import path÷÷
 import loginimg4 from "../assets/kyc-img4.webp";
 import { FaApple, FaArrowRight, FaArrowLeft } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
@@ -15,7 +14,7 @@ import { baseUrl, decryptText, encryptText } from "../encryptDecrypt";
 import { toast } from "react-toastify";
 import { useGoogleLogin } from "@react-oauth/google";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import { motion, AnimatePresence } from "framer-motion"; // Import AnimatePresence
+import { motion, AnimatePresence } from "framer-motion";
 
 const Spinner = () => <div className="spinner"></div>;
 
@@ -44,12 +43,6 @@ const Login = () => {
       description: "Send money anywhere in seconds, not days.",
       color: "rgba(108, 92, 231, 0.9)",
     },
-    // {
-    //   image: loginimg3,
-    //   title: "Smart Analytics",
-    //   description: "Track spending with beautiful visual reports.",
-    //   color: "rgba(0, 184, 148, 0.9)",
-    // },
     {
       image: loginimg4,
       title: "Global Access",
@@ -73,7 +66,7 @@ const Login = () => {
   // Auto-rotate slides for desktop
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
+      setIsMobile(window.innerWidth < 769);
     };
 
     window.addEventListener("resize", handleResize);
@@ -180,7 +173,6 @@ const Login = () => {
 
   // Function to handle OTP verification
   const handleVerifyOtp = async () => {
-    // ... (rest of your existing functions are perfect, no changes needed)
     if (!otp) {
       toast.warn("Please enter the OTP");
       return;
@@ -369,17 +361,15 @@ const Login = () => {
             className="login-form"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: isMobile ? 0 : 0.3 }} // Add delay for smoother transition on mobile
+            transition={{ duration: 0.5, delay: isMobile ? 0 : 0.3 }} 
           >
             <div className="form-header">
-              {/* MODIFICATION 1: Added inline style to set text color dynamically */}
               <h2
                 className="login-form-header-h2"
                 style={{ color: slides[currentSlide].color }}
               >
                 Welcome Back!
               </h2>
-              {/* <p className="login-form-header-p">Log in to continue your NifiPayment journey</p> */}
             </div>
             <div className="form-fields">
               <div className="input-group">
@@ -430,7 +420,7 @@ const Login = () => {
                 <motion.button
                   className="social-button google"
                   onClick={() => googleLogin()}
-                  whileHover={{ y: -2 }}
+                  whileHover={{ y: -2 }} 
                 >
                   <FcGoogle size={20} />
                   <span>Google</span>

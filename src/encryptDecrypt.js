@@ -87,7 +87,7 @@ const decryptField = async (encryptedData) => {
     { name: algorithm, iv: ivBytes },
     key,
     encryptedBytes
-  );
+  ); 
 
   return textDecoder.decode(decrypted);
 };

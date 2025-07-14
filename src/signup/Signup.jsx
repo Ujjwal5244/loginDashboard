@@ -18,7 +18,7 @@ const Spinner = () => (
   <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white"></div>
 );
 
-const Signup = () => {
+const Signup = () => { 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [mobile, setMobile] = useState("");
@@ -537,7 +537,7 @@ const Signup = () => {
             <p className="mb-2">
               Already have an account?{" "}
               <Link
-                to="/"
+                to="/login"
                 className="font-medium hover:underline"
                 style={{
                   color: activeColor,

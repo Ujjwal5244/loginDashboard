@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
-import './Nifipaymentheader.css'; // Assuming you have a CSS file for styles
+import React, { useState } from "react";
+import "./Nifipaymentheader.css";
+import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { TagIcon } from "@heroicons/react/20/solid";
 
 const Nifipaymentheader = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeItem, setActiveItem] = useState(null);
-
+  const navigate = useNavigate();
   const navItems = [
     "Product",
     "Why NifiPayment",
@@ -14,6 +17,7 @@ const Nifipaymentheader = () => {
     "About Us",
     "Pricing",
   ];
+  const message = "Limited Time: Save over 55% with code SUPERDEAL!";
 
   return (
     <div className="Nifipaymentheader-of-header-container">
@@ -23,13 +27,60 @@ const Nifipaymentheader = () => {
       {/* Main header content */}
       <nav className="Nifipaymentheader-of-main-nav">
         <div className="Nifipaymentheader-of-nav-content">
-          {/* Logo with hover effect */}
-          <div className="Nifipaymentheader-of-logo-container">
-            <div className="Nifipaymentheader-of-logo-wrapper">
-              <span className="Nifipaymentheader-of-logo-text">
-                <span className='Nifipaymentheader-of-logo-first-part'>Nifi</span>
-                <span className="Nifipaymentheader-of-logo-second-part text-orange-500">Payment</span>
-              </span>
+          {/* Left section: Menu Icon (mobile) + Logo */}
+          <div className="Nifipaymentheader-of-left-section">
+            {/* Mobile menu button */}
+            <div className="Nifipaymentheader-of-mobile-menu-button">
+              <button
+                type="button"
+                className="Nifipaymentheader-of-menu-toggle-button"
+                aria-label="Open main menu"
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+              >
+                {!isMenuOpen ? (
+                  <svg
+                    className="Nifipaymentheader-of-menu-icon"
+                    stroke="currentColor"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M4 6h16M4 12h16M4 18h16"
+                    />
+                  </svg>
+                ) : (
+                  <svg
+                    className="Nifipaymentheader-of-menu-icon"
+                    stroke="currentColor"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                )}
+              </button>
+            </div>
+
+            {/* Logo with hover effect */}
+            <div className="Nifipaymentheader-of-logo-container">
+              <div className="Nifipaymentheader-of-logo-wrapper">
+                <span className="Nifipaymentheader-of-logo-text">
+                  <span className="Nifipaymentheader-of-logo-first-part">
+                    Nifi
+                  </span>
+                  <span className="Nifipaymentheader-of-logo-second-part text-orange-500">
+                    Payment
+                  </span>
+                </span>
+              </div>
             </div>
           </div>
 
@@ -40,7 +91,9 @@ const Nifipaymentheader = () => {
                 <div key={item} className="Nifipaymentheader-of-nav-item-group">
                   <a
                     href="#"
-                    className={`Nifipaymentheader-of-nav-link ${activeItem === item ? 'active-nav-link' : ''}`}
+                    className={`Nifipaymentheader-of-nav-link ${
+                      activeItem === item ? "active-nav-link" : ""
+                    }`}
                     onClick={() => setActiveItem(item)}
                   >
                     {item}
@@ -54,35 +107,28 @@ const Nifipaymentheader = () => {
             </div>
           </div>
 
-          {/* Action Buttons - Right side */}
+          {/* Action Buttons - Right side (Visible on all screen sizes) */}
           <div className="Nifipaymentheader-of-action-buttons">
-            <button type="button" className="Nifipaymentheader-of-primary-button">
-              <span className="Nifipaymentheader-of-button-text">Book demo</span>
-              <span className="Nifipaymentheader-of-button-hover-effect"></span>
-            </button>
-            <button type="button" className="Nifipaymentheader-of-secondary-button">
-              <span className="Nifipaymentheader-of-button-text">Sign in / Register</span>
-              <span className="Nifipaymentheader-of-button-hover-effect"></span>
-            </button>
-          </div>
-
-          {/* Mobile menu button */}
-          <div className="Nifipaymentheader-of-mobile-menu-button">
             <button
               type="button"
-              className="Nifipaymentheader-of-menu-toggle-button"
-              aria-label="Open main menu"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="Nifipaymentheader-of-primary-button"
+              onClick={() => navigate("/login")}
             >
-              {!isMenuOpen ? (
-                <svg className="Nifipaymentheader-of-menu-icon" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              ) : (
-                <svg className="Nifipaymentheader-of-menu-icon" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              )}
+              <span className="Nifipaymentheader-of-button-text">
+                Book demo
+              </span>
+              <span className="Nifipaymentheader-of-button-hover-effect"></span>
+            </button>
+
+            <button
+              type="button"
+              className="Nifipaymentheader-of-secondary-button"
+              onClick={() => navigate("/login")}
+            >
+              <span className="Nifipaymentheader-of-button-text">
+                Sign in
+              </span>
+              <span className="Nifipaymentheader-of-button-hover-effect"></span>
             </button>
           </div>
         </div>
@@ -105,17 +151,23 @@ const Nifipaymentheader = () => {
                 {item}
               </a>
             ))}
-            <div className="Nifipaymentheader-of-mobile-buttons-container">
-              <button type="button" className="Nifipaymentheader-of-mobile-primary-button">
-                Book demo
-              </button>
-              <button type="button" className="Nifipaymentheader-of-mobile-secondary-button">
-                Sign in / Register
-              </button>
-            </div>
           </div>
         </div>
       )}
+
+      {/* Promotional banner */}
+      <Link
+        to="/offer"
+        className="group w-full bg-teal-500 text-white flex items-center justify-center text-center p-2 md:text-sm xs:text-xs font-medium hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition-all duration-300"
+      >
+        <TagIcon className="h-5 w-5 mr-2 -ml-1 opacity-80 group-hover:scale-110 transition-transform" />
+        <span>
+          {message}
+          <span className="ml-2 opacity-80 group-hover:opacity-100 group-hover:ml-3 transition-all">
+            →
+          </span>
+        </span>
+      </Link>
     </div>
   );
 };

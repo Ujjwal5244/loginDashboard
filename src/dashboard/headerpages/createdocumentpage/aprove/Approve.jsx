@@ -48,12 +48,12 @@ const Approve = ({darkMode}) => {
   const hasPopulatedFields = useRef(false);
   const pageRefs = useRef({});
   const [info, setInfo] = useState(null);
-  const [pdfWidth, setPdfWidth] = useState(700); // Initial width
+  const [pdfWidth, setPdfWidth] = useState(700);
 
   useEffect(() => {
     // Update PDF width based on window size
     const updatePdfWidth = () => {
-      const width = Math.min(window.innerWidth - 40, 700); // Max 700px, but responsive to screen
+      const width = Math.min(window.innerWidth - 40, 700); 
       setPdfWidth(width);
     };
 

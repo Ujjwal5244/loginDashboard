@@ -5,7 +5,7 @@ import nifipaymentbank from "../../assets/nifipaymentbank.jpg";
 
 const Nifipaymentpage2 = () => {
   return (
-    <div className="px-6 py-10 bg-white font-sans">
+    <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10 py-10 lg:py-10 font-sans"> 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Free eSign box */}
         <div className="bg-gradient-to-b from-purple-200 to-pink-100 rounded-xl p-6">

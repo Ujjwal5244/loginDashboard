@@ -136,8 +136,6 @@ const Requestfile = ({ darkMode }) => {
         const inviteesData = JSON.parse(decryptedInvitees);
         console.log("Fetched invitees data:", inviteesData);
 
-        // ********************* THE FIX IS HERE *********************
-        // We are now checking for `inviteesData.invitees` instead of `inviteesData.decrypted.invitees`
         if (inviteesData?.invitees && inviteesData.invitees.length > 0) {
           // We are mapping over `inviteesData.invitees`
           const fetchedInvitees = inviteesData.invitees.map((inv) => {
@@ -480,8 +478,8 @@ const Requestfile = ({ darkMode }) => {
           longitude: location.longitude,
         },
       };
-      const payloadString = JSON.stringify(payloadData); // Stringify for encryption
-      const encryptedPayload = await encryptText(payloadString);
+      // const payloadString = await encryptText(JSON.stringify(payloadData));
+      const encryptedPayload = await encryptText(payloadData);
 
       const response = await axios.post(
         `${baseUrl}/api/document/invitees/${documentId}`,
